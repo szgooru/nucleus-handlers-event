@@ -27,8 +27,10 @@ public class EventVerticle extends AbstractVerticle {
 
     vertx.executeBlocking(blockingFuture -> {
       startApplication();
+      blockingFuture.complete();
     }, future -> {
       if (future.succeeded()) {
+        LOGGER.info("Successfully initialized application machinery");
         voidFuture.complete();
       } else {
         voidFuture.fail("Not able to initialize the Resource machinery properly");
