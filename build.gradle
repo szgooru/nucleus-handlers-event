@@ -30,6 +30,7 @@ ext {
     logbackVersion = '1.0.13'
     hikariVersion = '2.4.3'
     postgresVersion = '9.4-1206-jdbc42'
+    kafkaVersion = 'kafka_2.11:0.9.0.0'
 }
 
 version = "0.1-snapshot"
@@ -52,7 +53,7 @@ dependencies {
     compile "ch.qos.logback:logback-classic:${logbackVersion}"
     compile "com.zaxxer:HikariCP:${hikariVersion}"
     compile "org.postgresql:postgresql:${postgresVersion}"
-
+    compile "org.apache.kafka:${kafkaVersion}"
 
     // Test dependencies
     testCompile "junit:junit:${junitVersion}"
