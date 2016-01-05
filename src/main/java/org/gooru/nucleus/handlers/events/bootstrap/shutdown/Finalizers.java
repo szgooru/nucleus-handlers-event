@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.bootstrap.shutdown;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.app.components.KafkaRegistry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ public class Finalizers implements Iterable<Finalizer> {
   public Finalizers() {
     finalizers = new ArrayList<Finalizer>();
     finalizers.add(DataSourceRegistry.getInstance());    
+    finalizers.add(KafkaRegistry.getInstance());    
     internalIterator = finalizers.iterator();
   }
 

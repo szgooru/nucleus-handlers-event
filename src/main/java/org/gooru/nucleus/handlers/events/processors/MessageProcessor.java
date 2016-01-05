@@ -22,8 +22,8 @@ class MessageProcessor implements Processor {
   }
   
   @Override
-  public boolean process() {
-    boolean result;
+  public JsonObject process() {
+    JsonObject result = null;
     try {
       if (message == null) {
         LOGGER.error("Invalid message received, either null or body of message is not JsonObject ");
@@ -47,16 +47,18 @@ class MessageProcessor implements Processor {
     } catch (InvalidRequestException e) {
       // TODO: handle exception
     }
-    return true;
+    return result;
   }
 
 
-  private boolean processEventResourceCreate() {
+  private JsonObject processEventResourceCreate() {
     JsonObject msgObject = (JsonObject) message.body();
-    String eventName = msgObject.getString(MessageConstants.MSG_EVENT_NAME);
-    JsonObject eventBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
 
-    return MessageDispatcher.getInstance().sendMessage2Kafka(eventName, eventBody);    
+    return msgObject;
+    
+//    String eventName = msgObject.getString(MessageConstants.MSG_EVENT_NAME);
+//    JsonObject eventBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
+//    return MessageDispatcher.getInstance().sendMessage2Kafka(eventName, eventBody);    
   }
 
 }
