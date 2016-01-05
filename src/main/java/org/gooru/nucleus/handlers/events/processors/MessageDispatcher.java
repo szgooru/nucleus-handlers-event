@@ -1,20 +1,26 @@
 package org.gooru.nucleus.handlers.events.processors;
 
+import org.gooru.nucleus.handlers.events.app.components.KafkaRegistry;
+import org.apache.kafka.clients.producer.Callback;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.BufferExhaustedException;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.errors.SerializationException;
+import org.apache.kafka.common.errors.InterruptException;
 
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import io.vertx.core.json.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
 
 public class MessageDispatcher {
   private static final MessageDispatcher INSTANCE = new MessageDispatcher();
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageDispatcher.class);
-  
-  static final String kafkaServer = "localhost:9092";  // <TBD> : This needs to go to external file
   
   private MessageDispatcher() { 
     
@@ -24,23 +30,39 @@ public class MessageDispatcher {
     return INSTANCE;
   }
   
-  public boolean sendMessage2Kafka(String eventName, JsonObject eventBody) {
+  public void sendMessage2Kafka(String eventName, JsonObject eventBody) {
     //
     // Kafka message publish
     //
-    Properties properties = new Properties();
-    properties.put("metadata.broker.list", this.kafkaServer);
-    properties.put("serializer.class","kafka.serializer.StringEncoder");
-    
-    ProducerConfig producerConfig = new ProducerConfig(properties);
-    Producer<String,String> producer = new Producer<String, String>(producerConfig);
-    KeyedMessage<String, String> kafkaMsg = new KeyedMessage<String, String>(eventName, eventBody.toString());
+    Producer<String,String> producer = KafkaRegistry.getInstance().getKafkaProducer();
+    ProducerRecord<String, String> kafkaMsg = new ProducerRecord<String, String>("MYTOPIC", eventName, eventBody.toString());
 
     LOGGER.debug("Message to Kafka server:" + kafkaMsg);
 
-    producer.send(kafkaMsg);            
-    producer.close();
-    
-    return true;
+    try {
+      producer.send(kafkaMsg, new Callback() {
+        @Override
+        public void onCompletion(RecordMetadata metadata, Exception exception) {
+            if (exception == null) {
+              LOGGER.info("Message Delivered Successfully: Offset : " + metadata.offset() + " : Topic : " + metadata.topic() + " : Partition : " + metadata.partition() + " : Message : " + kafkaMsg);
+            } else {
+              LOGGER.error("Message Could not be delivered : " + kafkaMsg + ". Cause: " + exception.getMessage());
+            }
+        }
+      });
+      
+      LOGGER.debug("Message Sent Successfully: " + kafkaMsg);
+      
+    } catch (InterruptException ie) {
+      //   - If the thread is interrupted while blocked
+      LOGGER.error("SendMesage2Kafka: to Kafka server:", ie);
+    } catch (SerializationException se) {
+      //   - If the key or value are not valid objects given the configured serializers
+      LOGGER.error("SendMesage2Kafka: to Kafka server:", se);
+    } catch (BufferExhaustedException be) {
+      //   - If block.on.buffer.full=false and the buffer is full.
+      LOGGER.error("SendMesage2Kafka: to Kafka server:", be);
+    }
   }
+  
 }
