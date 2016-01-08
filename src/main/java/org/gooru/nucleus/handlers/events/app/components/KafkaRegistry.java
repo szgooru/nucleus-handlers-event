@@ -2,6 +2,7 @@ package org.gooru.nucleus.handlers.events.app.components;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizer;
 import org.gooru.nucleus.handlers.events.bootstrap.startup.Initializer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -9,6 +10,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.Producer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 import java.util.Map;
 
@@ -18,6 +20,10 @@ public class KafkaRegistry implements Initializer, Finalizer {
   private static final String DEFAULT_KAFKA_SETTINGS = "defaultKafkaSettings";
   private static final Logger LOGGER = LoggerFactory.getLogger(KafkaRegistry.class);
   private Producer<String, String> kafkaProducer;
+
+  private String KAFKA_TOPIC = "prodContentLog";
+  private boolean testWithoutKafkaServer = false;
+  
   boolean initialized = false;
   
   @Override
@@ -51,30 +57,49 @@ public class KafkaRegistry implements Initializer, Finalizer {
       switch (entry.getKey()) {
         case ProducerConfig.BOOTSTRAP_SERVERS_CONFIG :  
           properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, (String) entry.getValue());          
+          LOGGER.debug("BOOTSTRAP_SERVERS_CONFIG : " + entry.getValue());
           break;
         case ProducerConfig.RETRIES_CONFIG:
           properties.put(ProducerConfig.RETRIES_CONFIG,(Integer) entry.getValue());
+          LOGGER.debug("RETRIES_CONFIG : " +  entry.getValue());
           break;
 //        case ProducerConfig.ACKS_CONFIG:
 //          properties.put(ProducerConfig.ACKS_CONFIG,(String) entry.getValue());
+//          LOGGER.debug("ACKS_CONFIG : " +  entry.getValue());
 //          break;
         case ProducerConfig.BATCH_SIZE_CONFIG:
           properties.put(ProducerConfig.BATCH_SIZE_CONFIG,(Integer) entry.getValue());
+          LOGGER.debug("BATCH_SIZE_CONFIG : " + entry.getValue());
           break;
         case ProducerConfig.LINGER_MS_CONFIG:
           properties.put(ProducerConfig.LINGER_MS_CONFIG,(Integer) entry.getValue());
+          LOGGER.debug("LINGER_MS_CONFIG : " +  entry.getValue());
           break;
         case ProducerConfig.BUFFER_MEMORY_CONFIG:
           properties.put(ProducerConfig.BUFFER_MEMORY_CONFIG,(Integer) entry.getValue());
+          LOGGER.debug("BUFFER_MEMORY_CONFIG : " + entry.getValue());
           break;
         case ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG:
           properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,(String) entry.getValue());
+          LOGGER.debug("KEY_SERIALIZER_CLASS_CONFIG : " + entry.getValue());
           break;
         case ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG:
           properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,(String) entry.getValue());
-          break;       
+          LOGGER.debug("VALUE_SERIALIZER_CLASS_CONFIG : " + entry.getValue());
+          break;
+        case "topic" :
+          this.KAFKA_TOPIC = entry.getValue().toString();
+          LOGGER.debug("KAFKA_TOPIC : " + this.KAFKA_TOPIC);
+          break;
+        case "testEnvironmentWithoutKafkaServer" :
+          this.testWithoutKafkaServer = (boolean) entry.getValue();
+          LOGGER.debug("KAFKA_TOPIC : " + this.KAFKA_TOPIC);
+          break;
       }
     }
+    
+    if (this.testWithoutKafkaServer) return null;
+    
     LOGGER.debug("InitializeKafkaPublisher properties created...");
     Producer<String, String> producer = new KafkaProducer<String, String>(properties);
 
@@ -97,6 +122,14 @@ public class KafkaRegistry implements Initializer, Finalizer {
       this.kafkaProducer = null;
     }
   }
+  
+  public boolean testWithoutKafkaServer() {
+    return this.testWithoutKafkaServer;
+  }  
+  
+  public String getKafkaTopic() {
+    return this.KAFKA_TOPIC;
+  }  
   
   public static KafkaRegistry getInstance() {
     return Holder.INSTANCE;

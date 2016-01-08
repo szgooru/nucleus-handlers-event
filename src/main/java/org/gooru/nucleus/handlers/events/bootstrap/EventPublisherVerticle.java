@@ -2,7 +2,6 @@ package org.gooru.nucleus.handlers.events.bootstrap;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizer;
@@ -19,9 +18,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by ashish on 25/12/15.
  */
-public class EventVerticle extends AbstractVerticle {
+public class EventPublisherVerticle extends AbstractVerticle {
 
-  static final Logger LOGGER = LoggerFactory.getLogger(EventVerticle.class);
+  static final Logger LOGGER = LoggerFactory.getLogger(EventPublisherVerticle.class);
 
   @Override
   public void start(Future<Void> voidFuture) throws Exception {
@@ -31,10 +30,10 @@ public class EventVerticle extends AbstractVerticle {
       blockingFuture.complete();
     }, future -> {
       if (future.succeeded()) {
-        LOGGER.info("Successfully initialized application machinery");
+        LOGGER.info("Successfully initialized EventPublish Handler machinery");
         voidFuture.complete();
       } else {
-        voidFuture.fail("Not able to initialize the Resource machinery properly");
+        voidFuture.fail("Not able to initialize the EventPublish Handler machinery properly");
       }
     });
 
@@ -53,14 +52,25 @@ public class EventVerticle extends AbstractVerticle {
       }, res -> {
         
         if (res.succeeded()) {
+          // 
+          // We can be here with or without a valid result object -- as in case of object not found in DB returns null 
+          // but future.complete() happened successfully.......
+          // So, do check null objects upon return.
+          //
           JsonObject result = (JsonObject)res.result();
-          LOGGER.debug("Successful!! Now dispatch message: " + result.toString());
-          
-          String eventName = result.getString(MessageConstants.MSG_EVENT_NAME);
-          JsonObject eventBody = result.getJsonObject(MessageConstants.MSG_EVENT_BODY);
-          
-          MessageDispatcher.getInstance().sendMessage2Kafka(eventName, eventBody);    
-                    
+          if (result != null) {
+            
+            LOGGER.debug("***********************************************");
+            LOGGER.debug("Now dispatch message: " + result.toString());
+            LOGGER.debug("***********************************************");
+            
+            String eventName = result.getString(MessageConstants.MSG_EVENT_NAME);
+            JsonObject eventBody = result.getJsonObject(MessageConstants.MSG_EVENT_BODY);
+            
+            MessageDispatcher.getInstance().sendMessage2Kafka(eventName, eventBody);            
+          } else {
+            LOGGER.warn("No data received from database interaction for this. So, no message being relayed to Kafka.");           
+          }
         } else {
           LOGGER.error("Error processing the database interactions!!");          
         }
@@ -70,9 +80,9 @@ public class EventVerticle extends AbstractVerticle {
 
     }).completionHandler(result -> {
       if (result.succeeded()) {
-        LOGGER.info("Resource end point ready to listen");
+        LOGGER.info("EventPublish handler end point ready to listen");
       } else {
-        LOGGER.error("Error registering the resource handler. Halting the Resource machinery");
+        LOGGER.error("Error registering the EventPublish handler. Halting the EventPublish Handler machinery");
         Runtime.getRuntime().halt(1);
       }
     });

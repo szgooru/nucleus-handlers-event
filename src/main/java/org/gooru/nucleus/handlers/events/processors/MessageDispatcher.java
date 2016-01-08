@@ -8,12 +8,7 @@ import org.apache.kafka.clients.producer.BufferExhaustedException;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.errors.InterruptException;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 import io.vertx.core.json.JsonObject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +18,6 @@ public class MessageDispatcher {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageDispatcher.class);
   
   private MessageDispatcher() { 
-    
   }
   
   public static MessageDispatcher getInstance() {
@@ -34,8 +28,10 @@ public class MessageDispatcher {
     //
     // Kafka message publish
     //
+    if ( KafkaRegistry.getInstance().testWithoutKafkaServer() ) return; // running without KafkaServer...
+    
     Producer<String,String> producer = KafkaRegistry.getInstance().getKafkaProducer();
-    ProducerRecord<String, String> kafkaMsg = new ProducerRecord<String, String>("MYTOPIC", eventName, eventBody.toString());
+    ProducerRecord<String, String> kafkaMsg = new ProducerRecord<String, String>(KafkaRegistry.getInstance().getKafkaTopic(), eventName, eventBody.toString());
 
     LOGGER.debug("Message to Kafka server:" + kafkaMsg);
 
