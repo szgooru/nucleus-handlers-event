@@ -28,7 +28,7 @@ public class MessageDispatcher {
     //
     // Kafka message publish
     //
-    if ( KafkaRegistry.getInstance().isDevEnvironment() ) return; // running without KafkaServer...
+    if ( KafkaRegistry.getInstance().testWithoutKafkaServer() ) return; // running without KafkaServer...
     
     Producer<String,String> producer = KafkaRegistry.getInstance().getKafkaProducer();
     ProducerRecord<String, String> kafkaMsg = new ProducerRecord<String, String>(KafkaRegistry.getInstance().getKafkaTopic(), eventName, eventBody.toString());

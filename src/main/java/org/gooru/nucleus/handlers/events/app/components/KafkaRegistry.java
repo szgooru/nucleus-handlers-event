@@ -22,7 +22,7 @@ public class KafkaRegistry implements Initializer, Finalizer {
   private Producer<String, String> kafkaProducer;
 
   private String KAFKA_TOPIC = "prodContentLog";
-  private boolean DEV_ENV = false;
+  private boolean testWithoutKafkaServer = false;
   
   boolean initialized = false;
   
@@ -92,13 +92,13 @@ public class KafkaRegistry implements Initializer, Finalizer {
           LOGGER.debug("KAFKA_TOPIC : " + this.KAFKA_TOPIC);
           break;
         case "testEnvironmentWithoutKafkaServer" :
-          this.DEV_ENV = (boolean) entry.getValue();
+          this.testWithoutKafkaServer = (boolean) entry.getValue();
           LOGGER.debug("KAFKA_TOPIC : " + this.KAFKA_TOPIC);
           break;
       }
     }
     
-    if (this.DEV_ENV) return null;
+    if (this.testWithoutKafkaServer) return null;
     
     LOGGER.debug("InitializeKafkaPublisher properties created...");
     Producer<String, String> producer = new KafkaProducer<String, String>(properties);
@@ -123,8 +123,8 @@ public class KafkaRegistry implements Initializer, Finalizer {
     }
   }
   
-  public boolean isDevEnvironment() {
-    return this.DEV_ENV;
+  public boolean testWithoutKafkaServer() {
+    return this.testWithoutKafkaServer;
   }  
   
   public String getKafkaTopic() {
