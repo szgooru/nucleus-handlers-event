@@ -14,9 +14,10 @@
   	"key.serializer" : "org.apache.kafka.common.serialization.StringSerializer",
    	"value.serializer" : "org.apache.kafka.common.serialization.StringSerializer",
    	"batch.size" : 10,
-   	"retries" : 3,
+   	"retries" : 2,
    	"linger.ms" : 1,
 	"buffer.memory" : 33554432,
-	"topic" : "prodContentLog"
+	"topic" : "prodContentLog",
+	"testEnvironmentWithoutKafkaServer" : false
   }
 }

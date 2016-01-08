@@ -78,10 +78,10 @@ class MessageProcessor implements Processor {
    *      Handles data collection for CREATE, UPDATE and COPY scenarios
    *      
    *      In all these cases, the event body will contain the following data items:
-   *            content_id, title, description, url, created, modified, creator_id, original_creator_id, original_content_id, narration, 
+   *            id, title, description, url, created_at, updated_at, creator_id, original_creator_id, original_content_id, narration, 
    *            content_format, content_subformat, metadata, taxonomy, depth_of_knowledge, thumbnail, 
    *            course_id, unit_id, lesson_id, collection_id, sequence_id, 
-   *            is_copyright_owner, copyright_owner, visible_on_profile,is_frame_breaker, is_broken
+   *            is_copyright_owner, copyright_owner, visible_on_profile, is_frame_breaker, is_broken
    *            
    *      Consumer needs to check for null / existence of values
    */
@@ -90,7 +90,7 @@ class MessageProcessor implements Processor {
     if (msgObject != null) {
       JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
       if (msgBody != null) {
-        String contentId = msgBody.getString("content_id");
+        String contentId = msgBody.getString("id");
         LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getResource(contentId);
@@ -109,7 +109,7 @@ class MessageProcessor implements Processor {
    *      Handles data collection for Resource DELETE scenario
    *      
    *      In all these cases, the event body will contain the following data items:
-   *            content_id, title, description, url, created, modified, creator_id, original_creator_id, original_content_id 
+   *            id, title, description, url, created_at, updated_at, creator_id, original_creator_id, original_content_id,
    *            content_format, content_subformat,  
    *            course_id, unit_id, lesson_id, collection_id, sequence_id, 
    *            is_copyright_owner, copyright_owner
@@ -121,7 +121,7 @@ class MessageProcessor implements Processor {
     if (msgObject != null) {
       JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
       if (msgBody != null) {
-        String contentId = msgBody.getString("content_id");
+        String contentId = msgBody.getString("id");
         LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedResource(contentId);
@@ -148,7 +148,7 @@ class MessageProcessor implements Processor {
     if (msgObject != null) {
       JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
       if (msgBody != null) {
-        String contentId = msgBody.getString("content_id");
+        String contentId = msgBody.getString("id");
         LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getQuestion(contentId);
@@ -167,8 +167,7 @@ class MessageProcessor implements Processor {
    *      Handles data collection for Resource DELETE scenario
    *      
    *      In all these cases, the event body will contain the following data items:
-   *            content_id, title, description, url, created, modified, creator_id, 
-   *            original_creator_id, original_content_id, short_title,
+   *            id, title, description, url, created_at, updated_at, creator_id, original_creator_id, original_content_id, short_title,
    *            content_format, content_subformat,  
    *            course_id, unit_id, lesson_id, collection_id, sequence_id 
    *            
@@ -179,7 +178,7 @@ class MessageProcessor implements Processor {
     if (msgObject != null) {
       JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
       if (msgBody != null) {
-        String contentId = msgBody.getString("content_id");
+        String contentId = msgBody.getString("id");
         LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedQuestion(contentId);
@@ -199,7 +198,7 @@ class MessageProcessor implements Processor {
    *      
    *      In all these cases, the event body will contain the following data items:
    *            user_id, firstname, lastname, parent_user_id, user_category, 
-   *            created, modified, last_login, birth_date, grade, 
+   *            created_at, updated_at, last_login, birth_date, grade, 
    *            thumbnail_path, gender, email, school_id, school_name, 
    *            school_district_id, school_district_name, country_id, country_name, state_id, state_name 
    *            

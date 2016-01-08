@@ -5,8 +5,8 @@ buildscript {
     repositories { jcenter() }
     dependencies {
         classpath "com.github.jengelman.gradle.plugins:shadow:1.2.2"
-        classpath group: 'org.javalite', name: 'activejdbc', version: '1.4.1'
-        classpath group: 'org.javalite', name: 'activejdbc-instrumentation', version: '1.4.1'
+        classpath group: 'org.javalite', name: 'activejdbc', version: '1.4.11'
+        classpath group: 'org.javalite', name: 'activejdbc-instrumentation', version: '1.4.11'
     }
 }
 
@@ -57,8 +57,8 @@ dependencies {
     compile "com.zaxxer:HikariCP:${hikariVersion}"
     compile "org.postgresql:postgresql:${postgresVersion}"
     compile "org.apache.kafka:kafka-clients:${kafkaVersion}"
-    compile 'org.javalite:activejdbc:1.4.1'
-    compile 'org.javalite:activejdbc-instrumentation:1.4.1'
+    compile 'org.javalite:activejdbc:1.4.11'
+    compile 'org.javalite:activejdbc-instrumentation:1.4.11'
 
     // Test dependencies
     testCompile "junit:junit:${junitVersion}"

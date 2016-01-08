@@ -2,7 +2,6 @@ package org.gooru.nucleus.handlers.events.bootstrap;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizer;
@@ -31,10 +30,10 @@ public class EventPublisherVerticle extends AbstractVerticle {
       blockingFuture.complete();
     }, future -> {
       if (future.succeeded()) {
-        LOGGER.info("Successfully initialized Event Handler machinery");
+        LOGGER.info("Successfully initialized EventPublish Handler machinery");
         voidFuture.complete();
       } else {
-        voidFuture.fail("Not able to initialize the Event Handler machinery properly");
+        voidFuture.fail("Not able to initialize the EventPublish Handler machinery properly");
       }
     });
 
@@ -81,9 +80,9 @@ public class EventPublisherVerticle extends AbstractVerticle {
 
     }).completionHandler(result -> {
       if (result.succeeded()) {
-        LOGGER.info("Event handler end point ready to listen");
+        LOGGER.info("EventPublish handler end point ready to listen");
       } else {
-        LOGGER.error("Error registering the event handler. Halting the Event Handler machinery");
+        LOGGER.error("Error registering the EventPublish handler. Halting the EventPublish Handler machinery");
         Runtime.getRuntime().halt(1);
       }
     });
