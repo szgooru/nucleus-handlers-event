@@ -4,6 +4,9 @@ public class MessageConstants {
   
   public static final String MSG_EVENT_NAME = "event.name";
   public static final String MSG_EVENT_BODY = "event.body";
+  
+  public static final String MSG_EVENT_TIMESTAMP = "event.timestamp";
+  public static final String MSG_EVENT_DUMP = "event.dump";
     
   // Operation names: Also need to be updated in corresponding handlers
   //Content related events
@@ -27,6 +30,21 @@ public class MessageConstants {
   public static final String MSG_OP_EVT_ASSESSMENT_DELETE = "event.assessment.delete";
   public static final String MSG_OP_EVT_ASSESSMENT_COPY = "event.assessment.copy";
 
+  public static final String MSG_OP_EVT_LESSON_CREATE = "event.lesson.create";
+  public static final String MSG_OP_EVT_LESSON_UPDATE = "event.lesson.update";
+  public static final String MSG_OP_EVT_LESSON_DELETE = "event.lesson.delete";
+  public static final String MSG_OP_EVT_LESSON_COPY = "event.lesson.copy";
+  
+  public static final String MSG_OP_EVT_UNIT_CREATE = "event.unit.create";
+  public static final String MSG_OP_EVT_UNIT_UPDATE = "event.unit.update";
+  public static final String MSG_OP_EVT_UNIT_DELETE = "event.unit.delete";
+  public static final String MSG_OP_EVT_UNIT_COPY = "event.unit.copy";
+  
+  public static final String MSG_OP_EVT_COURSE_CREATE = "event.course.create";
+  public static final String MSG_OP_EVT_COURSE_UPDATE = "event.course.update";
+  public static final String MSG_OP_EVT_COURSE_DELETE = "event.course.delete";
+  public static final String MSG_OP_EVT_COURSE_COPY = "event.course.copy";
+  
   public static final String MSG_OP_EVT_USER_CREATE = "event.user.create";
   public static final String MSG_OP_EVT_USER_UPDATE = "event.user.update";
   public static final String MSG_OP_EVT_USER_DELETE = "event.user.delete";
