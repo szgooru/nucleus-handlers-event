@@ -6,7 +6,6 @@ import java.util.Map;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Collection;
-import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Content;
 import org.javalite.activejdbc.Base;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

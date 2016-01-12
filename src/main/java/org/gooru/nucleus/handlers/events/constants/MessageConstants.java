@@ -4,6 +4,9 @@ public class MessageConstants {
   
   public static final String MSG_EVENT_NAME = "event.name";
   public static final String MSG_EVENT_BODY = "event.body";
+  
+  public static final String MSG_EVENT_TIMESTAMP = "event.timestamp";
+  public static final String MSG_EVENT_DUMP = "event.dump";
     
   // Operation names: Also need to be updated in corresponding handlers
   //Content related events
