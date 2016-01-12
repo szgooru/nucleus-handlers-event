@@ -6,16 +6,21 @@ import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.exceptions.InvalidRequestException;
 import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.AJContentRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class MessageProcessor implements Processor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageProcessor.class);
+  
+  // collect all failed event transmissions in this logger....
+  private static final Logger TRANSMIT_FAIL_LOGGER = LoggerFactory.getLogger("org.gooru.nucleus.transmission-errors");
+
   private Message<Object> message;
-  String userId;
-  JsonObject prefs;
-  JsonObject request;
+//  String userId;
+//  JsonObject prefs;
+//  JsonObject request;
   
   public MessageProcessor(Message<Object> message) {
     this.message = message;
@@ -56,6 +61,18 @@ class MessageProcessor implements Processor {
           result = processEventQuestionDelete();
           break;
   
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+          result = processEventCollectionCreateUpdateCopy();
+          break;
+          
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+          result = processEventAssessmentCreateUpdateCopy();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_USER_CREATE:
         case MessageConstants.MSG_OP_EVT_USER_UPDATE:
           result = processUserCreateUpdate();
@@ -67,7 +84,7 @@ class MessageProcessor implements Processor {
       }
       return result;
     } catch (InvalidRequestException e) {
-      // TODO: handle exception
+      TRANSMIT_FAIL_LOGGER.error( ((JsonObject) message.body()).toString() ); 
     }
     return result;
   }
@@ -94,13 +111,15 @@ class MessageProcessor implements Processor {
         LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getResource(contentId);
-        LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) returned:" + result);
-        
-        return buildResponseObject(result);        
+        if (result != null) {
+          LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) returned:" + result); 
+          return buildResponseObject(result);        
+        }
       }
     }
     
     LOGGER.error("processEventResourceCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
     return null;    
   }
   
@@ -125,13 +144,15 @@ class MessageProcessor implements Processor {
         LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedResource(contentId);
-        LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) returned:" + result);
-        
-        return buildResponseObject(result);        
+        if (result != null) {
+          LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) returned:" + result);
+          return buildResponseObject(result);        
+        }
       }
     }
     
     LOGGER.error("processEventResourceDelete: Failed to generate event for resource!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
     return null;    
   } 
   
@@ -152,13 +173,15 @@ class MessageProcessor implements Processor {
         LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getQuestion(contentId);
-        LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) returned:" + result);
-        
-        return buildResponseObject(result);        
+        if (result != null) {
+          LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) returned:" + result);        
+          return buildResponseObject(result);        
+        }
       }
     }
     
     LOGGER.error("processEventQuestionCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
     return null;    
   }
   
@@ -182,15 +205,60 @@ class MessageProcessor implements Processor {
         LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) :" + contentId);
         
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedQuestion(contentId);
-        LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) returned:" + result);
-        
-        return buildResponseObject(result);        
+        if (result != null) {
+          LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) returned:" + result);
+          return buildResponseObject(result);
+        }
       }
     }
     
     LOGGER.error("processEventQuestionDelete: Failed to generate event for resource!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
     return null;    
   }
+  
+  private JsonObject processEventCollectionCreateUpdateCopy() {
+    JsonObject msgObject = (JsonObject) message.body();
+    if (msgObject != null) {
+      JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
+      if (msgBody != null) {
+        String contentId = msgBody.getString("id");
+        LOGGER.debug("processEventCollectionCreateUpdateCopy: getCollection(Id) :" + contentId);
+        
+        JsonObject result = new RepoBuilder().buildCollectionRepo().getCollection(contentId);
+        if (result != null) {
+          LOGGER.debug("processEventCollectionCreateUpdateCopy: getCollection(Id) returned:" + result); 
+          return buildResponseObject(result);        
+        }
+      }
+    }
+    
+    LOGGER.error("processEventCollectionCreateUpdateCopy: Failed to generate event for collection!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
+    return null;    
+  }  
+  
+  private JsonObject processEventAssessmentCreateUpdateCopy() {
+    JsonObject msgObject = (JsonObject) message.body();
+    if (msgObject != null) {
+      JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
+      if (msgBody != null) {
+        String contentId = msgBody.getString("id");
+        LOGGER.debug("processEventAssessmentCreateUpdateCopy: getAssessment(Id) :" + contentId);
+        
+        JsonObject result = new RepoBuilder().buildCollectionRepo().getAssessment(contentId);
+        if (result != null) {
+          LOGGER.debug("processEventAssessmentCreateUpdateCopy: getAssessment(Id) returned:" + result); 
+          return buildResponseObject(result);        
+        }
+      }
+    }
+    
+    LOGGER.error("processEventAssessmentCreateUpdateCopy: Failed to generate event for assessment!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
+    return null;    
+  }  
+  
   
   /**
    * processUserCreateUpdateCopy:
@@ -213,13 +281,15 @@ class MessageProcessor implements Processor {
         LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) :" + userId);
         
         JsonObject result = new RepoBuilder().buildUserRepo().getUser(userId);
-        LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) returned:" + result);
-        
-        return buildResponseObject(result);        
+        if (result != null) {
+          LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) returned:" + result);        
+          return buildResponseObject(result);        
+        }
       }
     }
     
     LOGGER.error("processUserCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
+    TRANSMIT_FAIL_LOGGER.error( msgObject.toString() );
     return null;  
   }
   
@@ -233,6 +303,7 @@ class MessageProcessor implements Processor {
       
       return returnValue;
     } else {
+      TRANSMIT_FAIL_LOGGER.error( ((JsonObject) message.body()).toString() );      
       return null;
     }    
   }
