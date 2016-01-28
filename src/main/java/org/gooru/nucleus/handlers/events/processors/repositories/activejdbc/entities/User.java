@@ -7,8 +7,8 @@ import org.javalite.activejdbc.annotations.Table;
 /**
  * Created by subbu on 07-Jan-2016.
  */
-@Table("user")
-@IdName("user_id")
+@Table("user_demographic")
+@IdName("id")
 public class User extends Model {
   
 }

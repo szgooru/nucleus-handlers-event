@@ -5,9 +5,13 @@ import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.processors.repositories.ContentRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Content;
 import org.javalite.activejdbc.Base;
+import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import io.vertx.core.json.JsonObject;
+
+import java.sql.SQLException;
 import java.util.Set;
 
 
@@ -23,14 +27,14 @@ public class AJContentRepo implements ContentRepo {
   *            id, title, description, url, created_at, updated_at, creator_id, original_creator_id, original_content_id, narration, 
   *            content_format, content_subformat, metadata, taxonomy, depth_of_knowledge, thumbnail, 
   *            course_id, unit_id, lesson_id, collection_id, sequence_id, 
-  *            is_copyright_owner, copyright_owner, visible_on_profile, is_frame_breaker, is_broken
+  *            is_copyright_owner, copyright_owner, visible_on_profile, info, display_guide, accessibility
   */
   @Override
   public JsonObject getResource(String contentID) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJContentRepo:getResource: " + contentID);
     
-    Content result = Content.findById(contentID);
+    Content result = Content.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJContentRepo:getResource:findById: " + result);
     
     JsonObject returnValue = null;
@@ -41,7 +45,7 @@ public class AJContentRepo implements ContentRepo {
                             "metadata", "taxonomy", "depth_of_knowledge", "thumbnail",
                             "course_id", "unit_id", "lesson_id", "collection_id", "sequence_id",
                             "is_copyright_owner", "copyright_owner", "visible_on_profile",
-                            "is_frame_breaker", "is_broken" };
+                            "info", "display_guide", "accessibility" };
     LOGGER.debug("AJContentRepo:getResource:findById attributes: " + String.join(", ", attributes) );
 
     if (result != null) {      
@@ -66,7 +70,7 @@ public class AJContentRepo implements ContentRepo {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJContentRepo:getDeletedResource: " + contentID);
     
-    Content result = Content.findById(contentID);
+    Content result = Content.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJContentRepo:getDeletedResource:findById: " + result);
     
     JsonObject returnValue = null;
@@ -94,7 +98,7 @@ public class AJContentRepo implements ContentRepo {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJContentRepo:getQuestion: " + contentID);
     
-    Content result = Content.findById(contentID);
+    Content result = Content.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJContentRepo:getResource:findById: " + result);
     
     JsonObject returnValue = null;
@@ -121,7 +125,7 @@ public class AJContentRepo implements ContentRepo {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJContentRepo:getDeletedQuestion: " + contentID);
     
-    Content result = Content.findById(contentID);
+    Content result = Content.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJContentRepo:getDeletedResource:findById: " + result);
     
     JsonObject returnValue = null;
@@ -138,6 +142,20 @@ public class AJContentRepo implements ContentRepo {
     
     Base.close();
     return returnValue;
+  }
+
+  private final String UUID_TYPE = "uuid"; 
+  
+  private PGobject getPGObject(String field, String type, String value) {
+    PGobject pgObject = new PGobject();
+    pgObject.setType(type);
+    try {
+      pgObject.setValue(value);
+      return pgObject;
+    } catch (SQLException e) {
+      LOGGER.error("Not able to set value for field: {}, type: {}, value: {}", field, type, value);
+      return null;
+    }
   }
   
 }
