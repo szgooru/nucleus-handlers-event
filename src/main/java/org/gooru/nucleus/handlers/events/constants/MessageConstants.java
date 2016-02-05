@@ -54,6 +54,11 @@ public class MessageConstants {
   public static final String MSG_OP_EVT_USER_UPDATE = "user.update";
   public static final String MSG_OP_EVT_USER_DELETE = "user.delete";
   
-  //Activity related events
-  
+  // Event Structure Type
+  public static final int EST_ERROR = -1;
+  public static final int EST_ITEM_CREATE = 0;
+  public static final int EST_ITEM_EDIT = 1;
+  public static final int EST_ITEM_COPY = 2;
+  public static final int EST_ITEM_MOVE = 3;
+  public static final int EST_ITEM_DELETE = 4;
 }

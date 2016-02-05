@@ -2,10 +2,10 @@ package org.gooru.nucleus.handlers.events.processors;
 
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.json.JsonObject;
-
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.exceptions.InvalidRequestException;
 import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
+import org.gooru.nucleus.handlers.events.processors.responseobject.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ class MessageProcessor implements Processor {
       }
       return result;
     } catch (InvalidRequestException e) {
-      TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() ); 
+      TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     }
     return result;
   }
@@ -119,13 +119,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getResource(contentId);
         if (result != null) {
           LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);
         }
       }
     }
     
     LOGGER.error("processEventResourceCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -152,13 +152,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedResource(contentId);
         if (result != null) {
           LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) returned:" + result);
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemDeleteResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventResourceDelete: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   } 
   
@@ -181,13 +181,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getQuestion(contentId);
         if (result != null) {
           LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) returned:" + result);        
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventQuestionCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -213,13 +213,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedQuestion(contentId);
         if (result != null) {
           LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) returned:" + result);
-          return buildResponseObject(result);
+          return ResponseFactory.generateItemDeleteResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventQuestionDelete: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -234,13 +234,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildCollectionRepo().getCollection(contentId);
         if (result != null) {
           LOGGER.debug("processEventCollectionCreateUpdateCopy: getCollection(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventCollectionCreateUpdateCopy: Failed to generate event for collection!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }  
   
@@ -255,13 +255,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildCollectionRepo().getAssessment(contentId);
         if (result != null) {
           LOGGER.debug("processEventAssessmentCreateUpdateCopy: getAssessment(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventAssessmentCreateUpdateCopy: Failed to generate event for assessment!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }  
   
@@ -289,136 +289,14 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildUserRepo().getUser(userId);
         if (result != null) {
           LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) returned:" + result);        
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);
         }
       }
     }
     
     LOGGER.error("processUserCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;  
   }
-  
-  
-  /*
-X   * {"startTime" : 1451994610328,
-X   *  "eventId"   : "df970f1c-2988-4a57-b297-ac315d46ab3f",
-X   *  "metrics"   : "{ "totalTimeSpentInMs" : 402 },
-X   *  "session"   : "{ "sessionToken"    : "fa768c5d-2924-4dc8-9c82-3355e9512789", 
-   *                   "organizationUId" : "4261739e-ccae-11e1-adfb-5404a609bd14", 
-   *                   "apiKey"          : "ASERTYUIOMNHBGFDXSDWERT123RTGHYT"
-   *                 }",
-X   *  "context"   : "{ "registerType"    : "google", 
-   *                   "clientSource"    : "web", 
-   *                   "url"             : "/gooruapi/rest/v2/account/authenticate"
-   *                 }",
-V   *  "eventName" : "user.register",
-X   *  "endTime"   : 1451994610730,
-X   *  "user"      : "{ "userIp"          : "54.219.20.89", 
-   *                   "gooruUId"        : "9f0d4b91-4c7b-4fd2-8bbf-defadc86f122", 
-   *                   "userAgent"       : "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36"
-   *                 }",
-   *  "payLoadObject" : "{ "data"        : "{ "accountCreatedType" : "google", 
-   *                                          "accountTypeId"      : 3,
-   *                                          "active"             : 1, 
-   *                                          "confirmStatus"      : 1,
-   *                                          "createdOn"          : "Tue Jan 05 11:50:10 UTC 2016",
-   *                                          "emailId"            : "",
-   *                                          "firstName"          : "Renu", 
-   *                                          "gooruUId"           : "9f0d4b91-4c7b-4fd2-8bbf-defadc86f122", 
-   *                                          "lastLogin"          : 1451994610706, 
-   *                                          "lastName"           : "Walia", 
-   *                                          "loginType"          : "google", 
-   *                                          "organizationName"   : "Gooru", 
-   *                                          "partyUid"           : "9f0d4b91-4c7b-4fd2-8bbf-defadc86f122", 
-   *                                          "profileImageUrl"    : "http://profile-images-goorulearning-org.s3.amazonaws.com/9f0d4b91-4c7b-4fd2-8bbf-defadc86f122.png",
-   *                                          "registeredOn"       : 1451994610348,
-   *                                          "token"              : "fa768c5d-2924-4dc8-9c82-3355e9512789",
-   *                                          "userRoleSetString"  : "User", 
-   *                                          "username"           : "RenuW", 
-   *                                          "usernameDisplay"    : "RenuW",
-   *                                          "viewFlag"           : 0 
-   *                                        }",
-X   *                       "requestMethod" : "POST",
-X   *                       "IdpName"       : "gmail.com",
-X   *                       "created_type"  : "google" 
-   *                     }",
-   *  "version"    : "{"logApi"  : "0.1"}"
-   * }
-   */
-  
-  private final String LOG_API = "logApi";
-  private final String API_VERSION = "0.1";
-  
-  private JsonObject buildResponseObject(JsonObject inputData) {
-    LOGGER.debug("buildResponseObject: inputData : " + inputData );
-    
-    if (inputData == null) {
-        TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );      
-        return null;
-    }
-    
-    JsonObject retVal = new JsonObject();    
-    
-    JsonObject msgObject = (JsonObject) message.body();
-    JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
-    String contentId = msgBody.getString("id");
-    
-    // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, context, user, payLoadObject
-    long timeinMS = System.currentTimeMillis();
-    retVal.put("startTime", timeinMS);  // cannot be null
-    retVal.put("endTime", timeinMS);    // cannot be null
-    retVal.put("eventId", UUID.randomUUID().toString() );    
-    retVal.put("eventName", msgObject.getString(MessageConstants.MSG_EVENT_NAME));
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    // TBD : get these values from message object / request object
-    retVal.put("metrics", new JsonObject());  // can be null
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    // TBD : get these values from message object / request object
-    JsonObject sessionObj = new JsonObject();
-    sessionObj.put("apiKey", (Object)null);         // can be null
-    sessionObj.put("sessionToken", message.headers().get(MessageConstants.MSG_HEADER_TOKEN));   // cannot be null
-    sessionObj.put("organizationUId", (Object)null);// can be null
-    retVal.put("session", sessionObj);
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    // TBD : get these values from message object / request object
-    JsonObject contextObj = new JsonObject();
-    contextObj.put("contentGooruId", contentId); // cannot be null
-    contextObj.put("clientSource", "web");  
-    retVal.put("context", contextObj);
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    // TBD : get these values from message object / request object
-    JsonObject userObj = new JsonObject();
-    userObj.put("userIp", (Object)null);    
-    userObj.put("userAgent", "Chrome");    
-    userObj.put("gooruUId", message.headers().get(MessageConstants.MSG_USER_ID));   // cannot be null 
-    retVal.put("user", userObj);
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    JsonObject payloadObj = new JsonObject();
-    payloadObj.put("data", inputData);
-    retVal.put("payLoadObject", payloadObj);
-    LOGGER.debug("buildResponseObject: retVal : " + retVal.toString() );
-    
-    retVal.put("version", new JsonObject().put(LOG_API, API_VERSION));
-    
-    LOGGER.debug("buildResponseObject: returning json:" + retVal.toString());
-        
-    return retVal;
-  }
-  
-  private JsonObject buildFailureResponseObject() {
-    JsonObject returnValue = new JsonObject();
-    returnValue.put(MessageConstants.MSG_EVENT_TIMESTAMP, new Date().toString());
-    returnValue.put(MessageConstants.MSG_EVENT_DUMP, (JsonObject) message.body());
-    
-    LOGGER.debug("buildFailureResponseObject: returning json:" + returnValue.toString());
-    
-    return returnValue;
-  }
-  
+      
 }
