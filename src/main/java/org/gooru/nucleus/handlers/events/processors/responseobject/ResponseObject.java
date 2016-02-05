@@ -157,7 +157,8 @@ public class ResponseObject {
       // TBD : get these values from message object / request object
       JsonObject contextObj = new JsonObject();
       contextObj.put("contentGooruId", contentId); // cannot be null
-      contextObj.put("parentGooruId", (Object)null);       
+      contextObj.put("parentGooruId", getParentIDFromResponse());   
+      contextObj.put("sourceGooruId", getSourceIDFromResponse());
       contextObj.put("clientSource", "web");  
       retVal.put("context", contextObj);
       LOGGER.debug("buildItemCreateResponseObject: retVal : " + retVal.toString() );
@@ -212,7 +213,8 @@ public class ResponseObject {
       // TBD : get these values from message object / request object
       JsonObject contextObj = new JsonObject();
       contextObj.put("contentGooruId", contentId); // cannot be null
-      contextObj.put("parentGooruId", (Object)null); 
+      contextObj.put("parentGooruId", getParentIDFromResponse()); 
+      contextObj.put("sourceGooruId", getSourceIDFromResponse());
       contextObj.put("clientSource", "web");  
       retVal.put("context", contextObj);
       LOGGER.debug("buildItemEditResponseObject: retVal : " + retVal.toString() );
@@ -264,9 +266,118 @@ public class ResponseObject {
       return retVal;
     }
     
-    private String getParentIDFromResponse() {
-      return null;
+    private Object getParentIDFromResponse() {
+      String retVal = null;
+      final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
+      switch (msgOp) {
+        case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
+        case MessageConstants.MSG_OP_EVT_RES_CREATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_RES_COPY:
+        case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+        case MessageConstants.MSG_OP_EVT_RES_DELETE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+          retVal = this.response.getString("collection_id");
+          break;
+
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+          retVal = this.response.getString("lesson_id");
+          break;
+                    
+        case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+          retVal = this.response.getString("unit_id");
+          break;
+            
+        case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+          retVal = this.response.getString("course_id");
+          break;
+            
+        case MessageConstants.MSG_OP_EVT_USER_CREATE:
+        case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+          retVal = this.response.getString("parent_user_id");
+          break;
+          
+        default:
+          // technically we should not land here...
+          LOGGER.error("Invalid operation type passed in, not able to handle");
+      }      
+      return retVal;
     }
+    
+    private Object getSourceIDFromResponse() {
+      String retVal = null;
+      final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
+      switch (msgOp) {
+        case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
+        case MessageConstants.MSG_OP_EVT_RES_CREATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_RES_COPY:
+        case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+        case MessageConstants.MSG_OP_EVT_RES_DELETE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+          retVal = this.response.getString("original_content_id");
+          break;
+
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+          retVal = this.response.getString("original_collection_id");
+          break;
+                    
+        case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+          retVal = this.response.getString("original_lesson_id");
+          break;
+            
+        case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+          retVal = this.response.getString("original_unit_id");
+          break;
+            
+        case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_COPY:
+        case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
+          retVal = this.response.getString("original_course_id");
+          break;
+          
+        case MessageConstants.MSG_OP_EVT_USER_CREATE:
+        case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+          retVal = this.response.getString("parent_user_id");
+          break;
+          
+        default:
+          // technically we should not land here...
+          LOGGER.error("Invalid operation type passed in, not able to handle");
+      }      
+      return retVal;
+    }    
     
   } // end of Builder class
 

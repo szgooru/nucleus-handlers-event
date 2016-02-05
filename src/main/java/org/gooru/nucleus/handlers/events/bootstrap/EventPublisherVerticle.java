@@ -61,7 +61,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
           if (result != null) {
             
             LOGGER.debug("***********************************************");
-            LOGGER.debug("Now dispatch message: " + result.toString());
+            LOGGER.debug("Now dispatch message: \n \n " + result.toString() + " \n \n");
             LOGGER.debug("***********************************************");
             
             String eventName = result.getString(MessageConstants.MSG_EVENT_NAME);
