@@ -5,9 +5,12 @@ import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.exceptions.InvalidRequestException;
 import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
+import org.gooru.nucleus.handlers.events.processors.responseobject.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Date;
+import java.util.UUID;
 
 class MessageProcessor implements Processor {
 
@@ -35,6 +38,9 @@ class MessageProcessor implements Processor {
       }
       
       JsonObject msgObject = (JsonObject) message.body();
+      LOGGER.debug("MsgObject: " + msgObject.toString());
+      LOGGER.debug("MsgObject HEADERS: " + message.headers().toString());
+
       final String msgOp = msgObject.getString(MessageConstants.MSG_EVENT_NAME);
       
       LOGGER.debug("MsgOp: " + msgOp);
@@ -43,6 +49,7 @@ class MessageProcessor implements Processor {
         case MessageConstants.MSG_OP_EVT_RES_CREATE:
         case MessageConstants.MSG_OP_EVT_RES_UPDATE:
         case MessageConstants.MSG_OP_EVT_RES_COPY:
+        case MessageConstants.MSG_OP_EVT_RES_GET:
           result = processEventResourceCreateUpdateCopy();
           break;
         
@@ -83,7 +90,7 @@ class MessageProcessor implements Processor {
       }
       return result;
     } catch (InvalidRequestException e) {
-      TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() ); 
+      TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     }
     return result;
   }
@@ -112,13 +119,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getResource(contentId);
         if (result != null) {
           LOGGER.debug("processEventResourceCreateUpdateCopy: getResource(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);
         }
       }
     }
     
     LOGGER.error("processEventResourceCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -145,13 +152,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedResource(contentId);
         if (result != null) {
           LOGGER.debug("processEventResourceDelete: getDeletedResource(Id) returned:" + result);
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemDeleteResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventResourceDelete: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   } 
   
@@ -174,13 +181,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getQuestion(contentId);
         if (result != null) {
           LOGGER.debug("processEventQuestionCreateUpdateCopy: getQuestion(Id) returned:" + result);        
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventQuestionCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -206,13 +213,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildContentRepo().getDeletedQuestion(contentId);
         if (result != null) {
           LOGGER.debug("processEventQuestionDelete: getDeletedQuestion(Id) returned:" + result);
-          return buildResponseObject(result);
+          return ResponseFactory.generateItemDeleteResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventQuestionDelete: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }
   
@@ -227,13 +234,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildCollectionRepo().getCollection(contentId);
         if (result != null) {
           LOGGER.debug("processEventCollectionCreateUpdateCopy: getCollection(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventCollectionCreateUpdateCopy: Failed to generate event for collection!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }  
   
@@ -248,13 +255,13 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildCollectionRepo().getAssessment(contentId);
         if (result != null) {
           LOGGER.debug("processEventAssessmentCreateUpdateCopy: getAssessment(Id) returned:" + result); 
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);          
         }
       }
     }
     
     LOGGER.error("processEventAssessmentCreateUpdateCopy: Failed to generate event for assessment!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;    
   }  
   
@@ -282,39 +289,14 @@ class MessageProcessor implements Processor {
         JsonObject result = new RepoBuilder().buildUserRepo().getUser(userId);
         if (result != null) {
           LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) returned:" + result);        
-          return buildResponseObject(result);        
+          return ResponseFactory.generateItemCreateResponse(msgObject, message.headers(), result);
         }
       }
     }
     
     LOGGER.error("processUserCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );
+    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body(), message.headers()).toString() ); 
     return null;  
   }
-  
-  private JsonObject buildResponseObject(JsonObject inputData) {
-    if (inputData != null) {
-      JsonObject returnValue = new JsonObject();
-      returnValue.put(MessageConstants.MSG_EVENT_NAME, ((JsonObject) message.body()).getString(MessageConstants.MSG_EVENT_NAME));
-      returnValue.put(MessageConstants.MSG_EVENT_BODY, inputData);
       
-      LOGGER.debug("buildResponseObject: returning json:" + returnValue.toString());
-      
-      return returnValue;
-    } else {
-      TRANSMIT_FAIL_LOGGER.error( buildFailureResponseObject().toString() );      
-      return null;
-    }    
-  }
-  
-  private JsonObject buildFailureResponseObject() {
-    JsonObject returnValue = new JsonObject();
-    returnValue.put(MessageConstants.MSG_EVENT_TIMESTAMP, new Date().toString());
-    returnValue.put(MessageConstants.MSG_EVENT_DUMP, (JsonObject) message.body());
-    
-    LOGGER.debug("buildFailureResponseObject: returning json:" + returnValue.toString());
-    
-    return returnValue;
-  }
-
 }

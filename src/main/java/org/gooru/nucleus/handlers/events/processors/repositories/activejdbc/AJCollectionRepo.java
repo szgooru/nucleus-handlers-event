@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Collection;
 import org.javalite.activejdbc.Base;
+import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +37,17 @@ public class AJCollectionRepo implements CollectionRepo {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJCollectionRepo : getCollection : " + contentID);
     
-    Collection result = Collection.findById(contentID);
+    Collection result = Collection.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJCollectionRepo : getCollection : " + result);
     
     JsonObject returnValue = null;
     String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id", 
                             "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting", 
-                            "metadata", "taxonomy", "thumbnail", "visible_on_profile" };
+                            "metadata", "taxonomy", "thumbnail", "visible_on_profile", "course_id", "unit_id", "lesson_id" };
     LOGGER.debug("AJCollectionRepo : getCollection : findById attributes: " + String.join(", ", attributes) );
 
     if (result != null) {      
       returnValue =  new JsonObject(result.toJson(false,  attributes ));
-      addContainmentInfo(returnValue);
     }
     LOGGER.debug("AJCollectionRepo : getCollection : findById returned: " + returnValue);
 
@@ -80,20 +81,20 @@ public class AJCollectionRepo implements CollectionRepo {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJCollectionRepo : getAssessment : " + contentID);
     
-    Collection result = Collection.findById(contentID);
+    Collection result = Collection.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJCollectionRepo : getAssessment : " + result);
     
     JsonObject returnValue = null;
     String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id", 
                             "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting", 
-                            "metadata", "taxonomy", "thumbnail", "visible_on_profile" };
+                            "metadata", "taxonomy", "thumbnail", "visible_on_profile", "course_id", "unit_id", "lesson_id" };
     LOGGER.debug("AJCollectionRepo : getAssessment : findById attributes: " + String.join(", ", attributes) );
 
     if (result != null) {      
       returnValue =  new JsonObject(result.toJson(false,  attributes ));
-      addContainmentInfo(returnValue);
+      LOGGER.debug("AJCollectionRepo : getAssessment : findById returned: " + returnValue);      
     }
-    LOGGER.debug("AJCollectionRepo : getAssessment : findById returned: " + returnValue);
+    LOGGER.debug("AJCollectionRepo : getAssessment : afterAddingContainmentInfo : " + returnValue);
 
     Base.close();
     return returnValue;
@@ -111,51 +112,20 @@ public class AJCollectionRepo implements CollectionRepo {
     return null;
   }
   
-  /*
-   * course : {[
-   *            unit : {[
-   *                    lesson : { }
-   *                    lesson : { } ]}
-   *            unit : {[
-   *                    lesson : { } ]}] }
-   *                    
-   * course : {[
-   *            unit : {[
-   *                    lesson : { }
-   *                    lesson : { } ]}
-   *            unit : {[
-   *                    lesson : { } ]}] }
-   *                            
-   */
-  private void addContainmentInfo(JsonObject jsonToModify) {
-    String collectionId = jsonToModify.getString("id");
-    if ((collectionId != null) && !collectionId.isEmpty() ) {
-      List<Map> collectionAssocs = Base.findAll("select * from course_unit_lesson_collection where collection_id = ? order by course_id, unit_id, lesson_id", collectionId);
-      if (collectionAssocs.size() > 0) {
-        JsonArray courseIds = new JsonArray();
-        JsonArray unitIds = new JsonArray();
-        JsonArray lessonIds = new JsonArray();
-        
-        for (Map entry : collectionAssocs) {
-          LOGGER.debug("AJCollectionRepo : addContainmentInfo : " + entry.toString());
-          
-          //
-          // <TBD> -- need to create this jsonArray properly...
-          //          right now we are sending a flat list of courseids, unitids and lessonids
-          //          instead of course{ unit { lesson {} } } hierarchy data
-          //
-          courseIds.add(entry.get("course_id"));
-          unitIds.add(entry.get("unit_id"));
-          lessonIds.add(entry.get("lesson_id"));
-                      
-        }
-        
-        jsonToModify.put("courses", courseIds);
-        jsonToModify.put("units", unitIds);
-        jsonToModify.put("lessons", lessonIds);
-        
-      }
+  
+  private final String UUID_TYPE = "uuid"; 
+  
+  private PGobject getPGObject(String field, String type, String value) {
+    PGobject pgObject = new PGobject();
+    pgObject.setType(type);
+    try {
+      pgObject.setValue(value);
+      return pgObject;
+    } catch (SQLException e) {
+      LOGGER.error("Not able to set value for field: {}, type: {}, value: {}", field, type, value);
+      return null;
     }
   }
+  
   
 }
