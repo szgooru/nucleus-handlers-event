@@ -1,8 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
@@ -12,7 +10,6 @@ import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 
@@ -26,27 +23,27 @@ public class AJCollectionRepo implements CollectionRepo {
   /**
   * @see org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo#getCollection(java.lang.String)
   * getCollection: generates event with the following data items:
-  *            id, title, created_at, updated_at, creator_id, original_creator_id, original_collection_id, 
-  *            publish_date, format, learning_objective, collaborator, orientation, grading, setting, 
-  *            metadata, taxonomy, thumbnail, visible_on_profile, course_id, unit_id, lesson_id 
-  *            
+  *            id, title, created_at, updated_at, creator_id, original_creator_id, original_collection_id,
+  *            publish_date, format, learning_objective, collaborator, orientation, grading, setting,
+  *            metadata, taxonomy, thumbnail, visible_on_profile, course_id, unit_id, lesson_id
+  *
   *            course_id, unit_id, lesson_id   ------ will come from the association table
   */
   @Override
   public JsonObject getCollection(String contentID) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJCollectionRepo : getCollection : " + contentID);
-    
+
     Collection result = Collection.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJCollectionRepo : getCollection : " + result);
-    
+
     JsonObject returnValue = null;
-    String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id", 
-                            "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting", 
+    String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id",
+                            "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting",
                             "metadata", "taxonomy", "thumbnail", "visible_on_profile", "course_id", "unit_id", "lesson_id" };
     LOGGER.debug("AJCollectionRepo : getCollection : findById attributes: " + String.join(", ", attributes) );
 
-    if (result != null) {      
+    if (result != null) {
       returnValue =  new JsonObject(result.toJson(false,  attributes ));
     }
     LOGGER.debug("AJCollectionRepo : getCollection : findById returned: " + returnValue);
@@ -70,29 +67,29 @@ public class AJCollectionRepo implements CollectionRepo {
   /**
   * @see org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo#getCollection(java.lang.String)
   * getAssessment: generates event with the following data items:
-  *            id, title, created_at, updated_at, creator_id, original_creator_id, original_collection_id, 
-  *            publish_date, format, learning_objective, collaborator, orientation, grading, setting, 
-  *            metadata, taxonomy, thumbnail, visible_on_profile, course_id, unit_id, lesson_id 
-  *            
+  *            id, title, created_at, updated_at, creator_id, original_creator_id, original_collection_id,
+  *            publish_date, format, learning_objective, collaborator, orientation, grading, setting,
+  *            metadata, taxonomy, thumbnail, visible_on_profile, course_id, unit_id, lesson_id
+  *
   *            course_id, unit_id, lesson_id   ------ will come from the association table
   */
   @Override
   public JsonObject getAssessment(String contentID) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("AJCollectionRepo : getAssessment : " + contentID);
-    
+
     Collection result = Collection.findById(getPGObject("id", UUID_TYPE, contentID));
     LOGGER.debug("AJCollectionRepo : getAssessment : " + result);
-    
+
     JsonObject returnValue = null;
-    String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id", 
-                            "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting", 
+    String[] attributes =  {"id", "title", "created_at", "updated_at", "creator_id", "original_creator_id", "original_collection_id",
+                            "publish_date", "format", "learning_objective", "collaborator", "orientation", "grading", "setting",
                             "metadata", "taxonomy", "thumbnail", "visible_on_profile", "course_id", "unit_id", "lesson_id" };
     LOGGER.debug("AJCollectionRepo : getAssessment : findById attributes: " + String.join(", ", attributes) );
 
-    if (result != null) {      
+    if (result != null) {
       returnValue =  new JsonObject(result.toJson(false,  attributes ));
-      LOGGER.debug("AJCollectionRepo : getAssessment : findById returned: " + returnValue);      
+      LOGGER.debug("AJCollectionRepo : getAssessment : findById returned: " + returnValue);
     }
     LOGGER.debug("AJCollectionRepo : getAssessment : afterAddingContainmentInfo : " + returnValue);
 
@@ -111,10 +108,10 @@ public class AJCollectionRepo implements CollectionRepo {
     Base.close();
     return null;
   }
-  
-  
-  private final String UUID_TYPE = "uuid"; 
-  
+
+
+  private static final String UUID_TYPE = "uuid";
+
   private PGobject getPGObject(String field, String type, String value) {
     PGobject pgObject = new PGobject();
     pgObject.setType(type);
@@ -126,6 +123,6 @@ public class AJCollectionRepo implements CollectionRepo {
       return null;
     }
   }
-  
-  
+
+
 }

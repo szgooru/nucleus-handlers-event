@@ -12,8 +12,8 @@ import org.gooru.nucleus.handlers.events.constants.MessageConstants;
  * @author Subbu-Gooru
  *
  */
-public class ResponseFactory {
-    public static JsonObject generateItemCreateResponse(JsonObject body, MultiMap headers, JsonObject response) {
+public final class ResponseFactory {
+  public static JsonObject generateItemCreateResponse(JsonObject body, MultiMap headers, JsonObject response) {
       return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_CREATE).build();
     }
 
@@ -28,12 +28,16 @@ public class ResponseFactory {
     public static JsonObject generateItemCopyResponse(JsonObject body, MultiMap headers, JsonObject response) {
       return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_COPY).build();
     }
-    
+
     public static JsonObject generateItemMoveResponse(JsonObject body, MultiMap headers, JsonObject response) {
       return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_MOVE).build();
     }
-    
+
     public static JsonObject generateErrorResponse(JsonObject body, MultiMap headers) {
       return new ResponseObject.Builder().setBody(body).setHeaders(headers).setEventType(MessageConstants.EST_ERROR).build();
     }
+
+  private ResponseFactory() {
+    throw new AssertionError();
+  }
 }

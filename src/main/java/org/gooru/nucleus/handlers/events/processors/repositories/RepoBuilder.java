@@ -5,19 +5,21 @@ import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.Acti
 /**
  * Created by subbu on 06-Jan-2016.
  */
-public class RepoBuilder {
+public final class RepoBuilder {
 
-  public ContentRepo buildContentRepo() {
-    return new ActiveJdbcRepoBuilder().buildContentRepo();
-  }
-  
-  public CollectionRepo buildCollectionRepo() {
-    return new ActiveJdbcRepoBuilder().buildCollectionRepo();
+  public static ContentRepo buildContentRepo() {
+    return ActiveJdbcRepoBuilder.buildContentRepo();
   }
 
-  public UserRepo buildUserRepo() {
-    return new ActiveJdbcRepoBuilder().buildUserRepo();
+  public static CollectionRepo buildCollectionRepo() {
+    return ActiveJdbcRepoBuilder.buildCollectionRepo();
   }
-  
 
+  public static UserRepo buildUserRepo() {
+    return ActiveJdbcRepoBuilder.buildUserRepo();
+  }
+
+  private RepoBuilder() {
+    throw new AssertionError();
+  }
 }

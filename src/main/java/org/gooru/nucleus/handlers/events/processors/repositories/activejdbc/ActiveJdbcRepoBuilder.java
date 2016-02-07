@@ -8,17 +8,21 @@ import org.gooru.nucleus.handlers.events.processors.repositories.UserRepo;
 /**
  * Created by subbu on 06-Jan-2016.
  */
-public class ActiveJdbcRepoBuilder {
-  
-  public ContentRepo buildContentRepo() {
+public final class ActiveJdbcRepoBuilder {
+
+  public static ContentRepo buildContentRepo() {
     return new AJContentRepo();
   }
-  
-  public CollectionRepo buildCollectionRepo() {
+
+  public static CollectionRepo buildCollectionRepo() {
     return new AJCollectionRepo();
   }
 
-  public UserRepo buildUserRepo() {
+  public static UserRepo buildUserRepo() {
     return new AJUserRepo();
+  }
+
+  private ActiveJdbcRepoBuilder() {
+    throw new AssertionError();
   }
 }
