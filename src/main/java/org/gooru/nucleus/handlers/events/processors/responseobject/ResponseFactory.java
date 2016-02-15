@@ -14,27 +14,27 @@ import org.gooru.nucleus.handlers.events.constants.MessageConstants;
  */
 public final class ResponseFactory {
   public static JsonObject generateItemCreateResponse(JsonObject body, MultiMap headers, JsonObject response) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_CREATE).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_CREATE).build();
     }
 
     public static JsonObject generateItemDeleteResponse(JsonObject body, MultiMap headers, JsonObject response) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_DELETE).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_DELETE).build();
     }
 
     public static JsonObject generateItemEditResponse(JsonObject body, MultiMap headers, JsonObject response) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_EDIT).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_EDIT).build();
     }
 
     public static JsonObject generateItemCopyResponse(JsonObject body, MultiMap headers, JsonObject response) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_COPY).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_COPY).build();
     }
 
     public static JsonObject generateItemMoveResponse(JsonObject body, MultiMap headers, JsonObject response) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_MOVE).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setResponse(response).setEventType(MessageConstants.EST_ITEM_MOVE).build();
     }
 
     public static JsonObject generateErrorResponse(JsonObject body, MultiMap headers) {
-      return new ResponseObject.Builder().setBody(body).setHeaders(headers).setEventType(MessageConstants.EST_ERROR).build();
+      return new ResponseObject().setBody(body).setHeaders(headers).setEventType(MessageConstants.EST_ERROR).build();
     }
 
   private ResponseFactory() {

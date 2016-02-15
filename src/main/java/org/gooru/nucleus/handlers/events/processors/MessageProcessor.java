@@ -17,9 +17,6 @@ class MessageProcessor implements Processor {
   private static final Logger TRANSMIT_FAIL_LOGGER = LoggerFactory.getLogger("org.gooru.nucleus.transmission-errors");
 
   private final Message<Object> message;
-//  String userId;
-//  JsonObject prefs;
-//  JsonObject request;
 
   public MessageProcessor(Message<Object> message) {
     this.message = message;

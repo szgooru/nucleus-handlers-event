@@ -10,5 +10,7 @@ import org.javalite.activejdbc.annotations.Table;
 @Table("content")
 @IdName("id")
 public class Content extends Model {
+  public static final String CONTENT_FORMAT_RESOURCE = "resource";
+  public static final String CONTENT_FORMAT_QUESTION = "question";
   
 }
