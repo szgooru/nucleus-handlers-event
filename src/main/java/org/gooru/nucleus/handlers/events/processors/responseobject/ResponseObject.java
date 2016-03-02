@@ -2,13 +2,11 @@ package org.gooru.nucleus.handlers.events.processors.responseobject;
 
 import java.util.Date;
 import java.util.UUID;
-
+import java.util.Base64;
+import java.io.UnsupportedEncodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.MultiMap;
 import io.vertx.core.json.JsonObject;
-
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Content;
 
@@ -23,7 +21,6 @@ public final class ResponseObject {
   private static final String API_VERSION = "0.1";
 
   private JsonObject body = null;
-  private MultiMap headers;
   private JsonObject response = null;
   private int eventType = MessageConstants.EST_ERROR;
 
@@ -33,11 +30,6 @@ public final class ResponseObject {
   // Setters for headers, body and response
   public ResponseObject setBody(JsonObject input) {
     this.body = input.copy();
-    return this;
-  }
-
-  public ResponseObject setHeaders(MultiMap input) {
-    this.headers = input;
     return this;
   }
 
@@ -246,9 +238,16 @@ public final class ResponseObject {
     LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
 
     // TBD : get these values from message object / request object
+    // extract session token and base64decode should give us tokenID and UserId 
+    String sessionToken, userId;
+    sessionToken = this.body.getString(MessageConstants.MSG_HEADER_TOKEN);
+    String decodedVal = getDecodedUserIDFromSession(sessionToken);
+    if (decodedVal != null) userId = decodedVal;
+    else userId = sessionToken;
+    
     JsonObject sessionObj = new JsonObject();
     sessionObj.put("apiKey", (Object)null);         // can be null
-    sessionObj.put("sessionToken", this.headers.get(MessageConstants.MSG_HEADER_TOKEN));   // cannot be null
+    sessionObj.put("sessionToken", sessionToken);   // cannot be null
     sessionObj.put("organizationUId", (Object)null);// can be null
     retVal.put("session", sessionObj);
     LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
@@ -257,7 +256,7 @@ public final class ResponseObject {
     JsonObject userObj = new JsonObject();
     userObj.put("userIp", (Object)null);
     userObj.put("userAgent", "Chrome");
-    userObj.put("gooruUId", this.headers.get(MessageConstants.MSG_USER_ID));   // cannot be null
+    userObj.put("gooruUId", userId);   // cannot be null
     retVal.put("user", userObj);
     LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
 
@@ -664,6 +663,14 @@ public final class ResponseObject {
     return retJson;
   }
   
+  private String getDecodedUserIDFromSession(String sessionToken) {
+    try {
+      return new String(Base64.getDecoder().decode(sessionToken), "UTF-8");
+    } catch (UnsupportedEncodingException uee) {
+      LOGGER.error(uee.getMessage());
+      return null;
+    }
+  }
   
 }
 
