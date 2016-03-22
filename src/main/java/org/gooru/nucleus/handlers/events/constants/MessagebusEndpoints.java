@@ -6,7 +6,6 @@ public final class MessagebusEndpoints {
    */
   public static final String MBEP_EVENT = "org.gooru.nucleus.message.bus.publisher.event";
 
-
   private MessagebusEndpoints() {
     throw new AssertionError();
   }
