@@ -30,7 +30,7 @@ public final class MessageConstants {
   public static final String MSG_OP_EVT_COLLECTION_UPDATE = "event.collection.update";
   public static final String MSG_OP_EVT_COLLECTION_DELETE = "event.collection.delete";
   public static final String MSG_OP_EVT_COLLECTION_COPY = "event.collection.copy";
-  public static final String MSG_OP_EVT_COLLECTION_REORDER = "event.collection.reorder";
+  public static final String MSG_OP_EVT_COLLECTION_CONTENT_REORDER = "event.collection.content.reorder";
   public static final String MSG_OP_EVT_COLLECTION_CONTENT_ADD = "event.collection.content.add";
   public static final String MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE = "event.collection.collaborator.update";
   public static final String MSG_OP_EVT_COLLECTION_MOVE = "event.collection.move";
@@ -40,7 +40,7 @@ public final class MessageConstants {
   public static final String MSG_OP_EVT_ASSESSMENT_DELETE = "event.assessment.delete";
   public static final String MSG_OP_EVT_ASSESSMENT_COPY = "assessment.copy";
   public static final String MSG_OP_EVT_ASSESSMENT_QUESTION_ADD = "event.assessment.question.add";
-  public static final String MSG_OP_EVT_ASSESSMENT_REORDER = "event.assessment.reorder";
+  public static final String MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER = "event.assessment.content.reorder";
   public static final String MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE = "event.assessment.collaborator.update";
 
   public static final String MSG_OP_EVT_COURSE_CREATE = "event.course.create";
@@ -89,6 +89,10 @@ public final class MessageConstants {
   public static final int EST_ITEM_COPY = 2;
   public static final int EST_ITEM_MOVE = 3;
   public static final int EST_ITEM_DELETE = 4;
+  public static final int EST_ITEM_REORDER = 5;
+  public static final int EST_ITEM_CONTENT_REORDER = 6;
+  public static final int EST_ITEM_COLLABORATOR_UPDATE = 7;
+  public static final int EST_ITEM_CONTENT_ADD = 8;
 
   private MessageConstants() {
     throw new AssertionError();

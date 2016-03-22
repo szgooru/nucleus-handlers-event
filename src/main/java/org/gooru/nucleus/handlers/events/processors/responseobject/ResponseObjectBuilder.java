@@ -17,33 +17,38 @@ import io.vertx.core.json.JsonObject;
  * @author Subbu-Gooru
  *
  */
-public final class ResponseObject {
+public final class ResponseObjectBuilder {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ResponseObject.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResponseObjectBuilder.class);
 
   private JsonObject body = null;
   private JsonObject response = null;
   private int eventType = MessageConstants.EST_ERROR;
 
-  public ResponseObject() {
+  public ResponseObjectBuilder() {
   }
 
   // Setters for headers, body and response
-  public ResponseObject setBody(JsonObject input) {
+  public ResponseObjectBuilder setBody(JsonObject input) {
     this.body = input.copy();
     return this;
   }
 
-  public ResponseObject setResponse(JsonObject input) {
+  public ResponseObjectBuilder setResponse(JsonObject input) {
     this.response = input.copy();
     return this;
   }
 
-  public ResponseObject setEventType(int type) {
+  public ResponseObjectBuilder setEventType(int type) {
     this.eventType = type;
     return this;
   }
 
+  public static final int EST_ITEM_REORDER = 5;
+  public static final int EST_ITEM_CONTENT_REORDER = 6;
+  public static final int EST_ITEM_COLLABORATOR_UPDATE = 7;
+  public static final int EST_ITEM_CONTENT_ADD = 8;
+  
   public JsonObject build() {
     JsonObject result;
     if ((this.response == null) || (this.body == null)) {
@@ -55,19 +60,27 @@ public final class ResponseObject {
           result = buildFailureResponseObject();
           break;
         case MessageConstants.EST_ITEM_CREATE :
-          result = buildItemCreateResponseObject();
-          break;
         case MessageConstants.EST_ITEM_EDIT :
-          result = buildItemEditResponseObject();
-          break;
         case MessageConstants.EST_ITEM_COPY :
-          result = new JsonObject();
+          result = buildItemCreateUpdateCopyResponseObject();
           break;
         case MessageConstants.EST_ITEM_MOVE :
-          result = new JsonObject();
+          result = buildItemMoveResponseObject();
           break;
         case MessageConstants.EST_ITEM_DELETE :
-          result = new JsonObject();
+          result = buildItemDeleteResponseObject();
+          break;
+        case MessageConstants.EST_ITEM_REORDER:
+          result = buildItemReorderResponseObject();
+          break;
+        case MessageConstants.EST_ITEM_CONTENT_REORDER:
+          result = buildItemContentReorderResponseObject();
+          break;
+        case MessageConstants.EST_ITEM_COLLABORATOR_UPDATE:
+          result = buildItemCollaboratorUpdate();
+          break;
+        case MessageConstants.EST_ITEM_CONTENT_ADD:
+          result = buildItemContentAdd();
           break;
         default :
           LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
@@ -77,6 +90,53 @@ public final class ResponseObject {
     }
 
     return result;
+  }
+
+  private JsonObject buildItemMoveResponseObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private JsonObject buildItemDeleteResponseObject() {
+    LOGGER.debug("buildItemCreateUpdateCopyResponseObject: inputData : " + this.response );
+
+    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
+
+    // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, user, version
+    JsonObject retVal = createEventStructureWithGenericData();
+
+    // add specific items: context, payLoadObject
+    // TBD : get these values from message object / request object
+    JsonObject contextObj = new JsonObject();
+    contextObj.put(EventResoponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
+    contextObj.put(EventResoponseConstants.PARENT_GOORU_ID, getParentIDFromResponse());
+    contextObj.put(EventResoponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
+    contextObj.put(EventResoponseConstants.CLIENT_SOURCE, "web");
+    retVal.put(EventResoponseConstants.CONTEXT, contextObj);
+
+    JsonObject payloadObj = createPayloadFromResponse();
+    retVal.put(EventResoponseConstants.PAYLOAD_OBJECT, payloadObj);
+    return retVal;  
+  }
+
+  private JsonObject buildItemReorderResponseObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private JsonObject buildItemContentReorderResponseObject() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private JsonObject buildItemCollaboratorUpdate() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  private JsonObject buildItemContentAdd() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   private  JsonObject buildFailureResponseObject() {
@@ -137,8 +197,8 @@ public final class ResponseObject {
    *  "version"    : "{"logApi"  : "0.1"}"
    * }
    */
-  private JsonObject buildItemCreateResponseObject() {
-    LOGGER.debug("buildItemCreateResponseObject: inputData : " + this.response );
+  private JsonObject buildItemCreateUpdateCopyResponseObject() {
+    LOGGER.debug("buildItemCreateUpdateCopyResponseObject: inputData : " + this.response );
 
     String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
 
@@ -156,61 +216,6 @@ public final class ResponseObject {
 
     JsonObject payloadObj = createPayloadFromResponse();
     retVal.put(EventResoponseConstants.PAYLOAD_OBJECT, payloadObj);
-    return retVal;
-  }
-
-  /*
-   * buildItemEditResponseObject() builds the response object in the structure below.
-   *
-   * EVENT Structure for Item.Edit is as below.
-   * {"startTime" : 1451994610328,
-   *  "eventId"   : "df970f1c-2988-4a57-b297-ac315d46ab3f",
-   *  "metrics"   : "{ "totalTimeSpentInMs" : 402 },
-   *  "session"   : "{ "sessionToken"    : "fa768c5d-2924-4dc8-9c82-3355e9512789",
-   *                   "organizationUId" : "4261739e-ccae-11e1-adfb-5404a609bd14",
-   *                   "apiKey"          : "ASERTYUIOMNHBGFDXSDWERT123RTGHYT"
-   *                 }",
-   *  "context"   : "{ "clientSource"    : "web",
-   *                   "url"             : "/gooruapi/rest/v3/item/edit",
-   *                   "contentGooruId"  : "uuid of content item",
-   *                   "parentGooruId"   : "uuid of parent container of the item"
-   *                 }",
-   *  "eventName" : "item.edit",
-   *  "endTime"   : 1451994610730,
-   *  "user"      : "{ "userIp"          : "54.219.20.89",
-   *                   "gooruUId"        : "9f0d4b91-4c7b-4fd2-8bbf-defadc86f122",
-   *                   "userAgent"       : "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36"
-   *                 }",
-   *  "payLoadObject" : "{ "data"        : "{ "title" : "google",
-   *                                          "description"      : "description",
-   *                                          ....
-   *                                        }",
-   *                     }",
-   *  "version"    : "{"logApi"  : "0.1"}"
-   * }
-   */
-  private JsonObject buildItemEditResponseObject() {
-    LOGGER.debug("buildItemEditResponseObject: inputData : " + this.response );
-
-    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
-
-    // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, user
-    JsonObject retVal = createEventStructureWithGenericData();
-
-    // add specific items: context, payLoadObject
-    // TBD : get these values from message object / request object
-    JsonObject contextObj = new JsonObject();
-    contextObj.put(EventResoponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
-    contextObj.put(EventResoponseConstants.PARENT_GOORU_ID, getParentIDFromResponse());
-    contextObj.put(EventResoponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
-    contextObj.put(EventResoponseConstants.CLIENT_SOURCE, "web");
-    retVal.put(EventResoponseConstants.CONTEXT, contextObj);
-
-    JsonObject payloadObj = createPayloadFromResponse();    
-    retVal.put(EventResoponseConstants.PAYLOAD_OBJECT, payloadObj);
-
-    LOGGER.debug("buildItemEditResponseObject: returning json:" + retVal.toString());
-
     return retVal;
   }
 

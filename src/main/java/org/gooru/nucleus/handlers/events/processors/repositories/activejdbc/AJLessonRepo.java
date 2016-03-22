@@ -22,7 +22,7 @@ public class AJLessonRepo implements LessonRepo {
   }
 
   @Override
-  public JsonObject getLesson() {
+  public JsonObject createUpdateCopyLessonEvent() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, context.id());
     JsonObject result = null;
@@ -32,6 +32,21 @@ public class AJLessonRepo implements LessonRepo {
     } 
     Base.close();
     return result;
+  }
+
+  @Override
+  public JsonObject deleteLessonEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject moveLessonEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject reorderLessonContentEvent() {
+    return new JsonObject();
   }
 
 }
