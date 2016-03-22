@@ -1,14 +1,16 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
-import java.util.Base64;
-import java.io.UnsupportedEncodingException;
+
+import org.gooru.nucleus.handlers.events.constants.EventResoponseConstants;
+import org.gooru.nucleus.handlers.events.constants.MessageConstants;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import io.vertx.core.json.JsonObject;
-import org.gooru.nucleus.handlers.events.constants.MessageConstants;
-import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.Content;
 
 
 /**
@@ -16,9 +18,8 @@ import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.enti
  *
  */
 public final class ResponseObject {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ResponseObject.class);
-  private static final String LOG_API = "logApi";
-  private static final String API_VERSION = "0.1";
 
   private JsonObject body = null;
   private JsonObject response = null;
@@ -84,11 +85,8 @@ public final class ResponseObject {
     returnValue.put(MessageConstants.MSG_EVENT_DUMP, this.body);
 
     LOGGER.debug("buildFailureResponseObject: returning json:" + returnValue.toString());
-
     return returnValue;
   }
-
-
 
   /*
    * buildItemCreateResponseObject() builds the response object in the structure below.
@@ -142,7 +140,7 @@ public final class ResponseObject {
   private JsonObject buildItemCreateResponseObject() {
     LOGGER.debug("buildItemCreateResponseObject: inputData : " + this.response );
 
-    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString("id");
+    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
 
     // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, user, version
     JsonObject retVal = createEventStructureWithGenericData();
@@ -150,18 +148,14 @@ public final class ResponseObject {
     // add specific items: context, payLoadObject
     // TBD : get these values from message object / request object
     JsonObject contextObj = new JsonObject();
-    contextObj.put("contentGooruId", contentId); // cannot be null
-    contextObj.put("parentGooruId", getParentIDFromResponse());
-    contextObj.put("sourceGooruId", getSourceIDFromResponse());
-    contextObj.put("clientSource", "web");
-    retVal.put("context", contextObj);
-    LOGGER.debug("buildItemCreateResponseObject: retVal : " + retVal.toString() );
+    contextObj.put(EventResoponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
+    contextObj.put(EventResoponseConstants.PARENT_GOORU_ID, getParentIDFromResponse());
+    contextObj.put(EventResoponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
+    contextObj.put(EventResoponseConstants.CLIENT_SOURCE, "web");
+    retVal.put(EventResoponseConstants.CONTEXT, contextObj);
 
     JsonObject payloadObj = createPayloadFromResponse();
-    retVal.put("payLoadObject", payloadObj);
-    
-    LOGGER.debug("buildItemCreateResponseObject: returning json:" + retVal.toString());
-
+    retVal.put(EventResoponseConstants.PAYLOAD_OBJECT, payloadObj);
     return retVal;
   }
 
@@ -198,7 +192,7 @@ public final class ResponseObject {
   private JsonObject buildItemEditResponseObject() {
     LOGGER.debug("buildItemEditResponseObject: inputData : " + this.response );
 
-    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString("id");
+    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
 
     // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, user
     JsonObject retVal = createEventStructureWithGenericData();
@@ -206,15 +200,14 @@ public final class ResponseObject {
     // add specific items: context, payLoadObject
     // TBD : get these values from message object / request object
     JsonObject contextObj = new JsonObject();
-    contextObj.put("contentGooruId", contentId); // cannot be null
-    contextObj.put("parentGooruId", getParentIDFromResponse());
-    contextObj.put("sourceGooruId", getSourceIDFromResponse());
-    contextObj.put("clientSource", "web");
-    retVal.put("context", contextObj);
-    LOGGER.debug("buildItemEditResponseObject: retVal : " + retVal.toString() );
+    contextObj.put(EventResoponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
+    contextObj.put(EventResoponseConstants.PARENT_GOORU_ID, getParentIDFromResponse());
+    contextObj.put(EventResoponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
+    contextObj.put(EventResoponseConstants.CLIENT_SOURCE, "web");
+    retVal.put(EventResoponseConstants.CONTEXT, contextObj);
 
     JsonObject payloadObj = createPayloadFromResponse();    
-    retVal.put("payLoadObject", payloadObj);
+    retVal.put(EventResoponseConstants.PAYLOAD_OBJECT, payloadObj);
 
     LOGGER.debug("buildItemEditResponseObject: returning json:" + retVal.toString());
 
@@ -227,15 +220,13 @@ public final class ResponseObject {
 
     // add mandatory top-level items: startTime, endTime, eventId, eventName, metrics, session, user, version
     long timeinMS = System.currentTimeMillis();
-    retVal.put("startTime", timeinMS);  // cannot be null
-    retVal.put("endTime", timeinMS);    // cannot be null
-    retVal.put("eventId", UUID.randomUUID().toString() );
-    retVal.put("eventName", this.body.getString(MessageConstants.MSG_EVENT_NAME));
-    LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
+    retVal.put(EventResoponseConstants.START_TIME, timeinMS);  // cannot be null
+    retVal.put(EventResoponseConstants.END_TIME, timeinMS);    // cannot be null
+    retVal.put(EventResoponseConstants.EVENT_ID, UUID.randomUUID().toString() );
+    retVal.put(EventResoponseConstants.EVENT_NAME, this.body.getString(MessageConstants.MSG_EVENT_NAME));
 
     // TBD : get these values from message object / request object
-    retVal.put("metrics", new JsonObject());  // can be null
-    LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
+    retVal.put(EventResoponseConstants.METRICS, new JsonObject());  // can be null
 
     // TBD : get these values from message object / request object
     // extract session token and base64decode should give us tokenID and UserId 
@@ -245,24 +236,24 @@ public final class ResponseObject {
     if (decodedVal != null) userId = decodedVal;
     else userId = sessionToken;
     
+    //TODO: parse session and extract details
     JsonObject sessionObj = new JsonObject();
-    sessionObj.put("apiKey", (Object)null);         // can be null
-    sessionObj.put("sessionToken", sessionToken);   // cannot be null
-    sessionObj.put("organizationUId", (Object)null);// can be null
-    retVal.put("session", sessionObj);
-    LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
+    sessionObj.put(EventResoponseConstants.API_KEY, (Object)null);         // can be null
+    sessionObj.put(EventResoponseConstants.SESSION_TOKEN, sessionToken);   // cannot be null
+    sessionObj.put(EventResoponseConstants.ORGANIZATION_UID, (Object)null);// can be null
+    retVal.put(EventResoponseConstants.SESSION, sessionObj);
 
     // TBD : get these values from message object / request object
     JsonObject userObj = new JsonObject();
-    userObj.put("userIp", (Object)null);
-    userObj.put("userAgent", "Chrome");
-    userObj.put("gooruUId", userId);   // cannot be null
-    retVal.put("user", userObj);
-    LOGGER.debug("createEventStructureWithGenericData: retVal : " + retVal.toString() );
+    userObj.put(EventResoponseConstants.USER_IP, (Object)null); // can be null
+    userObj.put(EventResoponseConstants.USER_AGENT, "Chrome"); // can be null
+    // TODO: from session
+    userObj.put(EventResoponseConstants.GOORU_UID, userId);   // cannot be null
+    retVal.put(EventResoponseConstants.USER, userObj);
 
-    retVal.put("version", new JsonObject().put(LOG_API, API_VERSION));
+    retVal.put(EventResoponseConstants.VERSION, new JsonObject().put(EventResoponseConstants.LOG_API, EventResoponseConstants.API_VERSION));
+    
     LOGGER.debug("createEventStructureWithGenericData: returning json:" + retVal.toString());
-
     return retVal;
   }
 
@@ -270,14 +261,13 @@ public final class ResponseObject {
     String retVal = null;
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         retVal = this.response.getString("collection_id");
         break;
@@ -295,14 +285,12 @@ public final class ResponseObject {
 
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         retVal = this.response.getString("unit_id");
         break;
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
-      case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         retVal = this.response.getString("course_id");
         break;
@@ -317,8 +305,6 @@ public final class ResponseObject {
         LOGGER.error("Invalid operation type passed in, not able to handle");
     }
     
-    LOGGER.debug("getParentIDFromResponse : RetVal : {}", retVal);
-    
     return retVal;
   }
 
@@ -326,14 +312,13 @@ public final class ResponseObject {
     String retVal = null;
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         retVal = this.response.getString("original_content_id");
         break;
@@ -351,21 +336,18 @@ public final class ResponseObject {
 
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         retVal = this.response.getString("original_lesson_id");
         break;
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
-      case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         retVal = this.response.getString("original_unit_id");
         break;
 
       case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
       case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
-      case MessageConstants.MSG_OP_EVT_COURSE_COPY:
       case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
         retVal = this.response.getString("original_course_id");
         break;
@@ -387,18 +369,17 @@ public final class ResponseObject {
     String retType = null;
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         retVal = this.response.getString("collection_id");
         if (retVal != null) {
-          if (Content.CONTENT_FORMAT_RESOURCE.equalsIgnoreCase(this.response.getString("content_format"))) {
+          if (AJEntityContent.CONTENT_FORMAT_RESOURCE.equalsIgnoreCase(this.response.getString("content_format"))) {
             retType = "collection.resource";
           } else {
             retType = "collection.question";
@@ -428,7 +409,6 @@ public final class ResponseObject {
 
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         retVal = this.response.getString("unit_id");
         if (retVal != null) {
@@ -438,7 +418,6 @@ public final class ResponseObject {
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
-      case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         retVal = this.response.getString("course_id");
         if (retVal != null) {
@@ -455,9 +434,6 @@ public final class ResponseObject {
         // technically we should not land here...
         LOGGER.error("Invalid operation type passed in, not able to handle");
     }
-    
-    LOGGER.debug("getItemTypeFromResponse : RetType : {}", retType);
-    
     return retType;
   }
 
@@ -465,11 +441,10 @@ public final class ResponseObject {
     String retVal = null;
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
         retVal = "resource";
         break;
         
@@ -496,18 +471,20 @@ public final class ResponseObject {
     
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         retVal = "lesson";
         break;
     
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
-      case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         retVal = "unit";
         break;
     
+      case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
+        retVal = "course";
+        break;
+        
       case MessageConstants.MSG_OP_EVT_USER_CREATE:
       case MessageConstants.MSG_OP_EVT_USER_UPDATE:
         retVal = "user";
@@ -517,16 +494,11 @@ public final class ResponseObject {
         break;
     }
 
-    LOGGER.debug("getTypeFromResponse : RetType : {}", retVal);
-    
     return retVal;
   } 
   
   private Object getItemSequenceFromResponse() {
-    String retVal = this.response.getString("sequence_id");  // all tables consistently use this as "sequence_id" so we should be good.
-
-    LOGGER.debug("getItemSequenceFromResponse : RetType : {}", retVal);
-    
+    Integer retVal = this.response.getInteger("sequence_id");  // all tables consistently use this as "sequence_id" so we should be good.
     return retVal;
   }
   
@@ -534,35 +506,37 @@ public final class ResponseObject {
     String retVal = null;
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
+      case MessageConstants.MSG_OP_EVT_USER_CREATE:
         retVal = "create";
         break;
         
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+      case MessageConstants.MSG_OP_EVT_USER_UPDATE:
         retVal = "update";
         break;
         
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
       case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+      case MessageConstants.MSG_OP_EVT_COURSE_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
         retVal = "copy";
         break;
       
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
@@ -570,14 +544,10 @@ public final class ResponseObject {
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         retVal = "delete";
         break;
-            
-      case MessageConstants.MSG_OP_EVT_USER_CREATE:
-      case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+
       default:
         break;
     }
-    
-    LOGGER.debug("getModeFromResponse : RetVal : {}", retVal);
     
     return retVal;
   }  
@@ -587,14 +557,13 @@ public final class ResponseObject {
     
     final String msgOp = this.body.getString(MessageConstants.MSG_EVENT_NAME);
     switch (msgOp) {
-      case MessageConstants.MSG_OP_EVT_RES_GET:  //  this is test related....invalid code...
-      case MessageConstants.MSG_OP_EVT_RES_CREATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
-      case MessageConstants.MSG_OP_EVT_RES_UPDATE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
-      case MessageConstants.MSG_OP_EVT_RES_COPY:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
-      case MessageConstants.MSG_OP_EVT_RES_DELETE:
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         collectionId = this.response.getString("collection_id");
         lessonId = this.response.getString("lesson_id");
@@ -617,7 +586,6 @@ public final class ResponseObject {
         
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
-      case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         unitId = this.response.getString("unit_id");
         courseId = this.response.getString("course_id");
@@ -625,7 +593,6 @@ public final class ResponseObject {
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
-      case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         courseId = this.response.getString("course_id");
         break;
@@ -634,29 +601,27 @@ public final class ResponseObject {
         break;
     }
     
-    inoutObj.put("courseGooruId", (Object)courseId );
-    inoutObj.put("unitGooruId", (Object)unitId );
-    inoutObj.put("lessonGooruId", (Object)lessonId );
-    inoutObj.put("collectionGooruId", (Object)collectionId );
+    inoutObj.put(EventResoponseConstants.COURSE_GOORU_ID, (Object)courseId );
+    inoutObj.put(EventResoponseConstants.UNIT_GOORU_ID, (Object)unitId );
+    inoutObj.put(EventResoponseConstants.LESSON_GOORU_ID, (Object)lessonId );
+    inoutObj.put(EventResoponseConstants.COLLECTION_GOORU_ID, (Object)collectionId );
 
     return;
   }
   
   private JsonObject createPayloadFromResponse() {
     JsonObject retJson = new JsonObject();
-    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString("id");
+    String contentId = this.body.getJsonObject(MessageConstants.MSG_EVENT_BODY).getString(MessageConstants.MSG_EVENT_CONTENT_ID);
     
-    retJson.put("data", this.response);
-    retJson.put("contentId", contentId);
-    retJson.put("mode", getModeFromResponse());
-    retJson.put("itemType", getItemTypeFromResponse());
-    retJson.put("type",  getTypeFromResponse());
-    
-    retJson.put("itemSequence", getItemSequenceFromResponse());
-    retJson.put("itemId", contentId);    
-    
-    retJson.put("sourceGooruId", getSourceIDFromResponse());
-    retJson.put("parentContentId", getParentIDFromResponse());
+    retJson.put(EventResoponseConstants.DATA, this.response);
+    retJson.put(EventResoponseConstants.CONTENT_ID, contentId);
+    retJson.put(EventResoponseConstants.MODE, getModeFromResponse());
+    retJson.put(EventResoponseConstants.ITEM_TYPE, getItemTypeFromResponse());
+    retJson.put(EventResoponseConstants.TYPE,  getTypeFromResponse());
+    retJson.put(EventResoponseConstants.ITEM_SEQUENCE, getItemSequenceFromResponse());
+    retJson.put(EventResoponseConstants.ITEM_ID, contentId);    
+    retJson.put(EventResoponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
+    retJson.put(EventResoponseConstants.PARENT_CONTENT_ID, getParentIDFromResponse());
     
     updateJsonForCULCInfo(retJson);
 
@@ -665,12 +630,12 @@ public final class ResponseObject {
   
   private String getDecodedUserIDFromSession(String sessionToken) {
     try {
-      return new String(Base64.getDecoder().decode(sessionToken), "UTF-8");
-    } catch (UnsupportedEncodingException uee) {
-      LOGGER.error(uee.getMessage());
+      String decoded = new String(Base64.getDecoder().decode(sessionToken));
+      return decoded.split(":")[1];
+    } catch (IllegalArgumentException e ) {
+      LOGGER.error(e.getMessage());
       return null;
     }
   }
-  
 }
 

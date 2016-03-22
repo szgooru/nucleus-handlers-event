@@ -1,16 +1,14 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
-import org.gooru.nucleus.handlers.events.processors.repositories.UserRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.User;
+import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
+import org.gooru.nucleus.handlers.events.processors.repositories.UserDemographicRepo;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUserDemographic;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.formatter.JsonFormatterBuilder;
 import org.javalite.activejdbc.Base;
-import org.postgresql.util.PGobject;
+import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import io.vertx.core.json.JsonObject;
 
@@ -18,77 +16,40 @@ import io.vertx.core.json.JsonObject;
 /**
  * Created by subbu on 07-Jan-2016.
  */
-public class AJUserRepo implements UserRepo {
+public class AJUserRepo implements UserDemographicRepo {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AJUserRepo.class);
+  private final ProcessorContext context;
+
+  public AJUserRepo(ProcessorContext context) {
+    this.context = context;
+  }
 
   /**
-   * getUser: generates event with the following data items:
-   *            id, firstname, lastname, parent_user_id, user_category,
-   *            created_at, updated_at, last_login, birth_date, grade,
-   *            thumbnail_path, gender, email_id, school_id, school_name,
-   *            school_district_id, school_district_name, country_id, country_name, state_id, state_name
+   * getUser: generates event with the following data items: id, firstname,
+   * lastname, parent_user_id, user_category, created_at, updated_at,
+   * last_login, birth_date, grade, thumbnail_path, gender, email_id, school_id,
+   * school_name, school_district_id, school_district_name, country_id,
+   * country_name, state_id, state_name
    *
-   *      Consumer needs to check for null / existence of values
+   * Consumer needs to check for null / existence of values
    */
   @Override
-  public JsonObject getUser(String userID) {
+  public JsonObject getUser() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("AJUserRepo : getUser: " + userID);
+    LOGGER.debug("AJUserRepo : getUser: " + context.id());
 
-    User result = User.findById(getPGObject("id", UUID_TYPE, userID));
-    LOGGER.debug("AJUserRepo : getUser : findById : " + result);
-
-    JsonObject returnValue = null;
-    String[] attributes =  {"id", "firstname", "lastname", "email_id", "parent_user_id", "user_category",
-                            "created_at", "updated_at", "last_login", "birth_date", "grade",
-                            "thumbnail_path", "gender", "school_id", "school_district_id", "country_id", "state_id" };
-
-    LOGGER.debug("AJUserRepo : getUser : findById attributes: " + String.join(", ", attributes) );
-
-    if (result != null) {
-      returnValue =  new JsonObject(result.toJson(false,  attributes ));
-      //
-      // get following detail and set them in response object
-      // "school_name",  "school_district_name", "country_name", "state_name"
-      //
-      addSchoolDistrictStateCountryInfo(returnValue);
+    LazyList<AJEntityUserDemographic> users = AJEntityUserDemographic.findBySQL(AJEntityUserDemographic.SELECT_USER, context.id());
+    JsonObject result = null;
+    if (!users.isEmpty()) {
+      result = new JsonObject(
+              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityUserDemographic.USER_DEMOGRAPHIC_FIELDS).toJson(users.get(0)));
     }
-    LOGGER.debug("AJUserRepo : getUser : findById returned: " + returnValue);
-
     Base.close();
-    return returnValue;
+    return result;
   }
 
-  @Override
-  public JsonObject getDeletedUser(String userID) {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("AJUserRepo : getDeletedUser: " + userID);
-
-    User result = User.findById(getPGObject("id", UUID_TYPE, userID));
-    LOGGER.debug("AJUserRepo : getDeletedUser : findById : " + result);
-
-    JsonObject returnValue = null;
-    String[] attributes =  {"id", "firstname", "lastname", "email_id", "parent_user_id", "user_category",
-                            "created_at", "updated_at", "last_login", "birth_date", "grade",
-                            "thumbnail_path", "gender", "school_id", "school_district_id", "country_id", "state_id" };
-    LOGGER.debug("AJUserRepo : getDeletedUser : findById attributes: " + String.join(", ", attributes) );
-
-    if (result != null) {
-      returnValue =  new JsonObject(result.toJson(false,  attributes ));
-      //
-      // get following detail and set them in response object
-      // "school_name",  "school_district_name", "country_name", "state_name"
-      //
-      addSchoolDistrictStateCountryInfo(returnValue);
-    }
-    LOGGER.debug("AJUserRepo : getDeletedUser : findById returned: " + returnValue);
-
-    Base.close();
-    return returnValue;
-  }
-
-  private void addSchoolDistrictStateCountryInfo(JsonObject jsonToModify) {
+  /*private void addSchoolDistrictStateCountryInfo(JsonObject jsonToModify) {
     String schoolId = jsonToModify.getString("school_id");
     if ((schoolId != null) && !schoolId.isEmpty() ) {
       List<Map> schools = Base.findAll("select name from school where id = ?::uuid", schoolId);
@@ -116,22 +77,5 @@ public class AJUserRepo implements UserRepo {
       for (Map country : countries)
         jsonToModify.put("country_name", country.get("name"));
     }
-
-  }
-
-
-  private static final String UUID_TYPE = "uuid";
-
-  private PGobject getPGObject(String field, String type, String value) {
-    PGobject pgObject = new PGobject();
-    pgObject.setType(type);
-    try {
-      pgObject.setValue(value);
-      return pgObject;
-    } catch (SQLException e) {
-      LOGGER.error("Not able to set value for field: {}, type: {}, value: {}", field, type, value);
-      return null;
-    }
-  }
-
+  }*/
 }

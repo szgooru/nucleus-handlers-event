@@ -7,10 +7,10 @@ import io.vertx.core.json.JsonObject;
  *
  */
 public interface CollectionRepo {
-  JsonObject getCollection(String contentID);
-  JsonObject getDeletedCollection(String contentID);
+  JsonObject getCollection();
+  JsonObject getDeletedCollection();
   
-  JsonObject getAssessment(String contentID);
-  JsonObject getDeletedAssessment(String contentID);
+  JsonObject getAssessment();
+  JsonObject getDeletedAssessment();
 
 }
