@@ -43,4 +43,10 @@ public class AJClassRepo implements ClassRepo {
     return new JsonObject();
   }
 
+  @Override
+  public JsonObject classContentVisibleEvent() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

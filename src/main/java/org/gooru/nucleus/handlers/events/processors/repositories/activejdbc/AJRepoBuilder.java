@@ -34,10 +34,6 @@ public final class AJRepoBuilder {
     return new AJLessonRepo(context);
   }
   
-  public static AJUserRepo buildUserRepo(ProcessorContext context) {
-    return new AJUserRepo(context);
-  }
-  
   public static ClassRepo buildClassRepo(ProcessorContext context) {
     return new AJClassRepo(context);
   }

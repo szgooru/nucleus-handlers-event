@@ -10,4 +10,5 @@ public interface ClassRepo {
   public JsonObject joinClassEvent();
   public JsonObject inviteStudentToClassEvent();
   public JsonObject assignClassToCourseEvent();
+  public JsonObject classContentVisibleEvent();
 }

@@ -186,33 +186,8 @@ class MessageProcessor implements Processor {
           result = processEventClassStudentJoin();
           break;
           
-        case MessageConstants.MSG_OP_EVT_USER_CREATE:
-        case MessageConstants.MSG_OP_EVT_USER_UPDATE:
-          result = processEventUserCreateUpdate();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_AUTHENTICATION:
-          result = processEventUserAuthentication();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_AUTHORIZE:
-          result = processEventUserAuthorize();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_RESET_PASSWORD:
-          result = processEventUserResetPassword();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_RESEND_CONFIRM_EMAIL:
-          result = processEventUserResendConfirmEmail();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_PREFS_UPDATE:
-          result = processEventUserPrefsUpdate();
-          break;
-          
-        case MessageConstants.MSG_OP_EVT_USER_UPDATE_EMAIL_CONFIRM:
-          result = processEventUserUpdateEmailConfirm();
+        case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
+          result = processEventClassContentVisible();
           break;
           
         default:
@@ -748,85 +723,9 @@ class MessageProcessor implements Processor {
     // TODO Auto-generated method stub
     return null;
   }
-
-  private JsonObject processEventUserCreateUpdate() {
-    try {
-      ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildUserRepo(context).getUser();
-      if (result != null) {
-        LOGGER.debug("getUser() returned: {}", result);
-        return ResponseFactory.generateItemCreateResponse(request, result);
-      }
-    } catch (Throwable t) {
-      LOGGER.error("Error while getting content from database:", t);
-    }
-    LOGGER.error("Failed to generate event. Input data received {}", request);
-    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
-    return null;
-  }
-
-  private JsonObject processEventUserAuthentication() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private JsonObject processEventUserAuthorize() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private JsonObject processEventUserResetPassword() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private JsonObject processEventUserResendConfirmEmail() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private JsonObject processEventUserPrefsUpdate() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  private JsonObject processEventUserUpdateEmailConfirm() {
-    // TODO Auto-generated method stub
-    return null;
-  }
   
-
-  /**
-   * processUserCreateUpdateCopy:
-   *      Handles data collection for CREATE & UPDATE scenarios
-   *
-   *      In all these cases, the event body will contain the following data items:
-   *            user_id, firstname, lastname, parent_user_id, user_category,
-   *            created_at, updated_at, last_login, birth_date, grade,
-   *            thumbnail_path, gender, email, school_id, school_name,
-   *            school_district_id, school_district_name, country_id, country_name, state_id, state_name
-   *
-   *      Consumer needs to check for null / existence of values
-   */
-/*  private JsonObject processUserCreateUpdate() {
-    JsonObject msgObject = (JsonObject) message.body();
-    if (msgObject != null) {
-      JsonObject msgBody = msgObject.getJsonObject(MessageConstants.MSG_EVENT_BODY);
-      if (msgBody != null) {
-        String userId = msgBody.getString("user_id");
-        LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) :" + userId);
-
-        JsonObject result = RepoBuilder.buildUserRepo().getUser(userId);
-        if (result != null) {
-          LOGGER.debug("processUserCreateUpdateCopy: getUser(Id) returned:" + result);
-          return ResponseFactory.generateItemCreateResponse(msgObject, result);
-        }
-      }
-    }
-
-    LOGGER.error("processUserCreateUpdateCopy: Failed to generate event for resource!! Input data received: " + message.body());
-    TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject)message.body()).toString() );
+  private JsonObject processEventClassContentVisible() {
+    // TODO Auto-generated method stub
     return null;
-  }*/
-
+  }
 }

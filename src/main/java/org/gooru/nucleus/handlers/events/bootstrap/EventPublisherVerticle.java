@@ -171,17 +171,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
     String emailTemplateName = null;
     String eventName = result.getString(EventResoponseConstants.EVENT_NAME);
     switch (eventName) {
-    case MessageConstants.MSG_OP_EVT_USER_CREATE:
-      emailTemplateName = EmailTemplateConstants.WELCOME_MAIL;
-      break;
-      
-    /*case MessageConstants.MSG_OP_EVT_USER_RESET_PASSWORD:
-      emailTemplateName = EmailTemplateConstants.PASSWORD_CHANGE_REQUEST;
-      break;
-      
-    case MessageConstants.MSG_OP_EVT_USER_UPDATE_EMAIL_CONFIRM:
-      break;
-      
+    /*      
     case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
     case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
     case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:

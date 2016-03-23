@@ -45,6 +45,27 @@ public final class EventResoponseConstants {
   
   public static final String EMAIL = "email_id";
   
+  public static final String TYPE_RESOUCE = "resource";
+  public static final String TYPE_QUESTION = "question";
+  public static final String TYPE_COLLECTION = "collection";
+  public static final String TYPE_ASSESSMENT = "assessment";
+  public static final String TYPE_LESSON = "lesson";
+  public static final String TYPE_UNIT = "unit";
+  public static final String TYPE_COURSE = "course";
+  
+  public static final String ITEM_TYPE_COLLECTION_RESOURCE = "collection.resource";
+  public static final String ITEM_TYPE_COLLECTION_QUESTION = "collection.question";
+  public static final String ITEM_TYPE_LESSON_COLLECTION = "lesson.collection";
+  public static final String ITEM_TYPE_LESSON_ASSESSMENT = "lesson.assessment";
+  public static final String ITEM_TYPE_UNIT_LESSON = "unit.lesson";
+  public static final String ITEM_TYPE_COURSE_UNIT = "course.unit";
+  
+  public static final String MODE_CREATE = "create";
+  public static final String MODE_UPDATE = "update";
+  public static final String MODE_DELETE = "delete";
+  public static final String MODE_COPY = "copy";
+  public static final String MODE_MOVE = "move";
+  
   public EventResoponseConstants() {
     throw new AssertionError();
   }

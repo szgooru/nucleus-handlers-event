@@ -72,16 +72,8 @@ public final class MessageConstants {
   public static final String MSG_OP_EVT_CLASS_STUDENT_JOIN = "event.class.student.join";
   public static final String MSG_OP_EVT_CLASS_STUDENT_INVITE = "event.class.student.invite";
   public static final String MSG_OP_EVT_CLASS_COURSE_ASSIGNED = "event.class.course.assigned";
+  public static final String MSG_OP_EVT_CLASS_CONTENT_VISIBLE = "event.class.content.visible";
 
-  public static final String MSG_OP_EVT_USER_CREATE = "event.user.create";
-  public static final String MSG_OP_EVT_USER_UPDATE = "event.user.update";
-  public static final String MSG_OP_EVT_USER_AUTHENTICATION = "event.user.authentication";
-  public static final String MSG_OP_EVT_USER_AUTHORIZE = "event.user.authorize";
-  public static final String MSG_OP_EVT_USER_RESET_PASSWORD = "event.user.reset.password";
-  public static final String MSG_OP_EVT_USER_RESEND_CONFIRM_EMAIL = "event.user.resend.confirm.email";
-  public static final String MSG_OP_EVT_USER_UPDATE_EMAIL_CONFIRM = "event.user.update.email.confirm";
-  public static final String MSG_OP_EVT_USER_PREFS_UPDATE = "event.user.prefs.update";
-  
   // Event Structure Type
   public static final int EST_ERROR = -1;
   public static final int EST_ITEM_CREATE = 0;
