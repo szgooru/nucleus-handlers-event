@@ -22,7 +22,7 @@ public class AJUnitRepo implements UnitRepo {
   }
 
   @Override
-  public JsonObject getUnit() {
+  public JsonObject createUpdateCopyUnitEvent() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, context.id());
     JsonObject result = null;
@@ -32,6 +32,21 @@ public class AJUnitRepo implements UnitRepo {
     } 
     Base.close();
     return result;
+  }
+
+  @Override
+  public JsonObject deleteUnitEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject moveUnitEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject reorderUnitContentEvent() {
+    return new JsonObject();
   }
 
 }

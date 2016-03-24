@@ -25,7 +25,7 @@ public class AJCollectionRepo implements CollectionRepo {
   }
 
   @Override
-  public JsonObject getCollection() {
+  public JsonObject createUpdateCopyCollectionEvent() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("getting collection for id {}", context.id());
 
@@ -41,16 +41,32 @@ public class AJCollectionRepo implements CollectionRepo {
   }
 
   @Override
-  public JsonObject getDeletedCollection() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("AJCollectionRepo : getDeletedCollection : " + context.id());
-    // TODO: ...
-    Base.close();
-    return null;
+  public JsonObject deleteCollectionEvent() {
+    return new JsonObject();
   }
 
   @Override
-  public JsonObject getAssessment() {
+  public JsonObject reorderCollectionContentEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject addContentToCollectionEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject updateCollectionCollaboratorEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject moveCollectionEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject createUpdateCopyAssessmentEvent() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("getting assessment for id {}", context.id());
 
@@ -66,11 +82,22 @@ public class AJCollectionRepo implements CollectionRepo {
   }
 
   @Override
-  public JsonObject getDeletedAssessment() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("AJCollectionRepo : getDeletedAssessment : " + context.id());
-    // TODO: ...
-    Base.close();
-    return null;
+  public JsonObject deleteAssessmentEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject addQuestionToAssessmentEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject reorderAssessmentContentEvent() {
+    return new JsonObject();
+  }
+
+  @Override
+  public JsonObject updateAssessmentCollaboratorEvent() {
+    return new JsonObject();
   }
 }

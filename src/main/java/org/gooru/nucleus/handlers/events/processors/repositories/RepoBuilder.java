@@ -16,10 +16,6 @@ public final class RepoBuilder {
     return AJRepoBuilder.buildCollectionRepo(context);
   }
 
-  public static UserDemographicRepo buildUserRepo(ProcessorContext context) {
-    return AJRepoBuilder.buildUserRepo(context);
-  }
-  
   public static CourseRepo buildCourseRepo(ProcessorContext context) {
     return AJRepoBuilder.buildCourseRepo(context);
   }
@@ -30,6 +26,10 @@ public final class RepoBuilder {
   
   public static LessonRepo buildLessonRepo(ProcessorContext context) {
     return AJRepoBuilder.buildLessonRepo(context);
+  }
+  
+  public static ClassRepo buildClassRepo(ProcessorContext context) {
+    return AJRepoBuilder.buildClassRepo(context);
   }
 
   private RepoBuilder() {
