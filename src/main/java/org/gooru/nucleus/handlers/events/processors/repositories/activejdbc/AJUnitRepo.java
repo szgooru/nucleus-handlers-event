@@ -23,20 +23,12 @@ public class AJUnitRepo implements UnitRepo {
 
   @Override
   public JsonObject createUpdateCopyUnitEvent() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, context.id());
-    JsonObject result = null;
-    if (!units.isEmpty()) {
-      LOGGER.info("found unit for id {} : " + context.id());
-      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityUnit.ALL_FIELDS).toJson(units.get(0)));
-    } 
-    Base.close();
-    return result;
+    return getUnit();
   }
 
   @Override
   public JsonObject deleteUnitEvent() {
-    return new JsonObject();
+    return getUnit();
   }
 
   @Override
@@ -47,6 +39,18 @@ public class AJUnitRepo implements UnitRepo {
   @Override
   public JsonObject reorderUnitContentEvent() {
     return new JsonObject();
+  }
+  
+  private JsonObject getUnit() {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, context.id());
+    JsonObject result = null;
+    if (!units.isEmpty()) {
+      LOGGER.info("found unit for id {} : " + context.id());
+      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityUnit.ALL_FIELDS).toJson(units.get(0)));
+    } 
+    Base.close();
+    return result;
   }
 
 }

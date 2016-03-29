@@ -26,23 +26,12 @@ public class AJCollectionRepo implements CollectionRepo {
 
   @Override
   public JsonObject createUpdateCopyCollectionEvent() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting collection for id {}", context.id());
-
-    JsonObject result = null;
-    LazyList<AJEntityCollection> collections = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, context.id());
-    if (!collections.isEmpty()) {
-      result = new JsonObject(
-              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
-    }
-
-    Base.close();
-    return result;
+    return getCollection();
   }
 
   @Override
   public JsonObject deleteCollectionEvent() {
-    return new JsonObject();
+    return getCollection();
   }
 
   @Override
@@ -67,23 +56,12 @@ public class AJCollectionRepo implements CollectionRepo {
 
   @Override
   public JsonObject createUpdateCopyAssessmentEvent() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting assessment for id {}", context.id());
-
-    JsonObject result = null;
-    LazyList<AJEntityCollection> assessments = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_ASSESSMENT, context.id());
-    if (!assessments.isEmpty()) {
-      result = new JsonObject(
-              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
-    }
-
-    Base.close();
-    return result;
+    return getAssessment();
   }
 
   @Override
   public JsonObject deleteAssessmentEvent() {
-    return new JsonObject();
+    return getAssessment();
   }
 
   @Override
@@ -99,5 +77,35 @@ public class AJCollectionRepo implements CollectionRepo {
   @Override
   public JsonObject updateAssessmentCollaboratorEvent() {
     return new JsonObject();
+  }
+  
+  private JsonObject getCollection() {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    LOGGER.debug("getting collection for id {}", context.id());
+
+    JsonObject result = null;
+    LazyList<AJEntityCollection> collections = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, context.id());
+    if (!collections.isEmpty()) {
+      result = new JsonObject(
+              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
+    }
+
+    Base.close();
+    return result;
+  }
+  
+  private JsonObject getAssessment() {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    LOGGER.debug("getting assessment for id {}", context.id());
+
+    JsonObject result = null;
+    LazyList<AJEntityCollection> assessments = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_ASSESSMENT, context.id());
+    if (!assessments.isEmpty()) {
+      result = new JsonObject(
+              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
+    }
+
+    Base.close();
+    return result;
   }
 }
