@@ -26,6 +26,25 @@ public class AJContentRepo implements ContentRepo {
 
   @Override
   public JsonObject createUpdateCopyResourceEvent() {
+    return getResource();
+  }
+
+  @Override
+  public JsonObject deletedResourceEvent() {
+    return getResource();
+  }
+
+  @Override
+  public JsonObject createUpdateCopyQuestionEvent() {
+    return getQuestion();
+  }
+
+  @Override
+  public JsonObject deletedQuestionEvent() {
+    return getQuestion();
+  }
+  
+  private JsonObject getResource() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("getting resource for id {}", context.id());
 
@@ -38,14 +57,8 @@ public class AJContentRepo implements ContentRepo {
     Base.close();
     return result;
   }
-
-  @Override
-  public JsonObject deletedResourceEvent() {
-    return new JsonObject();
-  }
-
-  @Override
-  public JsonObject createUpdateCopyQuestionEvent() {
+  
+  private JsonObject getQuestion() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     LOGGER.debug("getting question for id {}", context.id());
 
@@ -57,10 +70,5 @@ public class AJContentRepo implements ContentRepo {
 
     Base.close();
     return result;
-  }
-
-  @Override
-  public JsonObject deletedQuestionEvent() {
-    return new JsonObject();
   }
 }

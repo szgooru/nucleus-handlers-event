@@ -23,20 +23,12 @@ public class AJCourseRepo implements CourseRepo {
 
   @Override
   public JsonObject createUpdateCopyCourseEvent() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, context.id());
-    JsonObject result = null;
-    if (!courses.isEmpty()) {
-      LOGGER.info("found course for id {} : " + context.id());
-      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCourse.ALL_FIELDS).toJson(courses.get(0)));
-    } 
-    Base.close();
-    return result;
+    return getCourse();
   }
 
   @Override
   public JsonObject deleteCourseEvent() {
-    return new JsonObject();
+    return getCourse();
   }
 
   @Override
@@ -52,6 +44,18 @@ public class AJCourseRepo implements CourseRepo {
   @Override
   public JsonObject reorderCourseContentEvent() {
     return new JsonObject();
+  }
+  
+  private JsonObject getCourse() {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, context.id());
+    JsonObject result = null;
+    if (!courses.isEmpty()) {
+      LOGGER.info("found course for id {} : " + context.id());
+      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCourse.ALL_FIELDS).toJson(courses.get(0)));
+    } 
+    Base.close();
+    return result;
   }
 
 }

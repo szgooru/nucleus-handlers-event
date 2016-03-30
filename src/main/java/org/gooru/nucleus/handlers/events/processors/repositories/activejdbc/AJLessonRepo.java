@@ -23,20 +23,12 @@ public class AJLessonRepo implements LessonRepo {
 
   @Override
   public JsonObject createUpdateCopyLessonEvent() {
-    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, context.id());
-    JsonObject result = null;
-    if (!lessons.isEmpty()) {
-      LOGGER.info("found lesson for id {} : " + context.id());
-      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityLesson.ALL_FIELDS).toJson(lessons.get(0)));
-    } 
-    Base.close();
-    return result;
+    return getLesson();
   }
 
   @Override
   public JsonObject deleteLessonEvent() {
-    return new JsonObject();
+    return getLesson();
   }
 
   @Override
@@ -49,4 +41,15 @@ public class AJLessonRepo implements LessonRepo {
     return new JsonObject();
   }
 
+  private JsonObject getLesson() {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, context.id());
+    JsonObject result = null;
+    if (!lessons.isEmpty()) {
+      LOGGER.info("found lesson for id {} : " + context.id());
+      result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityLesson.ALL_FIELDS).toJson(lessons.get(0)));
+    } 
+    Base.close();
+    return result;
+  }
 }
