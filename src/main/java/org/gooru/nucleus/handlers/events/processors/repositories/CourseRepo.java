@@ -4,7 +4,8 @@ import io.vertx.core.json.JsonObject;
 
 public interface CourseRepo {
 
-  public JsonObject createUpdateCopyCourseEvent();
+  public JsonObject createUpdateCourseEvent();
+  public JsonObject copyCourseEvent();
   public JsonObject deleteCourseEvent();
   public JsonObject updateCourseCollaboratorEvent();
   public JsonObject reorderCourseEvent();

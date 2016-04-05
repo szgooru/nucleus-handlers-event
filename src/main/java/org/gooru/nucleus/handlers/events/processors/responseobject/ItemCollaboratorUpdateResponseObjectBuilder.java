@@ -5,9 +5,9 @@ import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 
 import io.vertx.core.json.JsonObject;
 
-public class ItemDeleteResponseObjectBuilder extends ResponseObject {
+public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject {
 
-  public ItemDeleteResponseObjectBuilder(JsonObject body, JsonObject response) {
+  public ItemCollaboratorUpdateResponseObjectBuilder(JsonObject body, JsonObject response) {
     super(body, response);
   }
 
@@ -29,23 +29,11 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
     contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object)null);
     return contextStructure;
   }
-  
+
   private JsonObject createPayLoadObjectStructure() {
     JsonObject payloadStructure = new JsonObject();
-    String contentId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
-    
     payloadStructure.put(EventResponseConstants.DATA, this.response);
-    payloadStructure.put(EventResponseConstants.CONTENT_ID, contentId);
-    payloadStructure.put(EventResponseConstants.MODE, getModeFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_TYPE, getItemTypeFromResponse());
-    payloadStructure.put(EventResponseConstants.TYPE,  getContentFormatFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_SEQUENCE, getItemSequenceFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_ID, contentId);    
-    payloadStructure.put(EventResponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
-    payloadStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentIDFromResponse());
-    
+    payloadStructure.put(EventResponseConstants.CONTENT_FORMAT,  getContentFormatFromResponse());
     return payloadStructure;
   }
-  
-
 }

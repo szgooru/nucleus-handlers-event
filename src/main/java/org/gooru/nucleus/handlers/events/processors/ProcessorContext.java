@@ -9,15 +9,13 @@ public class ProcessorContext {
 
   private final String eventName;
   private final JsonObject eventBody;
-  private final String id;
 
-  public ProcessorContext(String eventName, JsonObject eventBody, String id) {
+  public ProcessorContext(String eventName, JsonObject eventBody) {
     if (eventName == null || eventBody == null) {
       throw new IllegalStateException("Processor Context creation failed because of invalid values");
     }
     this.eventName = eventName;
     this.eventBody = eventBody.copy();
-    this.id = id;
   }
 
   public String eventName() {
@@ -26,9 +24,5 @@ public class ProcessorContext {
 
   public JsonObject eventBody() {
     return eventBody;
-  }
-
-  public String id() {
-    return id;
   }
 }

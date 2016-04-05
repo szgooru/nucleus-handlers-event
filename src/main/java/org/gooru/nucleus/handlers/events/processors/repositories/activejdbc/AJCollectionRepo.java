@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCollection;
@@ -25,8 +26,14 @@ public class AJCollectionRepo implements CollectionRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyCollectionEvent() {
+  public JsonObject createUpdateCollectionEvent() {
     return getCollection();
+  }
+  
+  @Override
+  public JsonObject copyCollectionEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -46,7 +53,7 @@ public class AJCollectionRepo implements CollectionRepo {
 
   @Override
   public JsonObject updateCollectionCollaboratorEvent() {
-    return new JsonObject();
+    return context.eventBody();
   }
 
   @Override
@@ -55,10 +62,16 @@ public class AJCollectionRepo implements CollectionRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyAssessmentEvent() {
+  public JsonObject createUpdateAssessmentEvent() {
     return getAssessment();
   }
 
+  @Override
+  public JsonObject copyAssessmentEvent() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
   @Override
   public JsonObject deleteAssessmentEvent() {
     return getAssessment();
@@ -81,10 +94,11 @@ public class AJCollectionRepo implements CollectionRepo {
   
   private JsonObject getCollection() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting collection for id {}", context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LOGGER.debug("getting collection for id {}", contentId);
 
     JsonObject result = null;
-    LazyList<AJEntityCollection> collections = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, context.id());
+    LazyList<AJEntityCollection> collections = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, contentId);
     if (!collections.isEmpty()) {
       result = new JsonObject(
               new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
@@ -96,10 +110,11 @@ public class AJCollectionRepo implements CollectionRepo {
   
   private JsonObject getAssessment() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting assessment for id {}", context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LOGGER.debug("getting assessment for id {}", contentId);
 
     JsonObject result = null;
-    LazyList<AJEntityCollection> assessments = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_ASSESSMENT, context.id());
+    LazyList<AJEntityCollection> assessments = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_ASSESSMENT, contentId);
     if (!assessments.isEmpty()) {
       result = new JsonObject(
               new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
@@ -108,4 +123,6 @@ public class AJCollectionRepo implements CollectionRepo {
     Base.close();
     return result;
   }
+
+
 }

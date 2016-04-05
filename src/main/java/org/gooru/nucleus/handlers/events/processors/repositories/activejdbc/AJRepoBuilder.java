@@ -7,6 +7,7 @@ import org.gooru.nucleus.handlers.events.processors.repositories.ContentRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.CourseRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.LessonRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.UnitRepo;
+import org.gooru.nucleus.handlers.events.processors.repositories.UserRepo;
 
 
 /**
@@ -36,6 +37,10 @@ public final class AJRepoBuilder {
   
   public static ClassRepo buildClassRepo(ProcessorContext context) {
     return new AJClassRepo(context);
+  }
+  
+  public static UserRepo buildUserRepo(ProcessorContext context) {
+    return new AJUserRepo(context);
   }
   
   private AJRepoBuilder() {

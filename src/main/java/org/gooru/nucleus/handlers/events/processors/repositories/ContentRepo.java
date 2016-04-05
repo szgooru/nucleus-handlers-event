@@ -6,10 +6,12 @@ import io.vertx.core.json.JsonObject;
  * Created by subbu on 06-Jan-2016.
  */
 public interface ContentRepo {
-  JsonObject createUpdateCopyResourceEvent();
-  JsonObject deletedResourceEvent();
+  public JsonObject createUpdateResourceEvent();
+  public JsonObject copyResourceEvent();
+  public JsonObject deletedResourceEvent();
   
-  JsonObject createUpdateCopyQuestionEvent();
-  JsonObject deletedQuestionEvent();
+  public JsonObject createUpdateQuestionEvent();
+  public JsonObject copyQuestionEvent();
+  public JsonObject deletedQuestionEvent();
   
 }

@@ -2,18 +2,6 @@ package org.gooru.nucleus.handlers.events.constants;
 
 public final class MessageConstants {
 
-  public static final String MSG_EVENT_NAME = "event.name";
-  public static final String MSG_EVENT_BODY = "event.body";
-
-  public static final String MSG_USER_ANONYMOUS = "anonymous";
-  public static final String MSG_USER_ID = "userId";
-  public static final String MSG_HEADER_TOKEN = "session.token";
-
-  public static final String MSG_EVENT_TIMESTAMP = "event.timestamp";
-  public static final String MSG_EVENT_DUMP = "event.dump";
-  
-  public static final String MSG_EVENT_CONTENT_ID = "id";
-
   // Operation names: Also need to be updated in corresponding handlers
   //Content related events
   public static final String MSG_OP_EVT_RESOURCE_CREATE = "event.resource.create";

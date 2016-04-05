@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.UnitRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUnit;
@@ -22,8 +23,14 @@ public class AJUnitRepo implements UnitRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyUnitEvent() {
+  public JsonObject createUpdateUnitEvent() {
     return getUnit();
+  }
+  
+  @Override
+  public JsonObject copyUnitEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -43,14 +50,14 @@ public class AJUnitRepo implements UnitRepo {
   
   private JsonObject getUnit() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, contentId);
     JsonObject result = null;
     if (!units.isEmpty()) {
-      LOGGER.info("found unit for id {} : " + context.id());
+      LOGGER.info("found unit for id {} : " + contentId);
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityUnit.ALL_FIELDS).toJson(units.get(0)));
     } 
     Base.close();
     return result;
   }
-
 }

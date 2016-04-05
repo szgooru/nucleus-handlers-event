@@ -2,6 +2,7 @@ package org.gooru.nucleus.handlers.events.processors.responseobject;
 
 import java.util.Date;
 
+import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +53,10 @@ public final class ResponseObjectBuilder {
           break;
         case MessageConstants.EST_ITEM_CREATE :
         case MessageConstants.EST_ITEM_EDIT :
+          result = buildItemCreateUpdateResponseObject();
+          break;
         case MessageConstants.EST_ITEM_COPY :
-          result = buildItemCreateUpdateCopyResponseObject();
+          result = buildItemCopyResponseObject();
           break;
         case MessageConstants.EST_ITEM_MOVE :
           result = buildItemMoveResponseObject();
@@ -68,10 +71,10 @@ public final class ResponseObjectBuilder {
           result = buildItemContentReorderResponseObject();
           break;
         case MessageConstants.EST_ITEM_COLLABORATOR_UPDATE:
-          result = buildItemCollaboratorUpdate();
+          result = buildItemCollaboratorUpdateResponseObject();
           break;
         case MessageConstants.EST_ITEM_CONTENT_ADD:
-          result = buildItemContentAdd();
+          result = buildItemContentAddResponseObject();
           break;
         default :
           LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
@@ -83,13 +86,16 @@ public final class ResponseObjectBuilder {
     return result;
   }
 
-  private JsonObject buildItemCreateUpdateCopyResponseObject() {
-    return new ItemCreateUpdateCopyResponseObjectBuilder(body, response).build();
+  private JsonObject buildItemCreateUpdateResponseObject() {
+    return new ItemCreateUpdateResponseObjectBuilder(body, response).build();
+  }
+  
+  private JsonObject buildItemCopyResponseObject() {
+    return new ItemCopyResponseObjectBuilder(body, response).build();
   }
   
   private JsonObject buildItemMoveResponseObject() {
-    // TODO Auto-generated method stub
-    return null;
+    return new ItemMoveResponseObjectBuilder(body, response).build();
   }
 
   private JsonObject buildItemDeleteResponseObject() {
@@ -97,29 +103,25 @@ public final class ResponseObjectBuilder {
   }
 
   private JsonObject buildItemReorderResponseObject() {
-    // TODO Auto-generated method stub
-    return null;
+    return new ItemReorderResponseObjectBuilder(body, response).build();
   }
 
   private JsonObject buildItemContentReorderResponseObject() {
-    // TODO Auto-generated method stub
-    return null;
+    return new ItemContentReorderResponseObjectBuilder(body, response).build();
   }
 
-  private JsonObject buildItemCollaboratorUpdate() {
-    // TODO Auto-generated method stub
-    return null;
+  private JsonObject buildItemCollaboratorUpdateResponseObject() {
+    return new ItemCollaboratorUpdateResponseObjectBuilder(body, response).build();
   }
 
-  private JsonObject buildItemContentAdd() {
-    // TODO Auto-generated method stub
-    return null;
+  private JsonObject buildItemContentAddResponseObject() {
+    return new ItemContentAddResponseObjectBuilder(body, response).build();
   }
 
   private  JsonObject buildFailureResponseObject() {
     JsonObject failureJson = new JsonObject();
-    failureJson.put(MessageConstants.MSG_EVENT_TIMESTAMP, new Date().toString());
-    failureJson.put(MessageConstants.MSG_EVENT_DUMP, this.body);
+    failureJson.put(EventResponseConstants.EVENT_TIMESTAMP, new Date().toString());
+    failureJson.put(EventResponseConstants.EVENT_DUMP, this.body);
     return failureJson;
   }
 }

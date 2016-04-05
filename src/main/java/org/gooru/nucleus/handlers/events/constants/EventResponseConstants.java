@@ -1,6 +1,6 @@
 package org.gooru.nucleus.handlers.events.constants;
 
-public final class EventResoponseConstants {
+public final class EventResponseConstants {
 
   public static final String START_TIME = "startTime";
   public static final String END_TIME = "endTime";
@@ -28,6 +28,7 @@ public final class EventResoponseConstants {
   public static final String ITEM_SEQUENCE = "itemSequence";
   public static final String ITEM_ID = "itemId";
   public static final String PARENT_CONTENT_ID = "parentContentId";
+  public static final String CONTENT_FORMAT = "contentFormat";
   
   public static final String SESSION = "session";
   public static final String API_KEY = "apiKey";
@@ -45,13 +46,14 @@ public final class EventResoponseConstants {
   
   public static final String EMAIL = "email_id";
   
-  public static final String TYPE_RESOUCE = "resource";
-  public static final String TYPE_QUESTION = "question";
-  public static final String TYPE_COLLECTION = "collection";
-  public static final String TYPE_ASSESSMENT = "assessment";
-  public static final String TYPE_LESSON = "lesson";
-  public static final String TYPE_UNIT = "unit";
-  public static final String TYPE_COURSE = "course";
+  public static final String FORMAT_RESOUCE = "resource";
+  public static final String FORMAT_QUESTION = "question";
+  public static final String FORMAT_COLLECTION = "collection";
+  public static final String FORMAT_ASSESSMENT = "assessment";
+  public static final String FORMAT_LESSON = "lesson";
+  public static final String FORMAT_UNIT = "unit";
+  public static final String FORMAT_COURSE = "course";
+  public static final String FORMAT_CLASS = "class";
   
   public static final String ITEM_TYPE_COLLECTION_RESOURCE = "collection.resource";
   public static final String ITEM_TYPE_COLLECTION_QUESTION = "collection.question";
@@ -66,7 +68,10 @@ public final class EventResoponseConstants {
   public static final String MODE_COPY = "copy";
   public static final String MODE_MOVE = "move";
   
-  public EventResoponseConstants() {
+  public static final String EVENT_TIMESTAMP = "event.timestamp";
+  public static final String EVENT_DUMP = "event.dump";
+  
+  public EventResponseConstants() {
     throw new AssertionError();
   }
   

@@ -1,9 +1,12 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.ClassRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityClass;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.formatter.JsonFormatterBuilder;
+import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +58,14 @@ public class AJClassRepo implements ClassRepo {
   }
 
   private JsonObject getClassById() {
-    LazyList<AJEntityClass> classes = AJEntityClass.where(AJEntityClass.SELECT_QUERY, context.id());
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    String classId = context.eventBody().getString(EventRequestConstants.ID);
+    LazyList<AJEntityClass> classes = AJEntityClass.where(AJEntityClass.SELECT_QUERY, classId);
     if (classes.isEmpty()) {
-      LOGGER.warn("Not able to find class '{}'", this.context.id());
+      LOGGER.warn("Not able to find class '{}'", classId);
       return null;
     }
-
+    Base.close();
     return new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityClass.ALL_FIELDS).toJson(classes.get(0)));
   }
 

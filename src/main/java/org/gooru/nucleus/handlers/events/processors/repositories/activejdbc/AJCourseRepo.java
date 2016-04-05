@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.CourseRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCourse;
@@ -22,8 +23,14 @@ public class AJCourseRepo implements CourseRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyCourseEvent() {
+  public JsonObject createUpdateCourseEvent() {
     return getCourse();
+  }
+  
+  @Override
+  public JsonObject copyCourseEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -33,7 +40,8 @@ public class AJCourseRepo implements CourseRepo {
 
   @Override
   public JsonObject updateCourseCollaboratorEvent() {
-    return new JsonObject();
+    //Nothing to process here so just returning event body as is
+    return context.eventBody();
   }
 
   @Override
@@ -48,14 +56,14 @@ public class AJCourseRepo implements CourseRepo {
   
   private JsonObject getCourse() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, contentId);
     JsonObject result = null;
     if (!courses.isEmpty()) {
-      LOGGER.info("found course for id {} : " + context.id());
+      LOGGER.info("found course for id {} : " + contentId);
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCourse.ALL_FIELDS).toJson(courses.get(0)));
     } 
     Base.close();
     return result;
   }
-
 }
