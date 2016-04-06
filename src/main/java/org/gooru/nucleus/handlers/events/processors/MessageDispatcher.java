@@ -1,12 +1,12 @@
 package org.gooru.nucleus.handlers.events.processors;
 
-import org.gooru.nucleus.handlers.events.app.components.KafkaRegistry;
+import io.vertx.core.json.JsonObject;
+import org.apache.kafka.clients.producer.BufferExhaustedException;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.BufferExhaustedException;
-import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.errors.InterruptException;
-import io.vertx.core.json.JsonObject;
+import org.apache.kafka.common.errors.SerializationException;
+import org.gooru.nucleus.handlers.events.app.components.KafkaRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,9 +26,11 @@ public final class MessageDispatcher {
     //
     // Kafka message publish
     //
-    if ( KafkaRegistry.getInstance().testWithoutKafkaServer() ) return; // running without KafkaServer...
+    if (KafkaRegistry.getInstance().testWithoutKafkaServer()) {
+      return; // running without KafkaServer...
+    }
 
-    Producer<String,String> producer = KafkaRegistry.getInstance().getKafkaProducer();
+    Producer<String, String> producer = KafkaRegistry.getInstance().getKafkaProducer();
     ProducerRecord<String, String> kafkaMsg = new ProducerRecord<>(KafkaRegistry.getInstance().getKafkaTopic(), eventName, eventBody.toString());
 
     LOGGER.debug("Message to Kafka server:" + kafkaMsg);
@@ -37,7 +39,8 @@ public final class MessageDispatcher {
       if (producer != null) {
         producer.send(kafkaMsg, (metadata, exception) -> {
           if (exception == null) {
-            LOGGER.info("Message Delivered Successfully: Offset : " + metadata.offset() + " : Topic : " + metadata.topic() + " : Partition : " + metadata.partition() + " : Message : " + kafkaMsg);
+            LOGGER.info("Message Delivered Successfully: Offset : " + metadata.offset() + " : Topic : " + metadata.topic() + " : Partition : " +
+              metadata.partition() + " : Message : " + kafkaMsg);
           } else {
             LOGGER.error("Message Could not be delivered : " + kafkaMsg + ". Cause: " + exception.getMessage());
           }

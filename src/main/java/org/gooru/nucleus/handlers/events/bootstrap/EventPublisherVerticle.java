@@ -1,5 +1,9 @@
 package org.gooru.nucleus.handlers.events.bootstrap;
 
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.EventBus;
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizer;
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizers;
 import org.gooru.nucleus.handlers.events.bootstrap.startup.Initializer;
@@ -10,11 +14,6 @@ import org.gooru.nucleus.handlers.events.processors.MessageDispatcher;
 import org.gooru.nucleus.handlers.events.processors.ProcessorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
-import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.json.JsonObject;
 
 /**
  * Created by ashish on 25/12/15.
@@ -58,7 +57,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
           // but future.complete() happened successfully.......
           // So, do check null objects upon return.
           //
-          JsonObject result = (JsonObject)res.result();
+          JsonObject result = (JsonObject) res.result();
           if (result != null) {
 
             LOGGER.debug("***********************************************");
@@ -68,7 +67,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
             String eventName = result.getString(EventResponseConstants.EVENT_NAME);
             MessageDispatcher.getInstance().sendMessage2Kafka(eventName, result);
             LOGGER.info("Message dispatched successfully for event: {}", eventName);
-            
+
             //Forward the call to email processor
             JsonObject emailResult = ProcessorBuilder.buildEmailProcessor(vertx, config(), result).process();
 
@@ -91,7 +90,6 @@ public class EventPublisherVerticle extends AbstractVerticle {
   }
 
 
-
   @Override
   public void stop() throws Exception {
     shutDownApplication();
@@ -104,7 +102,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
       for (Initializer initializer : initializers) {
         initializer.initializeComponent(vertx, config());
       }
-    } catch(IllegalStateException ie) {
+    } catch (IllegalStateException ie) {
       LOGGER.error("Error initializing application", ie);
       Runtime.getRuntime().halt(1);
     }
@@ -112,10 +110,10 @@ public class EventPublisherVerticle extends AbstractVerticle {
 
   private void shutDownApplication() {
     Finalizers finalizers = new Finalizers();
-    for (Finalizer finalizer : finalizers ) {
+    for (Finalizer finalizer : finalizers) {
       finalizer.finalizeComponent();
     }
   }
-  
-  
+
+
 }

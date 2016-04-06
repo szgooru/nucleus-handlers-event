@@ -1,8 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import java.util.Base64;
-import java.util.UUID;
-
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EntityConstants;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
@@ -10,22 +8,23 @@ import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.json.JsonObject;
+import java.util.Base64;
+import java.util.UUID;
 
 public class ResponseObject {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ResponseObject.class);
-  
+
   protected JsonObject body;
   protected JsonObject response;
   private final String eventName;
-  
+
   protected ResponseObject(JsonObject body, JsonObject response) {
     this.body = body;
     this.response = response;
     this.eventName = body.getString(EventRequestConstants.EVENT_NAME);
   }
-  
+
   protected JsonObject createGenericStructure() {
     JsonObject genericStructure = new JsonObject();
     long timeinMS = System.currentTimeMillis();
@@ -35,18 +34,17 @@ public class ResponseObject {
     genericStructure.put(EventResponseConstants.EVENT_NAME, eventName);
     return genericStructure;
   }
-  
+
   protected JsonObject createMetricsStructure() {
-    JsonObject metricsStructure = new JsonObject();
-    return metricsStructure;
+    return new JsonObject();
   }
-  
+
   protected JsonObject createSessionStructure() {
     JsonObject sessionStructure = new JsonObject();
     String sessionToken = this.body.getString(EventRequestConstants.SESSION_TOKEN);
-    sessionStructure.put(EventResponseConstants.API_KEY, (Object)null);         // can be null
+    sessionStructure.put(EventResponseConstants.API_KEY, (Object) null);         // can be null
     sessionStructure.put(EventResponseConstants.SESSION_TOKEN, sessionToken);   // cannot be null
-    sessionStructure.put(EventResponseConstants.ORGANIZATION_UID, (Object)null);// can be null
+    sessionStructure.put(EventResponseConstants.ORGANIZATION_UID, (Object) null);// can be null
     return sessionStructure;
   }
 
@@ -60,29 +58,29 @@ public class ResponseObject {
     } else {
       userId = sessionToken;
     }
-    
-    userStructure.put(EventResponseConstants.USER_IP, (Object)null); // can be null
-    userStructure.put(EventResponseConstants.USER_AGENT, (Object)null); // can be null
+
+    userStructure.put(EventResponseConstants.USER_IP, (Object) null); // can be null
+    userStructure.put(EventResponseConstants.USER_AGENT, (Object) null); // can be null
     userStructure.put(EventResponseConstants.GOORU_UID, userId);   // cannot be null
     return userStructure;
   }
-  
+
   protected JsonObject createVersionStructure() {
     JsonObject versionStructure = new JsonObject();
     versionStructure.put(EventResponseConstants.LOG_API, EventResponseConstants.API_VERSION);
     return versionStructure;
   }
-  
+
   private String getDecodedUserIDFromSession(String sessionToken) {
     try {
       String decoded = new String(Base64.getDecoder().decode(sessionToken));
       return decoded.split(":")[1];
-    } catch (IllegalArgumentException e ) {
+    } catch (IllegalArgumentException e) {
       LOGGER.error(e.getMessage());
       return null;
     }
   }
-  
+
   protected String getModeFromResponse() {
     String retVal = null;
     switch (eventName) {
@@ -96,7 +94,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_CLASS_CREATE:
         retVal = EventResponseConstants.MODE_CREATE;
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
@@ -107,7 +105,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_CLASS_UPDATE:
         retVal = EventResponseConstants.MODE_UPDATE;
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
       case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
@@ -117,7 +115,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_COURSE_COPY:
         retVal = EventResponseConstants.MODE_COPY;
         break;
-      
+
       case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
@@ -128,7 +126,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_CLASS_DELETE:
         retVal = EventResponseConstants.MODE_DELETE;
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
       case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
       case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
@@ -137,10 +135,10 @@ public class ResponseObject {
       default:
         break;
     }
-    
+
     return retVal;
   }
-  
+
   protected Object getItemTypeFromResponse() {
     String retVal = null;
     String retType = null;
@@ -154,17 +152,17 @@ public class ResponseObject {
           retType = EventResponseConstants.ITEM_TYPE_COLLECTION_RESOURCE;
         }
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         retVal = this.response.getString(EntityConstants.COLLECTION_ID);
         if (retVal != null) {
-            retType = EventResponseConstants.ITEM_TYPE_COLLECTION_QUESTION;
+          retType = EventResponseConstants.ITEM_TYPE_COLLECTION_QUESTION;
         }
         break;
-            
+
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
@@ -178,7 +176,7 @@ public class ResponseObject {
           retType = EventResponseConstants.ITEM_TYPE_LESSON_COLLECTION;
         }
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
@@ -221,7 +219,7 @@ public class ResponseObject {
     }
     return retType;
   }
-  
+
   protected String getContentFormatFromResponse() {
     String retVal = null;
     switch (eventName) {
@@ -231,14 +229,14 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
         retVal = EventResponseConstants.FORMAT_RESOUCE;
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
         retVal = EventResponseConstants.FORMAT_QUESTION;
         break;
-            
+
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
@@ -249,7 +247,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
         retVal = EventResponseConstants.FORMAT_COLLECTION;
         break;
-        
+
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
@@ -259,7 +257,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
         retVal = EventResponseConstants.FORMAT_ASSESSMENT;
         break;
-    
+
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
@@ -268,7 +266,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
         retVal = EventResponseConstants.FORMAT_LESSON;
         break;
-    
+
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
@@ -277,7 +275,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
         retVal = EventResponseConstants.FORMAT_UNIT;
         break;
-    
+
       case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
       case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
       case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
@@ -287,7 +285,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
         retVal = EventResponseConstants.FORMAT_COURSE;
         break;
-      
+
       case MessageConstants.MSG_OP_EVT_CLASS_CREATE:
       case MessageConstants.MSG_OP_EVT_CLASS_UPDATE:
       case MessageConstants.MSG_OP_EVT_CLASS_DELETE:
@@ -297,14 +295,14 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
       case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
         retVal = EventResponseConstants.FORMAT_CLASS;
-        
+
       default:
         break;
     }
 
     return retVal;
   }
-  
+
   protected Integer getItemSequenceFromResponse() {
     Integer retVal = null;
     try {
@@ -314,7 +312,7 @@ public class ResponseObject {
     }
     return retVal;
   }
-  
+
   protected String getSourceIDFromResponse() {
     String retVal = null;
     switch (eventName) {
@@ -369,7 +367,7 @@ public class ResponseObject {
     }
     return retVal;
   }
-  
+
   protected Object getParentIDFromResponse() {
     String retVal = null;
     switch (eventName) {
@@ -415,10 +413,10 @@ public class ResponseObject {
       default:
         break;
     }
-    
+
     return retVal;
   }
-  
+
   protected void updateJsonForCULCInfo(JsonObject inoutObj) {
     String courseId = null, unitId = null, lessonId = null, collectionId = null;
 
@@ -436,7 +434,7 @@ public class ResponseObject {
         unitId = this.response.getString(EntityConstants.UNIT_ID);
         courseId = this.response.getString(EntityConstants.COURSE_ID);
         break;
-  
+
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
@@ -450,7 +448,7 @@ public class ResponseObject {
         unitId = this.response.getString(EntityConstants.UNIT_ID);
         courseId = this.response.getString(EntityConstants.COURSE_ID);
         break;
-  
+
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
       case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
@@ -459,7 +457,7 @@ public class ResponseObject {
         unitId = this.response.getString(EntityConstants.UNIT_ID);
         courseId = this.response.getString(EntityConstants.COURSE_ID);
         break;
-  
+
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
       case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
@@ -467,7 +465,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_UNIT_COPY:
         courseId = this.response.getString(EntityConstants.COURSE_ID);
         break;
-  
+
       default:
         break;
     }

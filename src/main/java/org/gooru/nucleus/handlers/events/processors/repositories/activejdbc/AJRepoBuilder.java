@@ -1,13 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
-import org.gooru.nucleus.handlers.events.processors.repositories.ClassRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.ContentRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.CourseRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.LessonRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.UnitRepo;
-import org.gooru.nucleus.handlers.events.processors.repositories.UserRepo;
+import org.gooru.nucleus.handlers.events.processors.repositories.*;
 
 
 /**
@@ -34,15 +28,15 @@ public final class AJRepoBuilder {
   public static LessonRepo buildLessonRepo(ProcessorContext context) {
     return new AJLessonRepo(context);
   }
-  
+
   public static ClassRepo buildClassRepo(ProcessorContext context) {
     return new AJClassRepo(context);
   }
-  
+
   public static UserRepo buildUserRepo(ProcessorContext context) {
     return new AJUserRepo(context);
   }
-  
+
   private AJRepoBuilder() {
     throw new AssertionError();
   }

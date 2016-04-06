@@ -1,11 +1,11 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.IdName;
 import org.javalite.activejdbc.annotations.Table;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Table("class")
 @IdName("id")
@@ -30,10 +30,10 @@ public class AJEntityClass extends Model {
   public static final String IS_DELETED = "is_deleted";
   public static final String CREATOR_ID = "creator_id";
   public static final String MODIFIER_ID = "modifier_id";
-  
+
   public static final String SELECT_QUERY = "id = ?::uuid";
-  
+
   public static final List<String> ALL_FIELDS = Arrays
-    .asList(ID, CREATOR_ID, TITLE, DESCRIPTION, GREETING, GRADE, CLASS_SHARING, COVER_IMAGE, GRADE, CODE, MIN_SCORE, END_DATE, COURSE_ID, COLLABORATOR,
-    GOORU_VERSION, CONTENT_VISIBILITY, IS_ARCHIVED);
+    .asList(ID, CREATOR_ID, TITLE, DESCRIPTION, GREETING, GRADE, CLASS_SHARING, COVER_IMAGE, GRADE, CODE, MIN_SCORE, END_DATE, COURSE_ID,
+      COLLABORATOR, GOORU_VERSION, CONTENT_VISIBILITY, IS_ARCHIVED);
 }

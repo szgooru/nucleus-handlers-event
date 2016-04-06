@@ -1,5 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors;
 
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.exceptions.InvalidRequestException;
@@ -7,9 +9,6 @@ import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
 import org.gooru.nucleus.handlers.events.processors.responseobject.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.json.JsonObject;
 
 class MessageProcessor implements Processor {
 
@@ -42,202 +41,202 @@ class MessageProcessor implements Processor {
         case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
           result = processEventCourseCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COURSE_COPY:
           result = processEventCourseCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
           result = processEventCourseDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
           result = processEventCourseReorder();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COURSE_CONTENT_REORDER:
           result = processEventCourseContentReorder();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
           result = processEventCourseCollaboratorUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
         case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
           result = processEventUnitCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_UNIT_COPY:
           result = processEventUnitCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
           result = processEventUnitDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
           result = processEventUnitMove();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
           result = processEventUnitContentReorder();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
         case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
           result = processEventLessonCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_LESSON_COPY:
           result = processEventLessonCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
           result = processEventLessonDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
           result = processEventLessonMove();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
           result = processEventLessonContentReorder();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
           result = processEventCollectionCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
           result = processEventCollectionCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
           result = processEventCollectionDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
           result = processEventCollectionCollaboratorUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
           result = processEventCollectionContentAdd();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
           result = processEventCollectionMove();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
           result = processEventCollectionContentReorder();
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
           result = processEventAssessmentCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
           result = processEventAssessmentCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
           result = processEventAssessmentDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
           result = processEventAssessmentCollaboratorUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
           result = processEventAssessmentQuestionAdd();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
           result = processEventAssessmentContentReorder();
-          
+
         case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
         case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
           result = processEventResourceCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
           result = processEventResourceCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
           result = processEventResourceDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
         case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
           result = processEventQuestionCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
           result = processEventQuestionCopy();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
           result = processEventQuestionDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_CREATE:
         case MessageConstants.MSG_OP_EVT_CLASS_UPDATE:
           result = processEventClassCreateUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_DELETE:
           result = processEventClassDelete();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
           result = processEventClassCollaboratorUpdate();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_COURSE_ASSIGNED:
           result = processEventClassCourseAssigned();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
           result = processEventClassStudentInvite();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
           result = processEventClassStudentJoin();
           break;
-          
+
         case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
           result = processEventClassContentVisible();
           break;
-          
+
         default:
           LOGGER.error("Invalid operation type passed in, not able to handle");
           throw new InvalidRequestException();
       }
       return result;
     } catch (InvalidRequestException e) {
-      TRANSMIT_FAIL_LOGGER.error( ResponseFactory.generateErrorResponse((JsonObject) (message != null ? message.body() : null)).toString() );
+      TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse((JsonObject) (message != null ? message.body() : null)).toString());
     }
     return result;
   }
-  
+
   private boolean validateAndInitialize() {
     if (message == null || !(message.body() instanceof JsonObject)) {
       LOGGER.error("Invalid message received, either null or body of message is not JsonObject ");
       return false;
     }
-    
+
     request = (JsonObject) message.body();
     if (request == null) {
       LOGGER.error("Invalid JSON payload on message bus. aborting");
       return false;
     }
-    
+
     return true;
   }
-  
+
   private ProcessorContext createContext() {
     String eventName = request.getString(EventRequestConstants.EVENT_NAME);
     JsonObject eventBody = request.getJsonObject(EventRequestConstants.EVENT_BODY);
@@ -259,7 +258,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCourseCopy() {
     try {
       ProcessorContext context = createContext();
@@ -275,7 +274,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCourseDelete() {
     try {
       ProcessorContext context = createContext();
@@ -291,7 +290,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCourseReorder() {
     // TODO Do NOT call create context here as it will not contain single course id
     //It will contain subject bucket
@@ -329,7 +328,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventUnitCreateUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -345,7 +344,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventUnitCopy() {
     try {
       ProcessorContext context = createContext();
@@ -361,7 +360,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventUnitDelete() {
     try {
       ProcessorContext context = createContext();
@@ -377,7 +376,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventUnitMove() {
     try {
       ProcessorContext context = createContext();
@@ -425,7 +424,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventLessonCopy() {
     try {
       ProcessorContext context = createContext();
@@ -441,7 +440,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventLessonDelete() {
     try {
       ProcessorContext context = createContext();
@@ -457,7 +456,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventLessonMove() {
     try {
       ProcessorContext context = createContext();
@@ -505,7 +504,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCollectionCopy() {
     try {
       ProcessorContext context = createContext();
@@ -521,7 +520,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCollectionDelete() {
     try {
       ProcessorContext context = createContext();
@@ -537,7 +536,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventCollectionCollaboratorUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -573,7 +572,7 @@ class MessageProcessor implements Processor {
   private JsonObject processEventCollectionMove() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildCollectionRepo(context).moveCollectionEvent(); 
+      JsonObject result = RepoBuilder.buildCollectionRepo(context).moveCollectionEvent();
       if (result != null) {
         LOGGER.debug("result returned: {}", result);
         return ResponseFactory.generateItemMoveResponse(request, result);
@@ -617,7 +616,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventAssessmentCopy() {
     try {
       ProcessorContext context = createContext();
@@ -633,7 +632,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventAssessmentDelete() {
     try {
       ProcessorContext context = createContext();
@@ -649,7 +648,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventAssessmentCollaboratorUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -697,7 +696,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventResourceCreateUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -713,7 +712,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventResourceCopy() {
     try {
       ProcessorContext context = createContext();
@@ -729,7 +728,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventResourceDelete() {
     try {
       ProcessorContext context = createContext();
@@ -745,7 +744,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventQuestionCreateUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -761,7 +760,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventQuestionCopy() {
     try {
       ProcessorContext context = createContext();
@@ -793,7 +792,7 @@ class MessageProcessor implements Processor {
     TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
     return null;
   }
-  
+
   private JsonObject processEventClassCreateUpdate() {
     try {
       ProcessorContext context = createContext();
@@ -856,7 +855,7 @@ class MessageProcessor implements Processor {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   private JsonObject processEventClassContentVisible() {
     // TODO Auto-generated method stub
     return null;

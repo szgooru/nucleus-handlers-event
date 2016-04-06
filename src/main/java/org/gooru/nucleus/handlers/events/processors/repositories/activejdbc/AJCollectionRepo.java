@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
@@ -10,8 +11,6 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.vertx.core.json.JsonObject;
 
 /**
  * Created by Subbu on 12-Jan-2016.
@@ -29,7 +28,7 @@ public class AJCollectionRepo implements CollectionRepo {
   public JsonObject createUpdateCollectionEvent() {
     return getCollection();
   }
-  
+
   @Override
   public JsonObject copyCollectionEvent() {
     // TODO Auto-generated method stub
@@ -71,7 +70,7 @@ public class AJCollectionRepo implements CollectionRepo {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
   @Override
   public JsonObject deleteAssessmentEvent() {
     return getAssessment();
@@ -91,7 +90,7 @@ public class AJCollectionRepo implements CollectionRepo {
   public JsonObject updateAssessmentCollaboratorEvent() {
     return new JsonObject();
   }
-  
+
   private JsonObject getCollection() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     String contentId = context.eventBody().getString(EventRequestConstants.ID);
@@ -100,14 +99,14 @@ public class AJCollectionRepo implements CollectionRepo {
     JsonObject result = null;
     LazyList<AJEntityCollection> collections = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, contentId);
     if (!collections.isEmpty()) {
-      result = new JsonObject(
-              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
+      result =
+        new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
     }
 
     Base.close();
     return result;
   }
-  
+
   private JsonObject getAssessment() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     String contentId = context.eventBody().getString(EventRequestConstants.ID);
@@ -116,8 +115,8 @@ public class AJCollectionRepo implements CollectionRepo {
     JsonObject result = null;
     LazyList<AJEntityCollection> assessments = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_ASSESSMENT, contentId);
     if (!assessments.isEmpty()) {
-      result = new JsonObject(
-              new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
+      result =
+        new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
     }
 
     Base.close();

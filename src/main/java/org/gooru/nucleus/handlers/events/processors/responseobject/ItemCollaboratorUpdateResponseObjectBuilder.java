@@ -1,9 +1,8 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
-
-import io.vertx.core.json.JsonObject;
 
 public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject {
 
@@ -21,19 +20,19 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
     eventStructure.put(EventResponseConstants.PAYLOAD_OBJECT, createPayLoadObjectStructure());
     return eventStructure;
   }
-  
+
   private JsonObject createContextStructure() {
     JsonObject contextStructure = new JsonObject();
     String contentId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
     contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
-    contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object)null);
+    contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
     return contextStructure;
   }
 
   private JsonObject createPayLoadObjectStructure() {
     JsonObject payloadStructure = new JsonObject();
     payloadStructure.put(EventResponseConstants.DATA, this.response);
-    payloadStructure.put(EventResponseConstants.CONTENT_FORMAT,  getContentFormatFromResponse());
+    payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
     return payloadStructure;
   }
 }

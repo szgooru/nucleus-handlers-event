@@ -1,18 +1,16 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import java.util.Date;
-
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.json.JsonObject;
+import java.util.Date;
 
 
 /**
  * @author Subbu-Gooru
- *
  */
 public final class ResponseObjectBuilder {
 
@@ -40,7 +38,7 @@ public final class ResponseObjectBuilder {
     this.eventType = type;
     return this;
   }
-  
+
   public JsonObject build() {
     JsonObject result;
     if ((this.response == null) || (this.body == null)) {
@@ -48,20 +46,20 @@ public final class ResponseObjectBuilder {
       result = buildFailureResponseObject();
     } else {
       switch (this.eventType) {
-        case MessageConstants.EST_ERROR :
+        case MessageConstants.EST_ERROR:
           result = buildFailureResponseObject();
           break;
-        case MessageConstants.EST_ITEM_CREATE :
-        case MessageConstants.EST_ITEM_EDIT :
+        case MessageConstants.EST_ITEM_CREATE:
+        case MessageConstants.EST_ITEM_EDIT:
           result = buildItemCreateUpdateResponseObject();
           break;
-        case MessageConstants.EST_ITEM_COPY :
+        case MessageConstants.EST_ITEM_COPY:
           result = buildItemCopyResponseObject();
           break;
-        case MessageConstants.EST_ITEM_MOVE :
+        case MessageConstants.EST_ITEM_MOVE:
           result = buildItemMoveResponseObject();
           break;
-        case MessageConstants.EST_ITEM_DELETE :
+        case MessageConstants.EST_ITEM_DELETE:
           result = buildItemDeleteResponseObject();
           break;
         case MessageConstants.EST_ITEM_REORDER:
@@ -76,7 +74,7 @@ public final class ResponseObjectBuilder {
         case MessageConstants.EST_ITEM_CONTENT_ADD:
           result = buildItemContentAddResponseObject();
           break;
-        default :
+        default:
           LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
           result = buildFailureResponseObject();
           break;
@@ -89,11 +87,11 @@ public final class ResponseObjectBuilder {
   private JsonObject buildItemCreateUpdateResponseObject() {
     return new ItemCreateUpdateResponseObjectBuilder(body, response).build();
   }
-  
+
   private JsonObject buildItemCopyResponseObject() {
     return new ItemCopyResponseObjectBuilder(body, response).build();
   }
-  
+
   private JsonObject buildItemMoveResponseObject() {
     return new ItemMoveResponseObjectBuilder(body, response).build();
   }
@@ -118,7 +116,7 @@ public final class ResponseObjectBuilder {
     return new ItemContentAddResponseObjectBuilder(body, response).build();
   }
 
-  private  JsonObject buildFailureResponseObject() {
+  private JsonObject buildFailureResponseObject() {
     JsonObject failureJson = new JsonObject();
     failureJson.put(EventResponseConstants.EVENT_TIMESTAMP, new Date().toString());
     failureJson.put(EventResponseConstants.EVENT_DUMP, this.body);

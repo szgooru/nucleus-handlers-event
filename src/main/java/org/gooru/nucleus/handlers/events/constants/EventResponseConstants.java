@@ -6,15 +6,15 @@ public final class EventResponseConstants {
   public static final String END_TIME = "endTime";
   public static final String EVENT_ID = "eventId";
   public static final String EVENT_NAME = "eventName";
-  
+
   public static final String METRICS = "metrics";
-  
+
   public static final String CONTEXT = "context";
   public static final String CONTENT_GOORU_ID = "contentGooruId";
   public static final String PARENT_GOORU_ID = "parentGooruId";
   public static final String SOURCE_GOORU_ID = "sourceGooruId";
   public static final String CLIENT_SOURCE = "clientSource";
-  
+
   public static final String PAYLOAD_OBJECT = "payLoadObject";
   public static final String DATA = "data";
   public static final String COURSE_GOORU_ID = "courseGooruId";
@@ -29,23 +29,23 @@ public final class EventResponseConstants {
   public static final String ITEM_ID = "itemId";
   public static final String PARENT_CONTENT_ID = "parentContentId";
   public static final String CONTENT_FORMAT = "contentFormat";
-  
+
   public static final String SESSION = "session";
   public static final String API_KEY = "apiKey";
   public static final String SESSION_TOKEN = "sessionToken";
   public static final String ORGANIZATION_UID = "organizationUId";
-  
+
   public static final String USER = "user";
   public static final String USER_IP = "userIp";
   public static final String USER_AGENT = "userAgent";
   public static final String GOORU_UID = "gooruUId";
-  
+
   public static final String VERSION = "version";
   public static final String LOG_API = "logApi";
   public static final String API_VERSION = "0.1";
-  
+
   public static final String EMAIL = "email_id";
-  
+
   public static final String FORMAT_RESOUCE = "resource";
   public static final String FORMAT_QUESTION = "question";
   public static final String FORMAT_COLLECTION = "collection";
@@ -54,26 +54,26 @@ public final class EventResponseConstants {
   public static final String FORMAT_UNIT = "unit";
   public static final String FORMAT_COURSE = "course";
   public static final String FORMAT_CLASS = "class";
-  
+
   public static final String ITEM_TYPE_COLLECTION_RESOURCE = "collection.resource";
   public static final String ITEM_TYPE_COLLECTION_QUESTION = "collection.question";
   public static final String ITEM_TYPE_LESSON_COLLECTION = "lesson.collection";
   public static final String ITEM_TYPE_LESSON_ASSESSMENT = "lesson.assessment";
   public static final String ITEM_TYPE_UNIT_LESSON = "unit.lesson";
   public static final String ITEM_TYPE_COURSE_UNIT = "course.unit";
-  
+
   public static final String MODE_CREATE = "create";
   public static final String MODE_UPDATE = "update";
   public static final String MODE_DELETE = "delete";
   public static final String MODE_COPY = "copy";
   public static final String MODE_MOVE = "move";
-  
+
   public static final String EVENT_TIMESTAMP = "event.timestamp";
   public static final String EVENT_DUMP = "event.dump";
-  
-  public EventResponseConstants() {
+
+  private EventResponseConstants() {
     throw new AssertionError();
   }
-  
-  
+
+
 }

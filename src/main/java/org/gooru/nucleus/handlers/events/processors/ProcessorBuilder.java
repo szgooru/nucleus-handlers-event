@@ -9,7 +9,7 @@ public final class ProcessorBuilder {
   public static Processor build(Message<Object> message) {
     return new MessageProcessor(message);
   }
-  
+
   public static Processor buildEmailProcessor(Vertx vertx, JsonObject config, JsonObject resultData) {
     return new EmailProcessor(vertx, config, resultData);
   }

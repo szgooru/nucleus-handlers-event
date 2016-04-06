@@ -19,19 +19,19 @@ public final class RepoBuilder {
   public static CourseRepo buildCourseRepo(ProcessorContext context) {
     return AJRepoBuilder.buildCourseRepo(context);
   }
-  
+
   public static UnitRepo buildUnitRepo(ProcessorContext context) {
     return AJRepoBuilder.buildUnitRepo(context);
   }
-  
+
   public static LessonRepo buildLessonRepo(ProcessorContext context) {
     return AJRepoBuilder.buildLessonRepo(context);
   }
-  
+
   public static ClassRepo buildClassRepo(ProcessorContext context) {
     return AJRepoBuilder.buildClassRepo(context);
   }
-  
+
   public static UserRepo buildUserRepo(ProcessorContext context) {
     return AJRepoBuilder.buildUserRepo(context);
   }

@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
@@ -11,13 +12,11 @@ import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.vertx.core.json.JsonObject;
-
 public class AJCourseRepo implements CourseRepo {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(AJCourseRepo.class);
   private final ProcessorContext context;
-  
+
   public AJCourseRepo(ProcessorContext context) {
     this.context = context;
   }
@@ -26,7 +25,7 @@ public class AJCourseRepo implements CourseRepo {
   public JsonObject createUpdateCourseEvent() {
     return getCourse();
   }
-  
+
   @Override
   public JsonObject copyCourseEvent() {
     // TODO Auto-generated method stub
@@ -53,7 +52,7 @@ public class AJCourseRepo implements CourseRepo {
   public JsonObject reorderCourseContentEvent() {
     return new JsonObject();
   }
-  
+
   private JsonObject getCourse() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
     String contentId = context.eventBody().getString(EventRequestConstants.ID);
@@ -62,7 +61,7 @@ public class AJCourseRepo implements CourseRepo {
     if (!courses.isEmpty()) {
       LOGGER.info("found course for id {} : " + contentId);
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCourse.ALL_FIELDS).toJson(courses.get(0)));
-    } 
+    }
     Base.close();
     return result;
   }

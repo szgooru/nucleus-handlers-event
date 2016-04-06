@@ -8,7 +8,6 @@ import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 
 /**
  * @author Subbu-Gooru
- *
  */
 public final class ResponseFactory {
   public static JsonObject generateItemCreateResponse(JsonObject body, JsonObject response) {

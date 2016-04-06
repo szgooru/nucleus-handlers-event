@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface UserRepo {
 
-  public List<String> getMultipleEmailIds(List<String> userIds);
+  List<String> getMultipleEmailIds(List<String> userIds);
 }
