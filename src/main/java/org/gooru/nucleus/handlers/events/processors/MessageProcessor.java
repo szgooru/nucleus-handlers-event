@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors;
 
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.exceptions.InvalidRequestException;
 import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
@@ -33,14 +34,17 @@ class MessageProcessor implements Processor {
         throw new InvalidRequestException();
       }
 
-      final String msgOp = request.getString(MessageConstants.MSG_EVENT_NAME);
+      final String msgOp = request.getString(EventRequestConstants.EVENT_NAME);
       LOGGER.debug("## Processing Event: " + msgOp);
 
       switch (msgOp) {
         case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
         case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
+          result = processEventCourseCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_COURSE_COPY:
-          result = processEventCourseCreateUpdateCopy();
+          result = processEventCourseCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
@@ -61,8 +65,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
         case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+          result = processEventUnitCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_UNIT_COPY:
-          result = processEventUnitCreateUpdateCopy();
+          result = processEventUnitCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
@@ -79,8 +86,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
         case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
+          result = processEventLessonCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_LESSON_COPY:
-          result = processEventLessonCreateUpdateCopy();
+          result = processEventLessonCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
@@ -97,8 +107,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+          result = processEventCollectionCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
-          result = processEventCollectionCreateUpdateCopy();
+          result = processEventCollectionCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
@@ -122,8 +135,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+          result = processEventAssessmentCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
-          result = processEventAssessmentCreateUpdateCopy();
+          result = processEventAssessmentCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
@@ -143,8 +159,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
         case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
+          result = processEventResourceCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
-          result = processEventResourceCreateUpdateCopy();
+          result = processEventResourceCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
@@ -153,8 +172,11 @@ class MessageProcessor implements Processor {
           
         case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
         case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
+          result = processEventQuestionCreateUpdate();
+          break;
+          
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
-          result = processEventQuestionCreateUpdateCopy();
+          result = processEventQuestionCopy();
           break;
           
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
@@ -217,19 +239,34 @@ class MessageProcessor implements Processor {
   }
   
   private ProcessorContext createContext() {
-    String eventName = request.getString(MessageConstants.MSG_EVENT_NAME);
-    JsonObject eventBody = request.getJsonObject(MessageConstants.MSG_EVENT_BODY);
-    String id = eventBody.getString(MessageConstants.MSG_EVENT_CONTENT_ID);
-    return new ProcessorContext(eventName, eventBody, id);
+    String eventName = request.getString(EventRequestConstants.EVENT_NAME);
+    JsonObject eventBody = request.getJsonObject(EventRequestConstants.EVENT_BODY);
+    return new ProcessorContext(eventName, eventBody);
   }
 
-  private JsonObject processEventCourseCreateUpdateCopy() {
+  private JsonObject processEventCourseCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildCourseRepo(context).createUpdateCopyCourseEvent();
+      JsonObject result = RepoBuilder.buildCourseRepo(context).createUpdateCourseEvent();
       if (result != null) {
         LOGGER.debug("result returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventCourseCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildCourseRepo(context).copyCourseEvent();
+      if (result != null) {
+        LOGGER.debug("result returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -293,13 +330,29 @@ class MessageProcessor implements Processor {
     return null;
   }
   
-  private JsonObject processEventUnitCreateUpdateCopy() {
+  private JsonObject processEventUnitCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildUnitRepo(context).createUpdateCopyUnitEvent();
+      JsonObject result = RepoBuilder.buildUnitRepo(context).createUpdateUnitEvent();
       if (result != null) {
         LOGGER.debug("getUnit() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventUnitCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildUnitRepo(context).copyUnitEvent();
+      if (result != null) {
+        LOGGER.debug("getUnit() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -357,13 +410,29 @@ class MessageProcessor implements Processor {
     return null;
   }
 
-  private JsonObject processEventLessonCreateUpdateCopy() {
+  private JsonObject processEventLessonCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildLessonRepo(context).createUpdateCopyLessonEvent();
+      JsonObject result = RepoBuilder.buildLessonRepo(context).createUpdateLessonEvent();
       if (result != null) {
         LOGGER.debug("getLesson() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventLessonCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildLessonRepo(context).copyLessonEvent();
+      if (result != null) {
+        LOGGER.debug("getLesson() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -421,13 +490,29 @@ class MessageProcessor implements Processor {
     return null;
   }
 
-  private JsonObject processEventCollectionCreateUpdateCopy() {
+  private JsonObject processEventCollectionCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildCollectionRepo(context).createUpdateCopyCollectionEvent();
+      JsonObject result = RepoBuilder.buildCollectionRepo(context).createUpdateCollectionEvent();
       if (result != null) {
         LOGGER.debug("getCollection() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventCollectionCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildCollectionRepo(context).copyCollectionEvent();
+      if (result != null) {
+        LOGGER.debug("getCollection() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -517,13 +602,29 @@ class MessageProcessor implements Processor {
     return null;
   }
 
-  private JsonObject processEventAssessmentCreateUpdateCopy() {
+  private JsonObject processEventAssessmentCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildCollectionRepo(context).createUpdateCopyAssessmentEvent();
+      JsonObject result = RepoBuilder.buildCollectionRepo(context).createUpdateAssessmentEvent();
       if (result != null) {
         LOGGER.debug("getAssessment() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventAssessmentCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildCollectionRepo(context).copyAssessmentEvent();
+      if (result != null) {
+        LOGGER.debug("getAssessment() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -597,13 +698,29 @@ class MessageProcessor implements Processor {
     return null;
   }
   
-  private JsonObject processEventResourceCreateUpdateCopy() {
+  private JsonObject processEventResourceCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildContentRepo(context).createUpdateCopyResourceEvent();
+      JsonObject result = RepoBuilder.buildContentRepo(context).createUpdateResourceEvent();
       if (result != null) {
         LOGGER.debug("getResource() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventResourceCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildContentRepo(context).copyResourceEvent();
+      if (result != null) {
+        LOGGER.debug("getResource() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);
@@ -629,13 +746,29 @@ class MessageProcessor implements Processor {
     return null;
   }
   
-  private JsonObject processEventQuestionCreateUpdateCopy() {
+  private JsonObject processEventQuestionCreateUpdate() {
     try {
       ProcessorContext context = createContext();
-      JsonObject result = RepoBuilder.buildContentRepo(context).createUpdateCopyQuestionEvent();
+      JsonObject result = RepoBuilder.buildContentRepo(context).createUpdateQuestionEvent();
       if (result != null) {
         LOGGER.debug("getQuestion() returned: {}", result);
         return ResponseFactory.generateItemCreateResponse(request, result);
+      }
+    } catch (Throwable t) {
+      LOGGER.error("Error while getting content from database:", t);
+    }
+    LOGGER.error("Failed to generate event. Input data received {}", request);
+    TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+    return null;
+  }
+  
+  private JsonObject processEventQuestionCopy() {
+    try {
+      ProcessorContext context = createContext();
+      JsonObject result = RepoBuilder.buildContentRepo(context).copyQuestionEvent();
+      if (result != null) {
+        LOGGER.debug("getQuestion() returned: {}", result);
+        return ResponseFactory.generateItemCopyResponse(request, result);
       }
     } catch (Throwable t) {
       LOGGER.error("Error while getting content from database:", t);

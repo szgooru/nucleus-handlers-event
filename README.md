@@ -19,6 +19,7 @@ DONE
 TODO
 ----
 * Currently email is supported for user create. Add support for rest of the applicable events
+* Support for delete events
 
 
 To understand build related stuff, take a look at **BUILD_README.md**.

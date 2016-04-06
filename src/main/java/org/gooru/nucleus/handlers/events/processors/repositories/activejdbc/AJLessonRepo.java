@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.LessonRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityLesson;
@@ -22,8 +23,14 @@ public class AJLessonRepo implements LessonRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyLessonEvent() {
+  public JsonObject createUpdateLessonEvent() {
     return getLesson();
+  }
+  
+  @Override
+  public JsonObject copyLessonEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -43,13 +50,15 @@ public class AJLessonRepo implements LessonRepo {
 
   private JsonObject getLesson() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, contentId);
     JsonObject result = null;
     if (!lessons.isEmpty()) {
-      LOGGER.info("found lesson for id {} : " + context.id());
+      LOGGER.info("found lesson for id {} : " + contentId);
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityLesson.ALL_FIELDS).toJson(lessons.get(0)));
     } 
     Base.close();
     return result;
   }
+
 }

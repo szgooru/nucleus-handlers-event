@@ -1,6 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.ContentRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityContent;
@@ -25,8 +26,14 @@ public class AJContentRepo implements ContentRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyResourceEvent() {
+  public JsonObject createUpdateResourceEvent() {
     return getResource();
+  }
+  
+  @Override
+  public JsonObject copyResourceEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -35,8 +42,14 @@ public class AJContentRepo implements ContentRepo {
   }
 
   @Override
-  public JsonObject createUpdateCopyQuestionEvent() {
+  public JsonObject createUpdateQuestionEvent() {
     return getQuestion();
+  }
+  
+  @Override
+  public JsonObject copyQuestionEvent() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   @Override
@@ -46,10 +59,11 @@ public class AJContentRepo implements ContentRepo {
   
   private JsonObject getResource() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting resource for id {}", context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LOGGER.debug("getting resource for id {}", contentId);
 
     JsonObject result = null;
-    LazyList<AJEntityContent> resources = AJEntityContent.findBySQL(AJEntityContent.SELECT_RESOURCE, context.id());
+    LazyList<AJEntityContent> resources = AJEntityContent.findBySQL(AJEntityContent.SELECT_RESOURCE, contentId);
     if (!resources.isEmpty()) {
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityContent.RESOURCE_FIELDS).toJson(resources.get(0)));
     }
@@ -60,10 +74,11 @@ public class AJContentRepo implements ContentRepo {
   
   private JsonObject getQuestion() {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    LOGGER.debug("getting question for id {}", context.id());
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    LOGGER.debug("getting question for id {}", contentId);
 
     JsonObject result = null;
-    LazyList<AJEntityContent> questions = AJEntityContent.findBySQL(AJEntityContent.SELECT_QUESTION, context.id());
+    LazyList<AJEntityContent> questions = AJEntityContent.findBySQL(AJEntityContent.SELECT_QUESTION, contentId);
     if (!questions.isEmpty()) {
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityContent.QUESTION_FIELDS).toJson(questions.get(0)));
     }

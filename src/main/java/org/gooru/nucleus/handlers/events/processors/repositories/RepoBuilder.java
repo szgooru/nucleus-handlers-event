@@ -31,6 +31,10 @@ public final class RepoBuilder {
   public static ClassRepo buildClassRepo(ProcessorContext context) {
     return AJRepoBuilder.buildClassRepo(context);
   }
+  
+  public static UserRepo buildUserRepo(ProcessorContext context) {
+    return AJRepoBuilder.buildUserRepo(context);
+  }
 
   private RepoBuilder() {
     throw new AssertionError();
