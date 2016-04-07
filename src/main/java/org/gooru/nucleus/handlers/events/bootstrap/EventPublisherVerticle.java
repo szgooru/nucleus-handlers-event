@@ -8,6 +8,7 @@ import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizer;
 import org.gooru.nucleus.handlers.events.bootstrap.shutdown.Finalizers;
 import org.gooru.nucleus.handlers.events.bootstrap.startup.Initializer;
 import org.gooru.nucleus.handlers.events.bootstrap.startup.Initializers;
+import org.gooru.nucleus.handlers.events.constants.EmailConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.constants.MessagebusEndpoints;
 import org.gooru.nucleus.handlers.events.processors.MessageDispatcher;
@@ -70,7 +71,11 @@ public class EventPublisherVerticle extends AbstractVerticle {
 
             //Forward the call to email processor
             JsonObject emailResult = ProcessorBuilder.buildEmailProcessor(vertx, config(), result).process();
-
+            if (!emailResult.getBoolean(EmailConstants.EMAIL_SENT)) {
+              if (emailResult.getString(EmailConstants.STATUS).equalsIgnoreCase(EmailConstants.STATUS_FAIL)) {
+                LOGGER.error("some issue while sending emails");
+              }
+            }
           } else {
             LOGGER.warn("No data received from database interaction for this. So, no message being relayed to Kafka.");
           }

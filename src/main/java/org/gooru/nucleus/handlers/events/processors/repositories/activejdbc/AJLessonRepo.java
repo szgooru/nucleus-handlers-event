@@ -1,8 +1,8 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
-import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
+import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.LessonRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityLesson;
@@ -11,6 +11,8 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonObject;
 
 public class AJLessonRepo implements LessonRepo {
 
@@ -23,23 +25,44 @@ public class AJLessonRepo implements LessonRepo {
 
   @Override
   public JsonObject createUpdateLessonEvent() {
-    return getLesson();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getLesson(contentId);
   }
 
   @Override
   public JsonObject copyLessonEvent() {
-    // TODO Auto-generated method stub
-    return null;
+    JsonObject response = new JsonObject();
+    String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
+    JsonObject targetContent = getLesson(targetContentId);
+    response.put(EventResponseConstants.TARGET, targetContent);
+    
+    String sourceContentId = targetContent.getString(AJEntityLesson.ORIGINAL_LESSON_ID);
+    if (sourceContentId != null && !sourceContentId.isEmpty()) {
+      JsonObject sourceContent = getLesson(sourceContentId);
+      response.put(EventResponseConstants.SOURCE, sourceContent);
+    }
+    return response;
   }
 
   @Override
   public JsonObject deleteLessonEvent() {
-    return getLesson();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getLesson(contentId);
   }
 
   @Override
   public JsonObject moveLessonEvent() {
-    return new JsonObject();
+    JsonObject response = new JsonObject();
+    String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
+    JsonObject targetContent = getLesson(targetContentId);
+    response.put(EventResponseConstants.TARGET, targetContent);
+    
+    String sourceContentId = targetContent.getString(AJEntityLesson.ORIGINAL_LESSON_ID);
+    if (sourceContentId != null && !sourceContentId.isEmpty()) {
+      JsonObject sourceContent = getLesson(sourceContentId);
+      response.put(EventResponseConstants.SOURCE, sourceContent);
+    }
+    return response;
   }
 
   @Override
@@ -47,9 +70,9 @@ public class AJLessonRepo implements LessonRepo {
     return new JsonObject();
   }
 
-  private JsonObject getLesson() {
+  private JsonObject getLesson(String contentId) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    
     LazyList<AJEntityLesson> lessons = AJEntityLesson.findBySQL(AJEntityLesson.SELECT_LESSON, contentId);
     JsonObject result = null;
     if (!lessons.isEmpty()) {

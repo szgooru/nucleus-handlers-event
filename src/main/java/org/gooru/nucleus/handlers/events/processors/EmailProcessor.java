@@ -38,11 +38,6 @@ public class EmailProcessor implements Processor {
     List<String> emailIds = null;
     String eventName;
     try {
-      if (!validateAndInitialize()) {
-        LOGGER.error("Invalid payload received from the result, can't process to send email");
-        throw new InvalidRequestException();
-      }
-
       eventName = result.getString(EventResponseConstants.EVENT_NAME);
       switch (eventName) {
 
@@ -89,7 +84,7 @@ public class EmailProcessor implements Processor {
       emailRequest.end();
     });
 
-
+    LOGGER.debug("done with sending email.. returning");
     return new JsonObject().put(EmailConstants.EMAIL_SENT, true).put(EmailConstants.STATUS, EmailConstants.STATUS_SUCCESS);
   }
 
@@ -100,11 +95,21 @@ public class EmailProcessor implements Processor {
   }
 
   private List<String> processEmailStudentInvite() {
+    if (!validatePayload()) {
+      LOGGER.error("Invalid payload received from the result, can't process to send email");
+      throw new InvalidRequestException();
+    }
+    
     // TODO Auto-generated method stub
     return null;
   }
 
   private List<String> processEmailCollaboratorUpate() {
+    if (!validatePayload()) {
+      LOGGER.error("Invalid payload received from the result, can't process to send email");
+      throw new InvalidRequestException();
+    }
+    
     JsonObject payloadObject = result.getJsonObject(EventResponseConstants.PAYLOAD_OBJECT);
     JsonObject data = payloadObject.getJsonObject(EventResponseConstants.DATA);
 
@@ -118,7 +123,7 @@ public class EmailProcessor implements Processor {
     return emailIds;
   }
 
-  private boolean validateAndInitialize() {
+  private boolean validatePayload() {
     JsonObject payloadObject = result.getJsonObject(EventResponseConstants.PAYLOAD_OBJECT);
     if (payloadObject.isEmpty()) {
       LOGGER.warn("No payload found in event response");

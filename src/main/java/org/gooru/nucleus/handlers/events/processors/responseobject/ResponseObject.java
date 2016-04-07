@@ -1,15 +1,21 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import io.vertx.core.json.JsonObject;
+import java.util.Base64;
+import java.util.UUID;
+
 import org.gooru.nucleus.handlers.events.constants.EntityConstants;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCollection;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityContent;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCourse;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityLesson;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-import java.util.UUID;
+import io.vertx.core.json.JsonObject;
 
 public class ResponseObject {
 
@@ -368,8 +374,8 @@ public class ResponseObject {
     return retVal;
   }
 
-  protected Object getParentIDFromResponse() {
-    String retVal = null;
+  protected Object getParentContentId(JsonObject content) {
+    String parentContentId = null;
     switch (eventName) {
       case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
       case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
@@ -379,7 +385,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
-        retVal = this.response.getString(EntityConstants.COLLECTION_ID);
+        parentContentId = content.getString(EntityConstants.COLLECTION_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
@@ -391,7 +397,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
-        retVal = this.response.getString(EntityConstants.LESSON_ID);
+        parentContentId = content.getString(EntityConstants.LESSON_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
@@ -399,7 +405,7 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
       case MessageConstants.MSG_OP_EVT_LESSON_COPY:
       case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
-        retVal = this.response.getString(EntityConstants.UNIT_ID);
+        parentContentId = content.getString(EntityConstants.UNIT_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
@@ -407,18 +413,18 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
       case MessageConstants.MSG_OP_EVT_UNIT_COPY:
       case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
-        retVal = this.response.getString(EntityConstants.COURSE_ID);
+        parentContentId = content.getString(EntityConstants.COURSE_ID);
         break;
 
       default:
         break;
     }
 
-    return retVal;
+    return parentContentId;
   }
 
-  protected void updateJsonForCULCInfo(JsonObject inoutObj) {
-    String courseId = null, unitId = null, lessonId = null, collectionId = null;
+  protected void updateCULCInfo(JsonObject fromContent, JsonObject toObject) {
+    String courseId = null, unitId = null, lessonId = null;
 
     switch (eventName) {
       case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
@@ -429,10 +435,10 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
       case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
       case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
-        collectionId = this.response.getString(EntityConstants.COLLECTION_ID);
-        lessonId = this.response.getString(EntityConstants.LESSON_ID);
-        unitId = this.response.getString(EntityConstants.UNIT_ID);
-        courseId = this.response.getString(EntityConstants.COURSE_ID);
+        //collectionId = this.response.getString(EntityConstants.COLLECTION_ID);
+        lessonId = fromContent.getString(EntityConstants.LESSON_ID);
+        unitId = fromContent.getString(EntityConstants.UNIT_ID);
+        courseId = fromContent.getString(EntityConstants.COURSE_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
@@ -444,9 +450,9 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
       case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
-        lessonId = this.response.getString(EntityConstants.LESSON_ID);
-        unitId = this.response.getString(EntityConstants.UNIT_ID);
-        courseId = this.response.getString(EntityConstants.COURSE_ID);
+        lessonId = fromContent.getString(EntityConstants.LESSON_ID);
+        unitId = fromContent.getString(EntityConstants.UNIT_ID);
+        courseId = fromContent.getString(EntityConstants.COURSE_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
@@ -454,8 +460,8 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
       case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
       case MessageConstants.MSG_OP_EVT_LESSON_COPY:
-        unitId = this.response.getString(EntityConstants.UNIT_ID);
-        courseId = this.response.getString(EntityConstants.COURSE_ID);
+        unitId = fromContent.getString(EntityConstants.UNIT_ID);
+        courseId = fromContent.getString(EntityConstants.COURSE_ID);
         break;
 
       case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
@@ -463,16 +469,88 @@ public class ResponseObject {
       case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
       case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
       case MessageConstants.MSG_OP_EVT_UNIT_COPY:
-        courseId = this.response.getString(EntityConstants.COURSE_ID);
+        courseId = fromContent.getString(EntityConstants.COURSE_ID);
         break;
 
       default:
         break;
     }
 
-    inoutObj.put(EventResponseConstants.COURSE_GOORU_ID, courseId);
-    inoutObj.put(EventResponseConstants.UNIT_GOORU_ID, unitId);
-    inoutObj.put(EventResponseConstants.LESSON_GOORU_ID, lessonId);
-    inoutObj.put(EventResponseConstants.COLLECTION_GOORU_ID, collectionId);
+    toObject.put(EventResponseConstants.COURSE_GOORU_ID, courseId);
+    toObject.put(EventResponseConstants.UNIT_GOORU_ID, unitId);
+    toObject.put(EventResponseConstants.LESSON_GOORU_ID, lessonId);
+    //toObject.put(EventResponseConstants.COLLECTION_GOORU_ID, collectionId);
+  }
+  
+  protected String getContentGooruId(JsonObject content) {
+    String contentGooruId = null;
+    
+    switch (eventName) {
+    case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
+    case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+      contentGooruId = content.getString(AJEntityContent.ID);
+      break;
+      
+    
+    case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+    case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+    case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+      contentGooruId = content.getString(AJEntityCollection.ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+    case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
+      contentGooruId = content.getString(AJEntityLesson.LESSON_ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+    case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
+      contentGooruId = content.getString(AJEntityUnit.UNIT_ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_COURSE_COPY:
+      contentGooruId = content.getString(AJEntityCourse.ID);
+      break;
+      
+      default:
+        break;
+    }
+    return contentGooruId;
+  } 
+  
+  protected String getOriginalContentId(JsonObject content) {
+    String originalContentGooruId = null;
+    
+    switch (eventName) {
+    case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
+    case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+      originalContentGooruId = content.getString(AJEntityContent.ORIGINAL_CONTENT_ID);
+      break;
+      
+    
+    case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+    case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+    case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+      originalContentGooruId = content.getString(AJEntityCollection.ORIGINAL_COLLECTION_ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+    case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
+      originalContentGooruId = content.getString(AJEntityLesson.ORIGINAL_LESSON_ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+    case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
+      originalContentGooruId = content.getString(AJEntityUnit.ORIGINAL_UNIT_ID);
+      break;
+      
+    case MessageConstants.MSG_OP_EVT_COURSE_COPY:
+      originalContentGooruId = content.getString(AJEntityCourse.ORIGINAL_COURSE_ID);
+      break;
+      
+      default:
+        break;
+    }
+    return originalContentGooruId;
   }
 }

@@ -33,7 +33,8 @@ public class AJClassRepo implements ClassRepo {
 
   @Override
   public JsonObject updateClassCollaboratorEvent() {
-    return new JsonObject();
+    //Nothing to process here so just returning event body as is
+    return context.eventBody();
   }
 
   @Override

@@ -3,6 +3,7 @@ package org.gooru.nucleus.handlers.events.processors.responseobject;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
+import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 
 public class ItemDeleteResponseObjectBuilder extends ResponseObject {
 
@@ -25,24 +26,26 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
     JsonObject contextStructure = new JsonObject();
     String contentId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
     contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId); // cannot be null
+    contextStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(response));
+    contextStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(response));
+    contextStructure.put(EventResponseConstants.CLASS_GOORU_ID, (Object)null);
+    updateCULCInfo(response, contextStructure);
+    
     contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
     return contextStructure;
   }
 
   private JsonObject createPayLoadObjectStructure() {
     JsonObject payloadStructure = new JsonObject();
-    String contentId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
-
+    
+    //TODO: return referenceParentGooruIds for resource delete event
+    String eventName = body.getString(EventRequestConstants.EVENT_NAME);
+    if (eventName.equalsIgnoreCase(MessageConstants.MSG_OP_EVT_RESOURCE_DELETE)) {
+      payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, (Object) null);
+    }
     payloadStructure.put(EventResponseConstants.DATA, this.response);
-    payloadStructure.put(EventResponseConstants.CONTENT_ID, contentId);
-    payloadStructure.put(EventResponseConstants.MODE, getModeFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_TYPE, getItemTypeFromResponse());
-    payloadStructure.put(EventResponseConstants.TYPE, getContentFormatFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_SEQUENCE, getItemSequenceFromResponse());
-    payloadStructure.put(EventResponseConstants.ITEM_ID, contentId);
-    payloadStructure.put(EventResponseConstants.SOURCE_GOORU_ID, getSourceIDFromResponse());
-    payloadStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentIDFromResponse());
-
+    payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
+    
     return payloadStructure;
   }
 

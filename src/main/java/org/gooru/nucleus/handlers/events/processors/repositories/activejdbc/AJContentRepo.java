@@ -3,6 +3,7 @@ package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
+import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.ContentRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityContent;
@@ -26,39 +27,60 @@ public class AJContentRepo implements ContentRepo {
 
   @Override
   public JsonObject createUpdateResourceEvent() {
-    return getResource();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getResource(contentId);
   }
 
   @Override
   public JsonObject copyResourceEvent() {
-    // TODO Auto-generated method stub
-    return null;
+    JsonObject response = new JsonObject();
+    String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
+    JsonObject targetContent = getResource(targetContentId);
+    response.put(EventResponseConstants.TARGET, targetContent);
+    
+    String sourceContentId = targetContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID);
+    if (sourceContentId != null && !sourceContentId.isEmpty()) {
+      JsonObject sourceContent = getResource(sourceContentId);
+      response.put(EventResponseConstants.SOURCE, sourceContent);
+    }
+    return response;
   }
 
   @Override
   public JsonObject deletedResourceEvent() {
-    return getResource();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getResource(contentId);
   }
 
   @Override
   public JsonObject createUpdateQuestionEvent() {
-    return getQuestion();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getQuestion(contentId);
   }
 
   @Override
   public JsonObject copyQuestionEvent() {
-    // TODO Auto-generated method stub
-    return null;
+    JsonObject response = new JsonObject();
+    String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
+    JsonObject targetContent = getQuestion(targetContentId);
+    response.put(EventResponseConstants.TARGET, targetContent);
+    
+    String sourceContentId = targetContent.getString(AJEntityContent.ORIGINAL_CONTENT_ID);
+    if (sourceContentId != null && !sourceContentId.isEmpty()) {
+      JsonObject sourceContent = getQuestion(sourceContentId);
+      response.put(EventResponseConstants.SOURCE, sourceContent);
+    }
+    return response;
   }
 
   @Override
   public JsonObject deletedQuestionEvent() {
-    return getQuestion();
+    String contentId = context.eventBody().getString(EventRequestConstants.ID);
+    return getQuestion(contentId);
   }
 
-  private JsonObject getResource() {
+  private JsonObject getResource(String contentId) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    String contentId = context.eventBody().getString(EventRequestConstants.ID);
     LOGGER.debug("getting resource for id {}", contentId);
 
     JsonObject result = null;
@@ -71,9 +93,8 @@ public class AJContentRepo implements ContentRepo {
     return result;
   }
 
-  private JsonObject getQuestion() {
+  private JsonObject getQuestion(String contentId) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    String contentId = context.eventBody().getString(EventRequestConstants.ID);
     LOGGER.debug("getting question for id {}", contentId);
 
     JsonObject result = null;

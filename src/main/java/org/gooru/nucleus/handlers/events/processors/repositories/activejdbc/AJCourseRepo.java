@@ -3,6 +3,7 @@ package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
+import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.CourseRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCourse;
@@ -23,18 +24,31 @@ public class AJCourseRepo implements CourseRepo {
 
   @Override
   public JsonObject createUpdateCourseEvent() {
-    return getCourse();
+    String courseId = context.eventBody().getString(EventRequestConstants.ID);
+    return getCourse(courseId);
   }
 
   @Override
   public JsonObject copyCourseEvent() {
-    // TODO Auto-generated method stub
-    return null;
+    JsonObject response = new JsonObject();
+    
+    String targetCourseId = context.eventBody().getString(EventRequestConstants.ID);
+    JsonObject targetCourse = getCourse(targetCourseId);
+    response.put(EventResponseConstants.TARGET, targetCourse);
+    
+    String sourceCourseId = targetCourse.getString(AJEntityCourse.ORIGINAL_COURSE_ID);
+    if (sourceCourseId != null && !sourceCourseId.isEmpty()) {
+      JsonObject sourceCourse = getCourse(sourceCourseId);
+      response.put(EventResponseConstants.SOURCE, sourceCourse);
+    }
+    
+    return response;
   }
 
   @Override
   public JsonObject deleteCourseEvent() {
-    return getCourse();
+    String courseId = context.eventBody().getString(EventRequestConstants.ID);
+    return getCourse(courseId);
   }
 
   @Override
@@ -53,13 +67,12 @@ public class AJCourseRepo implements CourseRepo {
     return new JsonObject();
   }
 
-  private JsonObject getCourse() {
+  private JsonObject getCourse(String courseId) {
     Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-    String contentId = context.eventBody().getString(EventRequestConstants.ID);
-    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, contentId);
+    LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, courseId);
     JsonObject result = null;
     if (!courses.isEmpty()) {
-      LOGGER.info("found course for id {} : " + contentId);
+      LOGGER.info("found course for id {} : " + courseId);
       result = new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityCourse.ALL_FIELDS).toJson(courses.get(0)));
     }
     Base.close();

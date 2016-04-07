@@ -21,6 +21,7 @@ public final class EventResponseConstants {
   public static final String UNIT_GOORU_ID = "unitGooruId";
   public static final String LESSON_GOORU_ID = "lessonGooruId";
   public static final String COLLECTION_GOORU_ID = "collectionGooruId";
+  public static final String CLASS_GOORU_ID = "classGooruId";
   public static final String CONTENT_ID = "contentId";
   public static final String MODE = "mode";
   public static final String ITEM_TYPE = "itemType";
@@ -28,13 +29,18 @@ public final class EventResponseConstants {
   public static final String ITEM_SEQUENCE = "itemSequence";
   public static final String ITEM_ID = "itemId";
   public static final String PARENT_CONTENT_ID = "parentContentId";
+  public static final String ORIGINAL_CONTENT_ID = "originalContentId";
   public static final String CONTENT_FORMAT = "contentFormat";
-
+  public static final String REFERENCE_PARENT_GOORU_IDS = "referenceParentGooruIds";
+  
+  public static final String SOURCE = "source";
+  public static final String TARGET = "target";
+  
   public static final String SESSION = "session";
   public static final String API_KEY = "apiKey";
   public static final String SESSION_TOKEN = "sessionToken";
   public static final String ORGANIZATION_UID = "organizationUId";
-
+  
   public static final String USER = "user";
   public static final String USER_IP = "userIp";
   public static final String USER_AGENT = "userAgent";
