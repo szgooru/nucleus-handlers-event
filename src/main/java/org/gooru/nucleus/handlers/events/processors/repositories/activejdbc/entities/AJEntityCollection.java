@@ -53,4 +53,6 @@ public class AJEntityCollection extends Model {
   public static final List<String> ASSESSMENT_FIELDS = Arrays
     .asList(ID, TITLE, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, ORIGINAL_COLLECTION_ID, PUBLISH_DATE, PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE,
       AUDIENCE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING, VISIBLE_ON_PROFILE, COLLABORATOR, COURSE_ID, LESSON_ID);
+  
+  public static final String SELECT_OWNER_CREATOR = "SELECT owner_id, creator_id FROM collection where id = ANY(?::uuid[])";
 }

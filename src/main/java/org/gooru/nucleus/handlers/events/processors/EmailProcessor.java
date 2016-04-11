@@ -40,20 +40,23 @@ public class EmailProcessor implements Processor {
     try {
       eventName = result.getString(EventResponseConstants.EVENT_NAME);
       switch (eventName) {
+      case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
+        emailIds = processEmailResourceDelete();
+        break;
+        
+      case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
+      case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
+      case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
+        emailIds = processEmailCollaboratorUpate();
+        break;
 
-        case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
-        case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
-        case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
-          emailIds = processEmailCollaboratorUpate();
-          break;
+      case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
+        emailIds = processEmailStudentInvite();
+        break;
 
-        case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
-          emailIds = processEmailStudentInvite();
-          break;
-
-        default:
-          LOGGER.info("event {} does not require to send email", eventName);
-          break;
+      default:
+        LOGGER.info("event {} does not require to send email", eventName);
+        return new JsonObject().put(EmailConstants.EMAIL_SENT, false).put(EmailConstants.STATUS, EmailConstants.STATUS_SUCCESS);
       }
     } catch (Throwable t) {
       LOGGER.error("Something wrong while processing email", t);
@@ -88,10 +91,17 @@ public class EmailProcessor implements Processor {
     return new JsonObject().put(EmailConstants.EMAIL_SENT, true).put(EmailConstants.STATUS, EmailConstants.STATUS_SUCCESS);
   }
 
-  //TODO: Not sure whether we can make it singleton or return new instance every time
-  // as there will multiple email to send in single request.
-  private HttpClient getHttpClient() {
-    return vertx.createHttpClient(new HttpClientOptions().setDefaultHost(getAPIHost()));
+  private List<String> processEmailResourceDelete() {
+    if (!validatePayload()) {
+      LOGGER.error("Invalid payload received from the result, can't process to send email");
+      throw new InvalidRequestException();
+    }
+    
+    JsonObject payloadObject = result.getJsonObject(EventResponseConstants.PAYLOAD_OBJECT);
+    JsonArray refCollectionIds = payloadObject.getJsonArray(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS);
+    List<String> ownerCreatorIds = RepoBuilder.buildCollectionRepo(null).getOwnerAndCreatorIds(refCollectionIds);
+    List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(ownerCreatorIds);
+    return emailIds;
   }
 
   private List<String> processEmailStudentInvite() {
@@ -112,7 +122,11 @@ public class EmailProcessor implements Processor {
     
     JsonObject payloadObject = result.getJsonObject(EventResponseConstants.PAYLOAD_OBJECT);
     JsonObject data = payloadObject.getJsonObject(EventResponseConstants.DATA);
-
+    if (data.isEmpty()) {
+      LOGGER.warn("no data found in payload object");
+      throw new InvalidRequestException();
+    }
+    
     JsonArray collaboratorsAdded = data.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
     LOGGER.debug("collaborators.add: {}", collaboratorsAdded.toString());
     List<String> userIds = new ArrayList<>();
@@ -130,13 +144,13 @@ public class EmailProcessor implements Processor {
       return false;
     }
 
-    JsonObject data = payloadObject.getJsonObject(EventResponseConstants.DATA);
-    if (data.isEmpty()) {
-      LOGGER.warn("no data found in payload object");
-      return false;
-    }
-
     return true;
+  }
+  
+  //TODO: Not sure whether we can make it singleton or return new instance every time
+  // as there will multiple email to send in single request.
+  private HttpClient getHttpClient() {
+    return vertx.createHttpClient(new HttpClientOptions().setDefaultHost(getAPIHost()));
   }
 
   private String getAPIHost() {
@@ -147,6 +161,12 @@ public class EmailProcessor implements Processor {
   private String getAPIEndPoint() {
     JsonObject emailSettings = config.getJsonObject(KEY_EMAIL_SETTINGS);
     return emailSettings.getString(KEY_ENDPOINT);
+  }
+  
+  private String getAuthorizationHeader(JsonObject result) {
+    //TODO: check for null session
+    JsonObject session = result.getJsonObject(EventResponseConstants.SESSION);
+    return "Token " + session.getString(EventResponseConstants.SESSION_TOKEN);
   }
 
   private JsonObject generateRequestPayload(String eventName, String email) {
@@ -176,11 +196,5 @@ public class EmailProcessor implements Processor {
     requestPayload.put(EmailConstants.MAIL_TEMPLATE_NAME, templateName);
     requestPayload.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
     return requestPayload;
-  }
-
-  private String getAuthorizationHeader(JsonObject result) {
-    //TODO: check for null session
-    JsonObject session = result.getJsonObject(EventResponseConstants.SESSION);
-    return "Token " + session.getString(EventResponseConstants.SESSION_TOKEN);
   }
 }

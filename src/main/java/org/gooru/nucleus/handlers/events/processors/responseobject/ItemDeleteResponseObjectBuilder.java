@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
@@ -38,12 +39,11 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
   private JsonObject createPayLoadObjectStructure() {
     JsonObject payloadStructure = new JsonObject();
     
-    //TODO: return referenceParentGooruIds for resource delete event
     String eventName = body.getString(EventRequestConstants.EVENT_NAME);
     if (eventName.equalsIgnoreCase(MessageConstants.MSG_OP_EVT_RESOURCE_DELETE)) {
-      payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, (Object) null);
+      JsonArray refParentGooruIds = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getJsonArray(EventRequestConstants.COLLECTION_ID);
+      payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, refParentGooruIds);
     }
-    payloadStructure.put(EventResponseConstants.DATA, this.response);
     payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
     
     return payloadStructure;

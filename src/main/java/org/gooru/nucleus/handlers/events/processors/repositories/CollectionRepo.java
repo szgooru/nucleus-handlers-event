@@ -1,5 +1,8 @@
 package org.gooru.nucleus.handlers.events.processors.repositories;
 
+import java.util.List;
+
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -31,4 +34,6 @@ public interface CollectionRepo {
   JsonObject reorderAssessmentContentEvent();
 
   JsonObject updateAssessmentCollaboratorEvent();
+
+  List<String> getOwnerAndCreatorIds(JsonArray refCollectionIds);
 }

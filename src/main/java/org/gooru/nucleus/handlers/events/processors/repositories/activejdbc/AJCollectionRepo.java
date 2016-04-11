@@ -1,5 +1,10 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
@@ -12,6 +17,7 @@ import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
@@ -155,5 +161,41 @@ public class AJCollectionRepo implements CollectionRepo {
     return result;
   }
 
+  @Override
+  public List<String> getOwnerAndCreatorIds(JsonArray refCollectionIds) {
+    Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+    Set<String> uniqueOwnerCreatorIds = new HashSet<>();
 
+    LazyList<AJEntityCollection> ownerCreatorIdsFromDB = AJEntityCollection.findBySQL(AJEntityCollection.SELECT_OWNER_CREATOR, toPostgresArrayString(refCollectionIds));
+    ownerCreatorIdsFromDB.stream().forEach(collection -> { 
+      uniqueOwnerCreatorIds.add(collection.getString(AJEntityCollection.OWNER_ID));
+      uniqueOwnerCreatorIds.add(collection.getString(AJEntityCollection.CREATOR_ID));
+    });
+    
+    List<String> ownerCreatorIds = new ArrayList<>();
+    ownerCreatorIds.addAll(uniqueOwnerCreatorIds);
+    Base.close();
+    return ownerCreatorIds;
+  }
+
+  private String toPostgresArrayString(JsonArray input) {
+    int approxSize = ((input.size() + 1) * 36); // Length of UUID is around 36
+    // chars
+    if (input.isEmpty()) {
+      return "{}";
+    }
+
+    StringBuilder sb = new StringBuilder(approxSize);
+    sb.append('{');
+    int cnt = 0;
+    for (; ; ) {
+      String s = input.getString(cnt);
+      sb.append('"').append(s).append('"');
+      if (cnt == input.size()-1) {
+        return sb.append('}').toString();
+      }
+      sb.append(',');
+      cnt = cnt + 1;
+    }
+  }
 }
