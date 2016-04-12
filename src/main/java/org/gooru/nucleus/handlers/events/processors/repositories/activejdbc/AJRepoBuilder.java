@@ -37,7 +37,12 @@ public final class AJRepoBuilder {
     return new AJUserRepo(context);
   }
 
+  public static ProfileRepo buildProfileRepo(ProcessorContext context) {
+    return new AJProfileRepo(context);
+  }
+  
   private AJRepoBuilder() {
     throw new AssertionError();
   }
+
 }

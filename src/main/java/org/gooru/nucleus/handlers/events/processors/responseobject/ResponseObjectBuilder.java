@@ -74,6 +74,9 @@ public final class ResponseObjectBuilder {
         case MessageConstants.EST_ITEM_CONTENT_ADD:
           result = buildItemContentAddResponseObject();
           break;
+        case MessageConstants.EST_PROFILE_FOLLOW_UNFOLLOW:
+          result = buildProfileFollowUnfollowResponseObject();
+          break;
         default:
           LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
           result = buildFailureResponseObject();
@@ -114,6 +117,10 @@ public final class ResponseObjectBuilder {
 
   private JsonObject buildItemContentAddResponseObject() {
     return new ItemContentAddResponseObjectBuilder(body, response).build();
+  }
+  
+  private JsonObject buildProfileFollowUnfollowResponseObject() {
+    return new ProfileFollowUnfollowResponseObjectBuilder(body, response).build();
   }
 
   private JsonObject buildFailureResponseObject() {

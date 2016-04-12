@@ -45,7 +45,11 @@ public final class ResponseFactory {
   public static JsonObject generateItemContentAddResponse(JsonObject body, JsonObject response) {
     return new ResponseObjectBuilder().setBody(body).setResponse(response).setEventType(MessageConstants.EST_ITEM_CONTENT_ADD).build();
   }
-
+  
+  public static JsonObject generateFollowUnfollowProfileResponse(JsonObject body, JsonObject response) {
+    return new ResponseObjectBuilder().setBody(body).setResponse(response).setEventType(MessageConstants.EST_PROFILE_FOLLOW_UNFOLLOW).build();
+  }
+  
   public static JsonObject generateErrorResponse(JsonObject body) {
     return new ResponseObjectBuilder().setBody(body).setEventType(MessageConstants.EST_ERROR).build();
   }
@@ -53,4 +57,5 @@ public final class ResponseFactory {
   private ResponseFactory() {
     throw new AssertionError();
   }
+
 }
