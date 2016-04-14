@@ -7,15 +7,15 @@ import io.vertx.core.json.JsonObject;
 
 public class AJProfileRepo implements ProfileRepo {
 
-  private final ProcessorContext context;
+    private final ProcessorContext context;
 
-  public AJProfileRepo(ProcessorContext context) {
-    this.context = context;
-  }
+    public AJProfileRepo(ProcessorContext context) {
+        this.context = context;
+    }
 
-  @Override
-  public JsonObject followUnfollowProfileEvent() {
-    return context.eventBody();
-  }
+    @Override
+    public JsonObject followUnfollowProfileEvent() {
+        return context.eventBody();
+    }
 
 }

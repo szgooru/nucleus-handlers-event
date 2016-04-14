@@ -4,13 +4,13 @@ import io.vertx.core.json.JsonObject;
 
 public interface UnitRepo {
 
-  JsonObject createUpdateUnitEvent();
+    JsonObject createUpdateUnitEvent();
 
-  JsonObject copyUnitEvent();
+    JsonObject copyUnitEvent();
 
-  JsonObject deleteUnitEvent();
+    JsonObject deleteUnitEvent();
 
-  JsonObject moveUnitEvent();
+    JsonObject moveUnitEvent();
 
-  JsonObject reorderUnitContentEvent();
+    JsonObject reorderUnitContentEvent();
 }

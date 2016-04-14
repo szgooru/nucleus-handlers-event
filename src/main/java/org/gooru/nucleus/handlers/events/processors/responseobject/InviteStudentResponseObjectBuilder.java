@@ -1,12 +1,13 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 
-public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject {
+import io.vertx.core.json.JsonObject;
 
-    public ItemCollaboratorUpdateResponseObjectBuilder(JsonObject body, JsonObject response) {
+public class InviteStudentResponseObjectBuilder extends ResponseObject {
+
+    public InviteStudentResponseObjectBuilder(JsonObject body, JsonObject response) {
         super(body, response);
     }
 
@@ -38,4 +39,5 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         return payloadStructure;
     }
+
 }

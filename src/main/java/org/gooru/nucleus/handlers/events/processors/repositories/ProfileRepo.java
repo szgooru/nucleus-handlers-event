@@ -4,5 +4,5 @@ import io.vertx.core.json.JsonObject;
 
 public interface ProfileRepo {
 
-  JsonObject followUnfollowProfileEvent(); 
+    JsonObject followUnfollowProfileEvent();
 }
