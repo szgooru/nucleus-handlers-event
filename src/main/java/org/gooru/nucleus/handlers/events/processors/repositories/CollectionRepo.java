@@ -1,34 +1,41 @@
 package org.gooru.nucleus.handlers.events.processors.repositories;
 
+import java.util.List;
+
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 /**
  * Created by subbu on 12-Jan-2016.
  */
 public interface CollectionRepo {
-  JsonObject createUpdateCollectionEvent();
+        JsonObject createUpdateCollectionEvent();
 
-  JsonObject copyCollectionEvent();
+    JsonObject copyCollectionEvent();
 
-  JsonObject deleteCollectionEvent();
+    JsonObject deleteCollectionEvent();
 
-  JsonObject reorderCollectionContentEvent();
+    JsonObject reorderCollectionContentEvent();
 
-  JsonObject addContentToCollectionEvent();
+    JsonObject addContentToCollectionEvent();
 
-  JsonObject updateCollectionCollaboratorEvent();
+    JsonObject updateCollectionCollaboratorEvent();
 
-  JsonObject moveCollectionEvent();
+    JsonObject moveCollectionEvent();
 
-  JsonObject createUpdateAssessmentEvent();
+    JsonObject createUpdateAssessmentEvent();
 
-  JsonObject copyAssessmentEvent();
+    JsonObject copyAssessmentEvent();
 
-  JsonObject deleteAssessmentEvent();
+    JsonObject deleteAssessmentEvent();
 
-  JsonObject addQuestionToAssessmentEvent();
+    JsonObject addQuestionToAssessmentEvent();
 
-  JsonObject reorderAssessmentContentEvent();
+    JsonObject reorderAssessmentContentEvent();
 
-  JsonObject updateAssessmentCollaboratorEvent();
+    JsonObject updateAssessmentCollaboratorEvent();
+
+    List<String> getOwnerAndCreatorIds(JsonArray refCollectionIds);
+
+    JsonObject getCollection(String id);
 }

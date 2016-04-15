@@ -1,12 +1,13 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 
-public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject {
+import io.vertx.core.json.JsonObject;
 
-    public ItemCollaboratorUpdateResponseObjectBuilder(JsonObject body, JsonObject response) {
+public class ProfileFollowUnfollowResponseObjectBuilder extends ResponseObject {
+
+    public ProfileFollowUnfollowResponseObjectBuilder(JsonObject body, JsonObject response) {
         super(body, response);
     }
 
@@ -24,7 +25,7 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
     private JsonObject createContextStructure() {
         JsonObject contextStructure = new JsonObject();
         String contentId =
-            this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
+            this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.USER_ID);
         contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId); // cannot
                                                                                   // be
                                                                                   // null
@@ -35,7 +36,7 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
         payloadStructure.put(EventResponseConstants.DATA, this.response);
-        payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         return payloadStructure;
     }
+
 }

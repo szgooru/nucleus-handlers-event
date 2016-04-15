@@ -7,22 +7,22 @@ import io.vertx.core.json.JsonObject;
  */
 public class ProcessorContext {
 
-  private final String eventName;
-  private final JsonObject eventBody;
+    private final String eventName;
+    private final JsonObject eventBody;
 
-  public ProcessorContext(String eventName, JsonObject eventBody) {
-    if (eventName == null || eventBody == null) {
-      throw new IllegalStateException("Processor Context creation failed because of invalid values");
+    public ProcessorContext(String eventName, JsonObject eventBody) {
+        if (eventName == null || eventBody == null) {
+            throw new IllegalStateException("Processor Context creation failed because of invalid values");
+        }
+        this.eventName = eventName;
+        this.eventBody = eventBody.copy();
     }
-    this.eventName = eventName;
-    this.eventBody = eventBody.copy();
-  }
 
-  public String eventName() {
-    return eventName;
-  }
+    public String eventName() {
+        return eventName;
+    }
 
-  public JsonObject eventBody() {
-    return eventBody;
-  }
+    public JsonObject eventBody() {
+        return eventBody;
+    }
 }

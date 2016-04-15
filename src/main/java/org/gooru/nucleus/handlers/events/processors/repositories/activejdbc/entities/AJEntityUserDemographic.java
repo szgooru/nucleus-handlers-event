@@ -11,7 +11,8 @@ import org.javalite.activejdbc.annotations.Table;
 @IdName("id")
 public class AJEntityUserDemographic extends Model {
 
-  public static final String EMAIL_ID = "email_id";
+    public static final String EMAIL_ID = "email_id";
 
-  public final static String SELECT_MULTIPLE_EMAILIDS = "SELECT email_id FROM user_demographic WHERE id = ANY (?::uuid[])";
+    public final static String SELECT_MULTIPLE_EMAILIDS =
+        "SELECT email_id FROM user_demographic WHERE id = ANY (?::uuid[])";
 }
