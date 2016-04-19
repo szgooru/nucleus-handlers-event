@@ -6,7 +6,24 @@ public final class EventResponseConstants {
     public static final String END_TIME = "endTime";
     public static final String EVENT_ID = "eventId";
     public static final String EVENT_NAME = "eventName";
-
+    public static final String SUB_EVENT_NAME = "subEventName";
+    
+    public static final String EVENT_ITEM_CREATE = "item.create";
+    public static final String EVENT_ITEM_UPDATE = "item.update";
+    public static final String EVENT_ITEM_DELETE = "item.delete";
+    public static final String EVENT_ITEM_ADD = "item.add";
+    public static final String EVENT_ITEM_COPY = "item.copy";
+    public static final String EVENT_ITEM_MOVE = "item.move";
+    public static final String EVENT_COLLABORATOR_UPDATE = "collaborators.update";
+    public static final String EVENT_CLASS_JOIN = "class.join";
+    public static final String EVENT_CLASS_INVITE = "class.invite";
+    public static final String EVENT_CONTENT_REORDER = "content.reorder";
+    public static final String EVENT_PROFILE_FOLLOW = "profile.follow";
+    public static final String EVENT_PROFILE_UNFOLLOW = "profile.unfollow";
+    public static final String EVENT_COURSE_REORDER = "course.reorder";
+    public static final String EVENT_CLASS_COURSE_ASSIGNED = "class.course.assigned";
+    public static final String EVEBT_CLASS_CONTENT_VISIBLE = "class.content.visible";
+    
     public static final String METRICS = "metrics";
 
     public static final String CONTEXT = "context";
