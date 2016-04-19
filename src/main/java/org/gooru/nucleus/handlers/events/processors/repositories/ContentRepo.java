@@ -17,5 +17,7 @@ public interface ContentRepo {
     JsonObject copyQuestionEvent();
 
     JsonObject deletedQuestionEvent();
+    
+    JsonObject getResource(String resourceId);
 
 }

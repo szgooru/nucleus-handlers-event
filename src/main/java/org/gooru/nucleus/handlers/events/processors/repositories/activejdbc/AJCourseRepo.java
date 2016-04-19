@@ -67,7 +67,8 @@ public class AJCourseRepo implements CourseRepo {
         return new JsonObject();
     }
 
-    private JsonObject getCourse(String courseId) {
+    @Override
+    public JsonObject getCourse(String courseId) {
         Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
         LazyList<AJEntityCourse> courses = AJEntityCourse.findBySQL(AJEntityCourse.SELECT_COURSE, courseId);
         JsonObject result = null;

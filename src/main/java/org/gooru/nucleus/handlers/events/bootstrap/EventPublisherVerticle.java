@@ -70,6 +70,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
 
                         String eventName = result.getString(EventResponseConstants.EVENT_NAME);
                         MessageDispatcher.getInstance().sendMessage2Kafka(eventName, result);
+                        LOGGER.debug("Dispatched Event ID: {}", result.getString(EventResponseConstants.EVENT_ID));
                         LOGGER.info("Message dispatched successfully for event: {}", eventName);
 
                         // Forward the call to email processor

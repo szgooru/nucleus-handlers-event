@@ -34,12 +34,8 @@ public class ResponseObject {
     protected JsonObject createGenericStructure() {
         JsonObject genericStructure = new JsonObject();
         long timeinMS = System.currentTimeMillis();
-        genericStructure.put(EventResponseConstants.START_TIME, timeinMS);  // cannot
-                                                                            // be
-                                                                            // null
-        genericStructure.put(EventResponseConstants.END_TIME, timeinMS);    // cannot
-                                                                            // be
-                                                                            // null
+        genericStructure.put(EventResponseConstants.START_TIME, timeinMS);
+        genericStructure.put(EventResponseConstants.END_TIME, timeinMS);
         genericStructure.put(EventResponseConstants.EVENT_ID, UUID.randomUUID().toString());
         genericStructure.put(EventResponseConstants.EVENT_NAME, eventName);
         return genericStructure;
@@ -52,15 +48,9 @@ public class ResponseObject {
     protected JsonObject createSessionStructure() {
         JsonObject sessionStructure = new JsonObject();
         String sessionToken = this.body.getString(EventRequestConstants.SESSION_TOKEN);
-        sessionStructure.put(EventResponseConstants.API_KEY, (Object) null);         // can
-                                                                                     // be
-                                                                                     // null
-        sessionStructure.put(EventResponseConstants.SESSION_TOKEN, sessionToken);   // cannot
-                                                                                    // be
-                                                                                    // null
-        sessionStructure.put(EventResponseConstants.ORGANIZATION_UID, (Object) null);// can
-                                                                                     // be
-                                                                                     // null
+        sessionStructure.put(EventResponseConstants.API_KEY, (Object) null);
+        sessionStructure.put(EventResponseConstants.SESSION_TOKEN, sessionToken);
+        sessionStructure.put(EventResponseConstants.ORGANIZATION_UID, (Object) null);
         return sessionStructure;
     }
 
@@ -75,15 +65,9 @@ public class ResponseObject {
             userId = sessionToken;
         }
 
-        userStructure.put(EventResponseConstants.USER_IP, (Object) null); // can
-                                                                          // be
-                                                                          // null
-        userStructure.put(EventResponseConstants.USER_AGENT, (Object) null); // can
-                                                                             // be
-                                                                             // null
-        userStructure.put(EventResponseConstants.GOORU_UID, userId);   // cannot
-                                                                       // be
-                                                                       // null
+        userStructure.put(EventResponseConstants.USER_IP, (Object) null); 
+        userStructure.put(EventResponseConstants.USER_AGENT, (Object) null);
+        userStructure.put(EventResponseConstants.GOORU_UID, userId);
         return userStructure;
     }
 
@@ -328,18 +312,7 @@ public class ResponseObject {
     protected Integer getItemSequenceFromResponse() {
         Integer retVal = null;
         try {
-            retVal = this.response.getInteger(EntityConstants.SEQUENCE_ID);  // all
-                                                                             // tables
-                                                                             // consistently
-                                                                             // use
-                                                                             // this
-                                                                             // as
-                                                                             // "sequence_id"
-                                                                             // so
-                                                                             // we
-                                                                             // should
-                                                                             // be
-                                                                             // good.
+            retVal = this.response.getInteger(EntityConstants.SEQUENCE_ID);
         } catch (ClassCastException cce) {
             LOGGER.warn("invalid sequence_id found in respone");
         }
@@ -451,7 +424,7 @@ public class ResponseObject {
     }
 
     protected void updateCULCInfo(JsonObject fromContent, JsonObject toObject) {
-        String courseId = null, unitId = null, lessonId = null;
+        String courseId = null, unitId = null, lessonId = null, collectionId = null;
 
         switch (eventName) {
         case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
@@ -462,8 +435,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
-            // collectionId =
-            // this.response.getString(EntityConstants.COLLECTION_ID);
+            collectionId = this.response.getString(EntityConstants.COLLECTION_ID);
             lessonId = fromContent.getString(EntityConstants.LESSON_ID);
             unitId = fromContent.getString(EntityConstants.UNIT_ID);
             courseId = fromContent.getString(EntityConstants.COURSE_ID);
@@ -507,8 +479,7 @@ public class ResponseObject {
         toObject.put(EventResponseConstants.COURSE_GOORU_ID, courseId);
         toObject.put(EventResponseConstants.UNIT_GOORU_ID, unitId);
         toObject.put(EventResponseConstants.LESSON_GOORU_ID, lessonId);
-        // toObject.put(EventResponseConstants.COLLECTION_GOORU_ID,
-        // collectionId);
+        toObject.put(EventResponseConstants.COLLECTION_GOORU_ID, collectionId);
     }
 
     protected String getContentGooruId(JsonObject content) {

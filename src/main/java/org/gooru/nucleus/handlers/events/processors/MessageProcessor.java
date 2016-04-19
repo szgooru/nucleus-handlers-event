@@ -32,6 +32,12 @@ class MessageProcessor implements Processor {
                 LOGGER.error("Invalid message received, either null or body of message is not JsonObject");
                 throw new InvalidRequestException();
             }
+            
+            final String msgHeader = message.headers().get(MessageConstants.MSG_HEADER_OP);
+            if (msgHeader != null && msgHeader.equalsIgnoreCase(MessageConstants.MSG_OP_EVENT_PUBLISH)) {
+                LOGGER.debug("event publisher API request, no need for further execution");
+                return request;
+            }
 
             final String msgOp = request.getString(EventRequestConstants.EVENT_NAME);
             LOGGER.debug("## Processing Event: " + msgOp);
