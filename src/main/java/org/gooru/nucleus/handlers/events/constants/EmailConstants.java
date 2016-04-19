@@ -27,7 +27,11 @@ public final class EmailConstants {
     public static final String CLASS_ID = "class_id";
     public static final String CLASS_TITLE = "class_title";
     public static final String RESOURCE_TITLE = "resource_title";
-
+    public static final String TEACHER_USERNAME = "teacher_username";
+    public static final String CLASS_CODE = "class_code";
+    public static final String EMAIL_ID = "email_id";
+    public static final String FOLLOW_ON_USERNAME = "follow_on_username";
+    
     private EmailConstants() {
         throw new AssertionError();
     }

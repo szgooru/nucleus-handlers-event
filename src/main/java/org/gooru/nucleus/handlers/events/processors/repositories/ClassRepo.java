@@ -18,5 +18,5 @@ public interface ClassRepo {
 
     JsonObject classContentVisibleEvent();
 
-    JsonObject getClassById();
+    JsonObject getClassById(String classId);
 }

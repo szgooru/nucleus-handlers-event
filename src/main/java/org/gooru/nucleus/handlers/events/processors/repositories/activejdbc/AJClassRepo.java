@@ -23,12 +23,14 @@ public class AJClassRepo implements ClassRepo {
 
     @Override
     public JsonObject craeteUpdateClassEvent() {
-        return getClassById();
+        String classId = context.eventBody().getString(EventRequestConstants.ID);
+        return getClassById(classId);
     }
 
     @Override
     public JsonObject deleteClassEvent() {
-        return getClassById();
+        String classId = context.eventBody().getString(EventRequestConstants.ID);
+        return getClassById(classId);
     }
 
     @Override
@@ -58,9 +60,8 @@ public class AJClassRepo implements ClassRepo {
         return new JsonObject();
     }
 
-    public JsonObject getClassById() {
+    public JsonObject getClassById(String classId) {
         Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
-        String classId = context.eventBody().getString(EventRequestConstants.ID);
         LazyList<AJEntityClass> classes = AJEntityClass.where(AJEntityClass.SELECT_QUERY, classId);
         if (classes.isEmpty()) {
             LOGGER.warn("Not able to find class '{}'", classId);
