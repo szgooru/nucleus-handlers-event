@@ -18,6 +18,15 @@ public final class EmailConstants {
     public static final String STATUS = "status";
     public static final String STATUS_SUCCESS = "success";
     public static final String STATUS_FAIL = "fail";
+    
+    public static final String USERNAME = "username";
+    public static final String FIRSTNAME = "firstname";
+    public static final String LASTNAME = "lastname";
+    public static final String COLLECTION_ID = "collection_id";
+    public static final String COURSE_ID = "course_id";
+    public static final String CLASS_ID = "class_id";
+    public static final String CLASS_TITLE = "class_title";
+    public static final String RESOURCE_TITLE = "resource_title";
 
     private EmailConstants() {
         throw new AssertionError();

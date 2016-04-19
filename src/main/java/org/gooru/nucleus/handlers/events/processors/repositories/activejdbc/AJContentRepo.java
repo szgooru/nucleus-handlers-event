@@ -79,7 +79,8 @@ public class AJContentRepo implements ContentRepo {
         return getQuestion(contentId);
     }
 
-    private JsonObject getResource(String contentId) {
+    @Override
+    public JsonObject getResource(String contentId) {
         Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
         LOGGER.debug("getting resource for id {}", contentId);
 

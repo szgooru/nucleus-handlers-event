@@ -1,8 +1,12 @@
 package org.gooru.nucleus.handlers.events.constants;
 
 public final class MessageConstants {
+    
+    public static final String MSG_HEADER_OP = "mb.operation";
 
     // Operation names: Also need to be updated in corresponding handlers
+    public static final String MSG_OP_EVENT_PUBLISH = "event.publish";
+    
     // Content related events
     public static final String MSG_OP_EVT_RESOURCE_CREATE = "event.resource.create";
     public static final String MSG_OP_EVT_RESOURCE_UPDATE = "event.resource.update";

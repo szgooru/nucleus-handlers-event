@@ -15,4 +15,6 @@ public interface CourseRepo {
     JsonObject reorderCourseEvent();
 
     JsonObject reorderCourseContentEvent();
+    
+    JsonObject getCourse(String courseId);
 }
