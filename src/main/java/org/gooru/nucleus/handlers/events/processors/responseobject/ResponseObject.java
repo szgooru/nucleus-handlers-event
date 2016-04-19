@@ -37,7 +37,7 @@ public class ResponseObject {
         genericStructure.put(EventResponseConstants.START_TIME, timeinMS);
         genericStructure.put(EventResponseConstants.END_TIME, timeinMS);
         genericStructure.put(EventResponseConstants.EVENT_ID, UUID.randomUUID().toString());
-        genericStructure.put(EventResponseConstants.EVENT_NAME, eventName);
+        genericStructure.put(EventResponseConstants.EVENT_NAME, getEventName());
         return genericStructure;
     }
 
@@ -85,6 +85,105 @@ public class ResponseObject {
             LOGGER.error(e.getMessage());
             return null;
         }
+    }
+    
+    protected String getSubEventName() {
+        return eventName;
+    }
+    
+    private String getEventName() {
+        String retVal = null;
+        switch (eventName) {
+        case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
+        case MessageConstants.MSG_OP_EVT_CLASS_CREATE:
+            retVal = EventResponseConstants.EVENT_ITEM_CREATE;
+            break;
+
+        case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
+        case MessageConstants.MSG_OP_EVT_CLASS_UPDATE:
+            retVal = EventResponseConstants.EVENT_ITEM_UPDATE;
+            break;
+
+        case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
+        case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+        case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+        case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+        case MessageConstants.MSG_OP_EVT_COURSE_COPY:
+            retVal = EventResponseConstants.EVENT_ITEM_COPY;
+            break;
+
+        case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+        case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
+        case MessageConstants.MSG_OP_EVT_CLASS_DELETE:
+            retVal = EventResponseConstants.EVENT_ITEM_DELETE;
+            break;
+
+        case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+        case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
+        case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
+            retVal = EventResponseConstants.EVENT_ITEM_MOVE;
+            
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
+            retVal = EventResponseConstants.EVENT_ITEM_ADD;
+            
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
+            retVal = EventResponseConstants.EVENT_COLLABORATOR_UPDATE;
+            
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_COURSE_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
+            retVal = EventResponseConstants.EVENT_CONTENT_REORDER;
+            
+        case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
+            retVal = EventResponseConstants.EVENT_CLASS_JOIN;
+            
+        case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
+            retVal = EventResponseConstants.EVENT_CLASS_INVITE;
+            
+        case MessageConstants.MSG_OP_EVT_PROFILE_FOLLOW:
+            retVal = EventResponseConstants.EVENT_PROFILE_FOLLOW;
+            
+        case MessageConstants.MSG_OP_EVT_PROFILE_UNFOLLOW:
+            retVal = EventResponseConstants.EVENT_PROFILE_UNFOLLOW;
+            
+        case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
+            retVal = EventResponseConstants.EVENT_COURSE_REORDER;
+            
+        case MessageConstants.MSG_OP_EVT_CLASS_COURSE_ASSIGNED:
+            retVal = EventResponseConstants.EVENT_CLASS_COURSE_ASSIGNED;
+            
+        case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
+            retVal = EventResponseConstants.EVEBT_CLASS_CONTENT_VISIBLE;
+            
+        default:
+            break;
+        }
+        return retVal;
     }
 
     protected String getModeFromResponse() {

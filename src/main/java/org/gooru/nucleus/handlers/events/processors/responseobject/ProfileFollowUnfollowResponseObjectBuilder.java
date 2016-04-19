@@ -26,9 +26,7 @@ public class ProfileFollowUnfollowResponseObjectBuilder extends ResponseObject {
         JsonObject contextStructure = new JsonObject();
         String contentId =
             this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.USER_ID);
-        contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId); // cannot
-                                                                                  // be
-                                                                                  // null
+        contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId);
         contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
         return contextStructure;
     }
@@ -36,6 +34,7 @@ public class ProfileFollowUnfollowResponseObjectBuilder extends ResponseObject {
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
         payloadStructure.put(EventResponseConstants.DATA, this.response);
+        payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());
         return payloadStructure;
     }
 
