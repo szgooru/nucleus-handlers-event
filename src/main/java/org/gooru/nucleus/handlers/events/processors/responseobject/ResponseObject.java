@@ -141,16 +141,19 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
         case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
             retVal = EventResponseConstants.EVENT_ITEM_MOVE;
+            break;
             
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             retVal = EventResponseConstants.EVENT_ITEM_ADD;
+            break;
             
         case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
             retVal = EventResponseConstants.EVENT_COLLABORATOR_UPDATE;
+            break;
             
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
@@ -158,27 +161,35 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
             retVal = EventResponseConstants.EVENT_CONTENT_REORDER;
+            break;
             
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
             retVal = EventResponseConstants.EVENT_CLASS_JOIN;
+            break;
             
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
             retVal = EventResponseConstants.EVENT_CLASS_INVITE;
+            break;
             
         case MessageConstants.MSG_OP_EVT_PROFILE_FOLLOW:
             retVal = EventResponseConstants.EVENT_PROFILE_FOLLOW;
+            break;
             
         case MessageConstants.MSG_OP_EVT_PROFILE_UNFOLLOW:
             retVal = EventResponseConstants.EVENT_PROFILE_UNFOLLOW;
+            break;
             
         case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
             retVal = EventResponseConstants.EVENT_COURSE_REORDER;
+            break;
             
         case MessageConstants.MSG_OP_EVT_CLASS_COURSE_ASSIGNED:
             retVal = EventResponseConstants.EVENT_CLASS_COURSE_ASSIGNED;
+            break;
             
         case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
             retVal = EventResponseConstants.EVEBT_CLASS_CONTENT_VISIBLE;
+            break;
             
         default:
             break;

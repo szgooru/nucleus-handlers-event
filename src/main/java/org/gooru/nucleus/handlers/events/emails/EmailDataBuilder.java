@@ -102,7 +102,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.USERNAME, username);
@@ -134,7 +134,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.USERNAME, username);
@@ -166,7 +166,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.USERNAME, username);
@@ -196,7 +196,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.USERNAME, username);
@@ -227,7 +227,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.TEACHER_USERNAME, teacherUsername);
@@ -260,7 +260,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.TEACHER_USERNAME, teacherUsername);
@@ -290,7 +290,7 @@ public final class EmailDataBuilder {
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
-            emailData.put(EmailConstants.TO_ADDRESSES, email);
+            emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
             emailContextData.put(EmailConstants.FOLLOW_ON_USERNAME, folloOnUsername);
