@@ -33,8 +33,6 @@ public final class MessageDispatcher {
         ProducerRecord<String, String> kafkaMsg =
             new ProducerRecord<>(KafkaRegistry.getInstance().getKafkaTopic(), eventName, eventBody.toString());
 
-        LOGGER.debug("Message to Kafka server:" + kafkaMsg);
-
         try {
             if (producer != null) {
                 producer.send(kafkaMsg, (metadata, exception) -> {
