@@ -10,6 +10,7 @@ import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.CollectionRepo;
+import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityCollection;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.formatter.JsonFormatterBuilder;
 import org.javalite.activejdbc.Base;
@@ -77,15 +78,25 @@ public class AJCollectionRepo implements CollectionRepo {
     @Override
     public JsonObject moveCollectionEvent() {
         JsonObject response = new JsonObject();
-        String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
-        JsonObject targetContent = getCollection(targetContentId);
-        response.put(EventResponseConstants.TARGET, targetContent);
-
-        String sourceContentId = targetContent.getString(AJEntityCollection.ORIGINAL_COLLECTION_ID);
-        if (sourceContentId != null && !sourceContentId.isEmpty()) {
-            JsonObject sourceContent = getCollection(sourceContentId);
-            response.put(EventResponseConstants.SOURCE, sourceContent);
+        JsonObject target = context.eventBody().getJsonObject(EventRequestConstants.TARGET);
+        if (target == null || target.isEmpty()) {
+            LOGGER.error("no target exists in move collection event");
+            return response;
         }
+        
+        String targetLessonId = target.getString(EventRequestConstants.LESSON_ID);
+        JsonObject targetLesson = RepoBuilder.buildLessonRepo(null).getLesson(targetLessonId);
+        response.put(EventResponseConstants.TARGET, targetLesson);
+
+        JsonObject source = context.eventBody().getJsonObject(EventRequestConstants.SOURCE);
+        if (source == null || source.isEmpty()) {
+            LOGGER.error("no source exists in move collection event");
+            return response;
+        }
+        
+        String sourceLessonId = source.getString(EventRequestConstants.LESSON_ID);
+        JsonObject sourceLesson = RepoBuilder.buildLessonRepo(null).getLesson(sourceLessonId);
+        response.put(EventResponseConstants.SOURCE, sourceLesson);
         return response;
     }
 

@@ -40,7 +40,7 @@ class MessageProcessor implements Processor {
             }
 
             final String msgOp = request.getString(EventRequestConstants.EVENT_NAME);
-            LOGGER.debug("## Processing Event: " + msgOp);
+            LOGGER.debug("## Processing Event: {} ##", msgOp);
 
             switch (msgOp) {
             case MessageConstants.MSG_OP_EVT_COURSE_CREATE:

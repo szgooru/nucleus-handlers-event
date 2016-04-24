@@ -14,6 +14,12 @@ public final class EventRequestConstants {
     public static final String INVITEES = "invitees";
     public static final String USER_ID = "user_id";
     public static final String FOLLOW_ON_USER_ID = "follow_on_user_id";
+    
+    public static final String SOURCE = "source";
+    public static final String TARGET = "target";    
+    public static final String COURSE_ID = "course_id";
+    public static final String UNIT_ID = "unit_id";
+    public static final String LESSON_ID = "lesson_id";
 
     private EventRequestConstants() {
         throw new AssertionError();

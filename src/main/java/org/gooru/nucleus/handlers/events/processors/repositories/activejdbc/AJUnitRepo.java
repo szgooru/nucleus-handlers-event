@@ -4,6 +4,7 @@ import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
+import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
 import org.gooru.nucleus.handlers.events.processors.repositories.UnitRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUnit;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.formatter.JsonFormatterBuilder;
@@ -53,15 +54,25 @@ public class AJUnitRepo implements UnitRepo {
     @Override
     public JsonObject moveUnitEvent() {
         JsonObject response = new JsonObject();
-        String targetContentId = context.eventBody().getString(EventRequestConstants.ID);
-        JsonObject targetContent = getUnit(targetContentId);
-        response.put(EventResponseConstants.TARGET, targetContent);
-
-        String sourceContentId = targetContent.getString(AJEntityUnit.ORIGINAL_UNIT_ID);
-        if (sourceContentId != null && !sourceContentId.isEmpty()) {
-            JsonObject sourceContent = getUnit(sourceContentId);
-            response.put(EventResponseConstants.SOURCE, sourceContent);
+        JsonObject target = context.eventBody().getJsonObject(EventRequestConstants.TARGET);
+        if (target == null || target.isEmpty()) {
+            LOGGER.error("no target exists in move unit event");
+            return response;
         }
+        
+        String targetCourseId = target.getString(EventRequestConstants.COURSE_ID);
+        JsonObject targetCourse = RepoBuilder.buildCourseRepo(null).getCourse(targetCourseId);
+        response.put(EventResponseConstants.TARGET, targetCourse);
+        
+        JsonObject source = context.eventBody().getJsonObject(EventRequestConstants.SOURCE);
+        if (source == null || source.isEmpty()) {
+            LOGGER.error("no source exists in move unit event");
+            return response;
+        }
+        
+        String sourceCourseId = source.getString(EventRequestConstants.COURSE_ID);
+        JsonObject sourceCourse = RepoBuilder.buildCourseRepo(null).getCourse(sourceCourseId);
+        response.put(EventResponseConstants.SOURCE, sourceCourse);
         return response;
     }
 
@@ -70,7 +81,8 @@ public class AJUnitRepo implements UnitRepo {
         return new JsonObject();
     }
 
-    private JsonObject getUnit(String contentId) {
+    @Override
+    public JsonObject getUnit(String contentId) {
         Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
 
         LazyList<AJEntityUnit> units = AJEntityUnit.findBySQL(AJEntityUnit.SELECT_UNIT, contentId);

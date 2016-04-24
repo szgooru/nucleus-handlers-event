@@ -43,8 +43,9 @@ public class EmailProcessor implements Processor {
                 LOGGER.error("Invalid payload received from the result, can't process to send email");
                 throw new InvalidRequestException();
             }
-            
-            eventName = result.getString(EventResponseConstants.EVENT_NAME);
+
+            JsonObject payloadObject = result.getJsonObject(EventResponseConstants.PAYLOAD_OBJECT);
+            eventName = payloadObject.getString(EventResponseConstants.SUB_EVENT_NAME);
             switch (eventName) {
             case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
                 emailData = processEmailForResourceDelete();
@@ -91,7 +92,7 @@ public class EmailProcessor implements Processor {
                 if (responseHandler.statusCode() == HttpConstants.HttpStatus.SUCCESS.getCode()) {
                     LOGGER.info("email sent to '{}' for event: {}", data, eventName);
                 } else {
-                    LOGGER.warn("email not for event {}, HttpStatusCode: {}, requestPayload: {}", eventName,
+                    LOGGER.warn("email not sent for event {}, HttpStatusCode: {}, requestPayload: {}", eventName,
                         responseHandler.statusCode(), data.toString());
                 }
             });

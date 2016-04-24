@@ -13,4 +13,6 @@ public interface UnitRepo {
     JsonObject moveUnitEvent();
 
     JsonObject reorderUnitContentEvent();
+    
+    JsonObject getUnit(String unitId);
 }

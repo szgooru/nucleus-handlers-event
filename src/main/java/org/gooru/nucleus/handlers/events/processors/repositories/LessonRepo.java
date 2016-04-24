@@ -13,4 +13,6 @@ public interface LessonRepo {
     JsonObject moveLessonEvent();
 
     JsonObject reorderLessonContentEvent();
+    
+    JsonObject getLesson(String lessonId);
 }
