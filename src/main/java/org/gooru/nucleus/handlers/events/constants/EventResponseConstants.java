@@ -93,6 +93,7 @@ public final class EventResponseConstants {
 
     public static final String EVENT_TIMESTAMP = "event.timestamp";
     public static final String EVENT_DUMP = "event.dump";
+    public static final String ID = "id";
 
     private EventResponseConstants() {
         throw new AssertionError();

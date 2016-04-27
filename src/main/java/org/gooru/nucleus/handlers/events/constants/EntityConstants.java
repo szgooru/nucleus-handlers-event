@@ -15,6 +15,7 @@ public final class EntityConstants {
     public static final String ORIGINAL_LESSON_ID = "original_lesson_id";
     public static final String ORIGINAL_UNIT_ID = "original_unit_id";
     public static final String ORIGINAL_COURSE_ID = "original_course_id";
+    public static final String ID = "id";
 
     private EntityConstants() {
         throw new AssertionError();

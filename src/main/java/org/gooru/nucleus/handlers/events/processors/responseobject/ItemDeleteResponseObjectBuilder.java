@@ -2,9 +2,12 @@ package org.gooru.nucleus.handlers.events.processors.responseobject;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import org.gooru.nucleus.handlers.events.constants.EntityConstants;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.constants.MessageConstants;
+import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
 
 public class ItemDeleteResponseObjectBuilder extends ResponseObject {
 
@@ -32,7 +35,28 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
         contextStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(response));
         contextStructure.put(EventResponseConstants.CLASS_GOORU_ID, (Object) null);
         updateCULCInfo(response, contextStructure);
-
+        
+        String eventName = getSubEventName();
+        String courseId = null;
+        switch (eventName) {
+        case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
+            courseId = response.getString(EntityConstants.ID);
+            break;
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+        case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+            courseId = response.getString(EntityConstants.COURSE_ID);
+            break;
+        }
+        
+        String classIds = null;
+        if (courseId != null) {
+            classIds = RepoBuilder.buildClassRepo(null).getClassIdsForCourse(courseId);
+        } 
+        contextStructure.put(EventResponseConstants.CLASS_GOORU_ID, classIds);
         contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
         return contextStructure;
     }
