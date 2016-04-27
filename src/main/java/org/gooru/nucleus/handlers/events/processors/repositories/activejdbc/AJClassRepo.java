@@ -1,5 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
+import java.util.Iterator;
+
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
@@ -80,6 +82,28 @@ public class AJClassRepo implements ClassRepo {
         Base.close();
         return new JsonObject(new JsonFormatterBuilder().buildSimpleJsonFormatter(false, AJEntityClass.ALL_FIELDS)
             .toJson(classes.get(0)));
+    }
+
+    @Override
+    public String getClassIdsForCourse(String courseId) {
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        StringBuilder classIds = new StringBuilder();
+        LOGGER.debug("getting class ids for course:{}", courseId);
+        LazyList<AJEntityClass> classes = AJEntityClass.findBySQL(AJEntityClass.SELECT_CLASSID_FOR_COURSE, courseId);
+        if (!classes.isEmpty()) {
+            LOGGER.debug("found {} classes matching course id", classes.size());
+            Iterator<AJEntityClass> it = classes.iterator();
+            for (;;) {
+                classIds.append(it.next().getString(AJEntityClass.ID));
+                if (!it.hasNext()) {
+                    break;
+                }
+                classIds.append(",");
+            }
+        }
+        Base.close();
+        LOGGER.debug("returnin class ids: {}", classIds.toString());
+        return classIds.toString();
     }
 
 }
