@@ -75,7 +75,7 @@ public class EventPublisherVerticle extends AbstractVerticle {
 
                         // Forward the call to email processor
                         JsonObject emailResult =
-                            ProcessorBuilder.buildEmailProcessor(vertx, config(), result).process();
+                            ProcessorBuilder.buildEmailProcessor(vertx, config(), result,  (JsonObject) message.body()).process();
                         if (!emailResult.getBoolean(EmailConstants.EMAIL_SENT)) {
                             if (emailResult.getString(EmailConstants.STATUS)
                                 .equalsIgnoreCase(EmailConstants.STATUS_FAIL)) {

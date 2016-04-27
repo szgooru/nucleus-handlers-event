@@ -45,6 +45,8 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
             JsonArray refParentGooruIds = this.body.getJsonObject(EventRequestConstants.EVENT_BODY)
                 .getJsonArray(EventRequestConstants.COLLECTION_ID);
             payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, refParentGooruIds);
+        } else {
+            payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, (Object)null);
         }
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());

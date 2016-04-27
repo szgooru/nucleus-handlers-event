@@ -23,16 +23,18 @@ public class EmailProcessor implements Processor {
     private final Vertx vertx;
     private final JsonObject config;
     private final JsonObject result;
+    private final JsonObject message;
     private String eventName = null;
 
     private static final String KEY_ENDPOINT = "api.endpoint";
     private static final String KEY_HOST = "api.host";
     private static final String KEY_EMAIL_SETTINGS = "emailSettings";
 
-    public EmailProcessor(Vertx vertx, JsonObject config, JsonObject result) {
+    public EmailProcessor(Vertx vertx, JsonObject config, JsonObject result, JsonObject message) {
         this.vertx = vertx;
         this.config = config;
         this.result = result;
+        this.message = message;
     }
 
     @Override
@@ -118,17 +120,17 @@ public class EmailProcessor implements Processor {
 
     private JsonArray processEmailForCollectionCollaboratorUpdate() {
         return new EmailDataBuilder().setEmailTemplate(EmailConstants.TEMPLATE_COLLECTION_COLLABORATOR_INVITE)
-            .setResultData(result).build();
+            .setResultData(result).setEventData(message).build();
     }
     
     private JsonArray processEmailForCourseCollaboratorUpdate() {
         return new EmailDataBuilder().setEmailTemplate(EmailConstants.TEMPLATE_COURSE_COLLABORATOR_INVITE)
-            .setResultData(result).build();
+            .setResultData(result).setEventData(message).build();
     }
     
     private JsonArray processEmailForClassCollaboratorUpate() {
         return new EmailDataBuilder().setEmailTemplate(EmailConstants.TEMPLATE_CLASS_COLLABORATOR_INVITE)
-            .setResultData(result).build();
+            .setResultData(result).setEventData(message).build();
     }
     
     private JsonArray processEmailToInviteStudent() {

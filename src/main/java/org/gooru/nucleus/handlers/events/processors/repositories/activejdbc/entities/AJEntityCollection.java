@@ -41,6 +41,9 @@ public class AJEntityCollection extends Model {
             + " learning_objective, audience, metadata, taxonomy, orientation, setting, grading, visible_on_profile, collaborator, course_id, unit_id,"
             + " lesson_id FROM collection WHERE id = ?::uuid AND format = 'collection'::content_container_type";
 
+    public static final String SELECT_COLLABORATOR =
+        "SELECT collaborator FROM collection WHERE id = ?::uuid";
+    
     public static final List<String> COLLECTION_FIELDS =
         Arrays.asList(ID, TITLE, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, ORIGINAL_COLLECTION_ID, PUBLISH_DATE,
             PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE, AUDIENCE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING,

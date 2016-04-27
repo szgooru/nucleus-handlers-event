@@ -1,6 +1,5 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
-import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
@@ -11,6 +10,9 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 public class AJClassRepo implements ClassRepo {
 
@@ -35,8 +37,16 @@ public class AJClassRepo implements ClassRepo {
 
     @Override
     public JsonObject updateClassCollaboratorEvent() {
-        // Nothing to process here so just returning event body as is
-        return context.eventBody();
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        JsonObject result = context.eventBody();
+        LazyList<AJEntityClass> classes =
+            AJEntityClass.findBySQL(AJEntityClass.SELECT_COLLABORATOR, contentId);
+        if (!classes.isEmpty()) {
+            result.put(EventRequestConstants.COLLABORATORS, new JsonArray(classes.get(0).getString(AJEntityClass.COLLABORATOR)));
+        }
+        Base.close();
+        return result;
     }
 
     @Override

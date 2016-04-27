@@ -32,6 +32,8 @@ public class AJEntityClass extends Model {
     public static final String MODIFIER_ID = "modifier_id";
 
     public static final String SELECT_QUERY = "id = ?::uuid";
+    
+    public static final String SELECT_COLLABORATOR = "SELECT collaborator FROM class WHERE id = ?::uuid";
 
     public static final List<String> ALL_FIELDS =
         Arrays.asList(ID, CREATOR_ID, TITLE, DESCRIPTION, GREETING, GRADE, CLASS_SHARING, COVER_IMAGE, GRADE, CODE,

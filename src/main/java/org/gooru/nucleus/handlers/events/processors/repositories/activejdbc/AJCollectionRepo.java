@@ -72,7 +72,16 @@ public class AJCollectionRepo implements CollectionRepo {
 
     @Override
     public JsonObject updateCollectionCollaboratorEvent() {
-        return context.eventBody();
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        JsonObject result = context.eventBody();
+        LazyList<AJEntityCollection> collections =
+            AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLABORATOR, contentId);
+        if (!collections.isEmpty()) {
+            result.put(EventRequestConstants.COLLABORATORS, collections.get(0).getString(AJEntityCollection.COLLABORATOR));
+        }
+        Base.close();
+        return result;
     }
 
     @Override
@@ -139,7 +148,16 @@ public class AJCollectionRepo implements CollectionRepo {
 
     @Override
     public JsonObject updateAssessmentCollaboratorEvent() {
-        return context.eventBody();
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        JsonObject result = context.eventBody();
+        LazyList<AJEntityCollection> collections =
+            AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLABORATOR, contentId);
+        if (!collections.isEmpty()) {
+            result.put(EventRequestConstants.COLLABORATORS, new JsonArray(collections.get(0).getString(AJEntityCollection.COLLABORATOR)));
+        }
+        Base.close();
+        return result;
     }
 
     @Override

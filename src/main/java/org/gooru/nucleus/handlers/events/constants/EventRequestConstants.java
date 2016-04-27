@@ -7,6 +7,7 @@ public final class EventRequestConstants {
     public static final String SESSION_TOKEN = "session.token";
 
     public static final String ID = "id";
+    public static final String COLLABORATORS = "collaborators";
     public static final String COLLABORATORS_ADDED = "collaborators.added";
     public static final String COLLABORATORS_REMOVED = "collaborators.removed";
     public static final String COLLECTION_ID = "collection_id";

@@ -25,6 +25,7 @@ public final class EmailDataBuilder {
 
     private String emailTemplate = null;
     private JsonObject result = null;
+    private JsonObject event = null;
 
     public EmailDataBuilder() {
     }
@@ -36,6 +37,11 @@ public final class EmailDataBuilder {
 
     public EmailDataBuilder setResultData(JsonObject result) {
         this.result = result.copy();
+        return this;
+    }
+    
+    public EmailDataBuilder setEventData(JsonObject event) {
+        this.event = event.copy();
         return this;
     }
 
@@ -86,9 +92,9 @@ public final class EmailDataBuilder {
 
     private JsonArray buildCollectionCollaboratorUpdateEmailData() {
         JsonArray emailDataArray = new JsonArray();
-        JsonObject data = getData();
-        String collectionId = data.getString(EventRequestConstants.ID);
-        JsonArray collaboratorsAdded = data.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
+        JsonObject eventData = getEventBody();
+        String collectionId = eventData.getString(EventRequestConstants.ID);
+        JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
 
         List<String> userIds = new ArrayList<>();
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
@@ -117,10 +123,9 @@ public final class EmailDataBuilder {
 
     private JsonArray buildClassCollaboratorUpdateEmailData() {
         JsonArray emailDataArray = new JsonArray();
-        JsonObject data = getData();
-
-        String classId = data.getString(EventRequestConstants.ID);
-        JsonArray collaboratorsAdded = data.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
+        JsonObject eventData = getEventBody();
+        String classId = eventData.getString(EventRequestConstants.ID);
+        JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
         List<String> userIds = new ArrayList<>();
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
 
@@ -150,9 +155,9 @@ public final class EmailDataBuilder {
 
     private JsonArray buildCourseCollaboratorUpdateEmailData() {
         JsonArray emailDataArray = new JsonArray();
-        JsonObject data = getData();
-        String courseId = data.getString(EventRequestConstants.ID);
-        JsonArray collaboratorsAdded = data.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
+        JsonObject eventData = getEventBody();
+        String courseId = eventData.getString(EventRequestConstants.ID);
+        JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
 
         List<String> userIds = new ArrayList<>();
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
@@ -310,6 +315,10 @@ public final class EmailDataBuilder {
         }
 
         return data;
+    }
+    
+    private JsonObject getEventBody() {
+        return this.event.getJsonObject(EventRequestConstants.EVENT_BODY);
     }
 
     private String getUserId() {
