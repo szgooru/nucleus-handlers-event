@@ -36,6 +36,8 @@ public class AJEntityCourse extends Model {
         "SELECT id, title, description, created_at, updated_at, owner_id, creator_id, modifier_id, original_creator_id, original_course_id,"
             + " parent_course_id, publish_date, publish_status, thumbnail, audience, metadata, taxonomy, collaborator, visible_on_profile, is_deleted,"
             + " sequence_id, subject_bucket, creator_system FROM course WHERE id = ?::uuid";
+    
+    public static final String SELECT_COLLABORATOR = "SELECT collaborator FROM course where  id = ?::uuid";
 
     public static final List<String> ALL_FIELDS =
         Arrays.asList(ID, TITLE, DESCRIPTION, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, MODIFIER_ID,

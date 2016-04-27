@@ -32,7 +32,9 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
 
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
-        payloadStructure.put(EventResponseConstants.DATA, this.response);
+        JsonObject collaborators = new JsonObject().put(EventRequestConstants.COLLABORATORS,
+            this.response.getJsonArray(EventRequestConstants.COLLABORATORS));
+        payloadStructure.put(EventResponseConstants.DATA, collaborators);
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());
         return payloadStructure;

@@ -11,7 +11,7 @@ public final class MessageConstants {
     public static final String MSG_OP_EVT_RESOURCE_CREATE = "event.resource.create";
     public static final String MSG_OP_EVT_RESOURCE_UPDATE = "event.resource.update";
     public static final String MSG_OP_EVT_RESOURCE_DELETE = "event.resource.delete";
-    public static final String MSG_OP_EVT_RESOURCE_COPY = "resource.copy";
+    public static final String MSG_OP_EVT_RESOURCE_COPY = "event.resource.copy";
 
     public static final String MSG_OP_EVT_QUESTION_CREATE = "event.question.create";
     public static final String MSG_OP_EVT_QUESTION_UPDATE = "event.question.update";
@@ -30,7 +30,7 @@ public final class MessageConstants {
     public static final String MSG_OP_EVT_ASSESSMENT_CREATE = "event.assessment.create";
     public static final String MSG_OP_EVT_ASSESSMENT_UPDATE = "event.assessment.update";
     public static final String MSG_OP_EVT_ASSESSMENT_DELETE = "event.assessment.delete";
-    public static final String MSG_OP_EVT_ASSESSMENT_COPY = "assessment.copy";
+    public static final String MSG_OP_EVT_ASSESSMENT_COPY = "event.assessment.copy";
     public static final String MSG_OP_EVT_ASSESSMENT_QUESTION_ADD = "event.assessment.question.add";
     public static final String MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER = "event.assessment.content.reorder";
     public static final String MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE = "event.assessment.collaborator.update";

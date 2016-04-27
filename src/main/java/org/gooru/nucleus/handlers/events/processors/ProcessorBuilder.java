@@ -10,8 +10,8 @@ public final class ProcessorBuilder {
         return new MessageProcessor(message);
     }
 
-    public static Processor buildEmailProcessor(Vertx vertx, JsonObject config, JsonObject resultData) {
-        return new EmailProcessor(vertx, config, resultData);
+    public static Processor buildEmailProcessor(Vertx vertx, JsonObject config, JsonObject resultData, JsonObject message) {
+        return new EmailProcessor(vertx, config, resultData, message);
     }
 
     private ProcessorBuilder(Message<Object> message) {
