@@ -24,7 +24,6 @@ public class AJEntityCollection extends Model {
     public static final String PUBLISH_STATUS = "publish_status";
     public static final String THUMBNAIL = "thumbnail";
     public static final String LEARNING_OBJECTIVE = "learning_objective";
-    public static final String AUDIENCE = "audience";
     public static final String METADATA = "metadata";
     public static final String TAXONOMY = "taxonomy";
     public static final String ORIENTATION = "orientation";
@@ -38,7 +37,7 @@ public class AJEntityCollection extends Model {
 
     public static final String SELECT_COLLECTION =
         "SELECT id, title, owner_id, creator_id, original_creator_id, original_collection_id, publish_date, publish_status, thumbnail,"
-            + " learning_objective, audience, metadata, taxonomy, orientation, setting, grading, visible_on_profile, collaborator, course_id, unit_id,"
+            + " learning_objective, metadata, taxonomy, orientation, setting, grading, visible_on_profile, collaborator, course_id, unit_id,"
             + " lesson_id FROM collection WHERE id = ?::uuid AND format = 'collection'::content_container_type";
 
     public static final String SELECT_COLLABORATOR =
@@ -46,17 +45,17 @@ public class AJEntityCollection extends Model {
     
     public static final List<String> COLLECTION_FIELDS =
         Arrays.asList(ID, TITLE, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, ORIGINAL_COLLECTION_ID, PUBLISH_DATE,
-            PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE, AUDIENCE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING,
+            PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING,
             VISIBLE_ON_PROFILE, COLLABORATOR, COURSE_ID, LESSON_ID);
 
     public static final String SELECT_ASSESSMENT =
         "SELECT id, title, owner_id, creator_id, original_creator_id, original_collection_id, publish_date, publish_status, thumbnail,"
-            + " learning_objective, audience, metadata, taxonomy, orientation, setting, grading, visible_on_profile, collaborator, course_id, unit_id,"
+            + " learning_objective, metadata, taxonomy, orientation, setting, grading, visible_on_profile, collaborator, course_id, unit_id,"
             + " lesson_id FROM collection WHERE id = ?::uuid AND format = 'assessment'::content_container_type";
 
     public static final List<String> ASSESSMENT_FIELDS =
         Arrays.asList(ID, TITLE, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, ORIGINAL_COLLECTION_ID, PUBLISH_DATE,
-            PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE, AUDIENCE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING,
+            PUBLISH_STATUS, THUMBNAIL, LEARNING_OBJECTIVE, METADATA, TAXONOMY, ORIENTATION, SETTING, GRADING,
             VISIBLE_ON_PROFILE, COLLABORATOR, COURSE_ID, LESSON_ID);
 
     public static final String SELECT_OWNER_CREATOR =
