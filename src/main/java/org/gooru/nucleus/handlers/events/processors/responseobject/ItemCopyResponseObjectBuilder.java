@@ -40,7 +40,7 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
         return payloadStructure;
     }
 
-    private JsonObject getTargetStructure() {
+    private JsonObject getSourceStructure() {
         JsonObject sourceStructure = new JsonObject();
         JsonObject sourceContent = response.getJsonObject(EventResponseConstants.SOURCE);
         sourceStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(sourceContent));
@@ -52,7 +52,7 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
         return sourceStructure;
     }
 
-    private JsonObject getSourceStructure() {
+    private JsonObject getTargetStructure() {
         JsonObject targetStructure = new JsonObject();
         JsonObject targetContent = response.getJsonObject(EventResponseConstants.TARGET);
         targetStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(targetContent));

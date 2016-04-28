@@ -22,7 +22,6 @@ public class AJEntityCourse extends Model {
     public static final String PUBLISH_DATE = "publish_date";
     public static final String PUBLISH_STATUS = "publish_status";
     public static final String THUMBNAIL = "thumbnail";
-    public static final String AUDIENCE = "audience";
     public static final String METADATA = "metadata";
     public static final String TAXONOMY = "taxonomy";
     public static final String COLLABORATOR = "collaborator";
@@ -34,13 +33,13 @@ public class AJEntityCourse extends Model {
 
     public static final String SELECT_COURSE =
         "SELECT id, title, description, created_at, updated_at, owner_id, creator_id, modifier_id, original_creator_id, original_course_id,"
-            + " parent_course_id, publish_date, publish_status, thumbnail, audience, metadata, taxonomy, collaborator, visible_on_profile, is_deleted,"
+            + " parent_course_id, publish_date, publish_status, thumbnail, metadata, taxonomy, collaborator, visible_on_profile, is_deleted,"
             + " sequence_id, subject_bucket, creator_system FROM course WHERE id = ?::uuid";
     
     public static final String SELECT_COLLABORATOR = "SELECT collaborator FROM course where  id = ?::uuid";
 
     public static final List<String> ALL_FIELDS =
         Arrays.asList(ID, TITLE, DESCRIPTION, OWNER_ID, CREATOR_ID, ORIGINAL_CREATOR_ID, MODIFIER_ID,
-            ORIGINAL_COURSE_ID, PUBLISH_STATUS, PUBLISH_DATE, THUMBNAIL, AUDIENCE, METADATA, TAXONOMY, COLLABORATOR,
+            ORIGINAL_COURSE_ID, PUBLISH_STATUS, PUBLISH_DATE, THUMBNAIL, METADATA, TAXONOMY, COLLABORATOR,
             VISIBLE_ON_PROFILE, IS_DELETED, CREATED_AT, UPDATED_AT, SEQUENCE_ID, SUBJECT_BUCKET, CREATOR_SYSTEM);
 }
