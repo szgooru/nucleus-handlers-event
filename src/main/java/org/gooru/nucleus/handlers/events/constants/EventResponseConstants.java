@@ -7,7 +7,7 @@ public final class EventResponseConstants {
     public static final String EVENT_ID = "eventId";
     public static final String EVENT_NAME = "eventName";
     public static final String SUB_EVENT_NAME = "subEventName";
-    
+
     public static final String EVENT_ITEM_CREATE = "item.create";
     public static final String EVENT_ITEM_UPDATE = "item.update";
     public static final String EVENT_ITEM_DELETE = "item.delete";
@@ -23,7 +23,7 @@ public final class EventResponseConstants {
     public static final String EVENT_COURSE_REORDER = "course.reorder";
     public static final String EVENT_CLASS_COURSE_ASSIGNED = "class.course.assigned";
     public static final String EVEBT_CLASS_CONTENT_VISIBLE = "class.content.visible";
-    
+
     public static final String METRICS = "metrics";
 
     public static final String CONTEXT = "context";
@@ -31,6 +31,7 @@ public final class EventResponseConstants {
     public static final String PARENT_GOORU_ID = "parentGooruId";
     public static final String SOURCE_GOORU_ID = "sourceGooruId";
     public static final String CLIENT_SOURCE = "clientSource";
+    public static final String COURSE_HIERARCHY = "courseHierarchy";
 
     public static final String PAYLOAD_OBJECT = "payLoadObject";
     public static final String DATA = "data";

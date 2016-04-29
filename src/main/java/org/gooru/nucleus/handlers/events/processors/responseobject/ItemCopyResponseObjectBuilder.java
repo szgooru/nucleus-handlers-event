@@ -44,10 +44,9 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
         JsonObject sourceStructure = new JsonObject();
         JsonObject sourceContent = response.getJsonObject(EventResponseConstants.SOURCE);
         sourceStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(sourceContent));
-        sourceStructure.put(EventResponseConstants.PARENT_GOORU_ID, (Object) null);
+        sourceStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(sourceContent));
         sourceStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(sourceContent));
         sourceStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(sourceContent));
-        sourceStructure.put(EventResponseConstants.CLASS_GOORU_ID, (Object) null);
         updateCULCInfo(sourceContent, sourceStructure);
         return sourceStructure;
     }
@@ -56,10 +55,9 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
         JsonObject targetStructure = new JsonObject();
         JsonObject targetContent = response.getJsonObject(EventResponseConstants.TARGET);
         targetStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(targetContent));
-        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, (Object) null);
+        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(targetContent));
         targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(targetContent));
         targetStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(targetContent));
-        targetStructure.put(EventResponseConstants.CLASS_GOORU_ID, (Object) null);
         updateCULCInfo(targetContent, targetStructure);
         return targetStructure;
     }

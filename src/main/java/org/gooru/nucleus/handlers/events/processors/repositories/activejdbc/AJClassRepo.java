@@ -42,10 +42,10 @@ public class AJClassRepo implements ClassRepo {
         Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
         String contentId = context.eventBody().getString(EventRequestConstants.ID);
         JsonObject result = context.eventBody();
-        LazyList<AJEntityClass> classes =
-            AJEntityClass.findBySQL(AJEntityClass.SELECT_COLLABORATOR, contentId);
+        LazyList<AJEntityClass> classes = AJEntityClass.findBySQL(AJEntityClass.SELECT_COLLABORATOR, contentId);
         if (!classes.isEmpty()) {
-            result.put(EventRequestConstants.COLLABORATORS, new JsonArray(classes.get(0).getString(AJEntityClass.COLLABORATOR)));
+            result.put(EventRequestConstants.COLLABORATORS,
+                new JsonArray(classes.get(0).getString(AJEntityClass.COLLABORATOR)));
         }
         Base.close();
         return result;
@@ -68,7 +68,18 @@ public class AJClassRepo implements ClassRepo {
 
     @Override
     public JsonObject classContentVisibleEvent() {
-        // TODO: get visibility of class and return
+        /*
+         * Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+         * String classId =
+         * context.eventBody().getString(EventRequestConstants.ID);
+         * LazyList<AJEntityClass> classes =
+         * AJEntityClass.where(AJEntityClass.SELECT_CONTENT_VISIBILITY,
+         * classId); if (classes.isEmpty()) { LOGGER.warn(
+         * "Not able to find class '{}'", classId); return null; } Base.close();
+         * return new
+         * JsonObject(classes.get(0).getString(AJEntityClass.CONTENT_VISIBILITY)
+         * );
+         */
         return new JsonObject();
     }
 

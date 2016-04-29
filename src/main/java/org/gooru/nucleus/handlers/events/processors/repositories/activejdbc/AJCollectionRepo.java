@@ -67,7 +67,8 @@ public class AJCollectionRepo implements CollectionRepo {
 
     @Override
     public JsonObject addContentToCollectionEvent() {
-        return new JsonObject();
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        return getCollection(contentId);
     }
 
     @Override
@@ -78,7 +79,8 @@ public class AJCollectionRepo implements CollectionRepo {
         LazyList<AJEntityCollection> collections =
             AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLABORATOR, contentId);
         if (!collections.isEmpty()) {
-            result.put(EventRequestConstants.COLLABORATORS, collections.get(0).getString(AJEntityCollection.COLLABORATOR));
+            result.put(EventRequestConstants.COLLABORATORS,
+                collections.get(0).getString(AJEntityCollection.COLLABORATOR));
         }
         Base.close();
         return result;
@@ -92,7 +94,7 @@ public class AJCollectionRepo implements CollectionRepo {
             LOGGER.error("no target exists in move collection event");
             return response;
         }
-        
+
         String targetLessonId = target.getString(EventRequestConstants.LESSON_ID);
         JsonObject targetLesson = RepoBuilder.buildLessonRepo(null).getLesson(targetLessonId);
         response.put(EventResponseConstants.TARGET, targetLesson);
@@ -102,7 +104,7 @@ public class AJCollectionRepo implements CollectionRepo {
             LOGGER.error("no source exists in move collection event");
             return response;
         }
-        
+
         String sourceLessonId = source.getString(EventRequestConstants.LESSON_ID);
         JsonObject sourceLesson = RepoBuilder.buildLessonRepo(null).getLesson(sourceLessonId);
         response.put(EventResponseConstants.SOURCE, sourceLesson);
@@ -154,7 +156,8 @@ public class AJCollectionRepo implements CollectionRepo {
         LazyList<AJEntityCollection> collections =
             AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLABORATOR, contentId);
         if (!collections.isEmpty()) {
-            result.put(EventRequestConstants.COLLABORATORS, new JsonArray(collections.get(0).getString(AJEntityCollection.COLLABORATOR)));
+            result.put(EventRequestConstants.COLLABORATORS,
+                new JsonArray(collections.get(0).getString(AJEntityCollection.COLLABORATOR)));
         }
         Base.close();
         return result;
@@ -213,7 +216,7 @@ public class AJCollectionRepo implements CollectionRepo {
 
     private String toPostgresArrayString(JsonArray input) {
         int approxSize = ((input.size() + 1) * 36); // Length of UUID is around
-                                                    // 36
+ // 36
         // chars
         if (input.isEmpty()) {
             return "{}";

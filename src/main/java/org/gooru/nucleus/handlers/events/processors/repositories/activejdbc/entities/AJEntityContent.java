@@ -1,11 +1,11 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.IdName;
 import org.javalite.activejdbc.annotations.Table;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by subbu on 06-Jan-2016.
@@ -72,5 +72,7 @@ public class AJEntityContent extends Model {
         PUBLIH_STATUS, ANSWER, CONTENT_FORMAT, CONTENT_SUBFORMAT, METADATA, TAXONOMY, DEPTH_OF_KNOWLEDGE,
         HINT_EXPLANATION_DETAIL, THUMBNAIL, CREATOR_ID, ORIGINAL_CONTENT_ID, ORIGINAL_CREATOR_ID, IS_DELETED,
         IS_COPYRIGHT_OWNER, COPYRIGHT_OWNER, VISIBLE_ON_PROFILE, COURSE_ID, UNIT_ID, LESSON_ID, COLLECTION_ID);
+
+    public static final String SELECT_CONTENT_FORMAT = "SELECT content_format FROM content WHERE id = ?::uuid";
 
 }

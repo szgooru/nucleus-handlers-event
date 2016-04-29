@@ -65,7 +65,7 @@ public class ResponseObject {
             userId = sessionToken;
         }
 
-        userStructure.put(EventResponseConstants.USER_IP, (Object) null); 
+        userStructure.put(EventResponseConstants.USER_IP, (Object) null);
         userStructure.put(EventResponseConstants.USER_AGENT, (Object) null);
         userStructure.put(EventResponseConstants.GOORU_UID, userId);
         return userStructure;
@@ -86,11 +86,11 @@ public class ResponseObject {
             return null;
         }
     }
-    
+
     protected String getSubEventName() {
         return eventName;
     }
-    
+
     private String getEventName() {
         String retVal = null;
         switch (eventName) {
@@ -142,19 +142,19 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
             retVal = EventResponseConstants.EVENT_ITEM_MOVE;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             retVal = EventResponseConstants.EVENT_ITEM_ADD;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_CLASS_COLLABORATOR_UPDATE:
             retVal = EventResponseConstants.EVENT_COLLABORATOR_UPDATE;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_COURSE_CONTENT_REORDER:
@@ -162,35 +162,35 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
             retVal = EventResponseConstants.EVENT_CONTENT_REORDER;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
             retVal = EventResponseConstants.EVENT_CLASS_JOIN;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
             retVal = EventResponseConstants.EVENT_CLASS_INVITE;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_PROFILE_FOLLOW:
             retVal = EventResponseConstants.EVENT_PROFILE_FOLLOW;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_PROFILE_UNFOLLOW:
             retVal = EventResponseConstants.EVENT_PROFILE_UNFOLLOW;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
             retVal = EventResponseConstants.EVENT_COURSE_REORDER;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_CLASS_COURSE_ASSIGNED:
             retVal = EventResponseConstants.EVENT_CLASS_COURSE_ASSIGNED;
             break;
-            
+
         case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
             retVal = EventResponseConstants.EVEBT_CLASS_CONTENT_VISIBLE;
             break;
-            
+
         default:
             break;
         }
@@ -359,7 +359,6 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
         case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
-        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
             retVal = EventResponseConstants.FORMAT_COLLECTION;
             break;
@@ -370,7 +369,6 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
-        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             retVal = EventResponseConstants.FORMAT_ASSESSMENT;
             break;
 
@@ -484,8 +482,8 @@ public class ResponseObject {
         return retVal;
     }
 
-    protected Object getParentContentId(JsonObject content) {
-        String parentContentId = null;
+    protected String getParentGooruId(JsonObject content) {
+        String parentGooruId = null;
         switch (eventName) {
         case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
         case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
@@ -495,7 +493,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
-            parentContentId = content.getString(EntityConstants.COLLECTION_ID);
+            parentGooruId = content.getString(EntityConstants.COLLECTION_ID);
             break;
 
         case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
@@ -507,7 +505,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
-            parentContentId = content.getString(EntityConstants.LESSON_ID);
+            parentGooruId = content.getString(EntityConstants.LESSON_ID);
             break;
 
         case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
@@ -515,7 +513,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         case MessageConstants.MSG_OP_EVT_LESSON_COPY:
         case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
-            parentContentId = content.getString(EntityConstants.UNIT_ID);
+            parentGooruId = content.getString(EntityConstants.UNIT_ID);
             break;
 
         case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
@@ -523,7 +521,74 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         case MessageConstants.MSG_OP_EVT_UNIT_COPY:
         case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
-            parentContentId = content.getString(EntityConstants.COURSE_ID);
+            parentGooruId = content.getString(EntityConstants.COURSE_ID);
+            break;
+
+        default:
+            break;
+        }
+
+        return parentGooruId;
+    }
+
+    protected String getParentContentId(JsonObject content) {
+        String parentContentId = null;
+        switch (eventName) {
+        case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
+        case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
+        case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
+        case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
+        case MessageConstants.MSG_OP_EVT_QUESTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+            parentContentId = content.getString(EntityConstants.PARENT_CONTENT_ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CREATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
+            parentContentId = content.getString(EntityConstants.PARENT_COLLECTION_ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_LESSON_CREATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_UPDATE:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+        case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+        case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
+        case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
+            parentContentId = content.getString(EntityConstants.PARENT_LESSON_ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_UNIT_CREATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_UPDATE:
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+        case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+        case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
+        case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
+            parentContentId = content.getString(EntityConstants.PARENT_UNIT_ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_COURSE_CREATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
+        case MessageConstants.MSG_OP_EVT_COURSE_COPY:
+        case MessageConstants.MSG_OP_EVT_COURSE_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_COURSE_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COURSE_REORDER:
+            parentContentId = content.getString(EntityConstants.PARENT_COURSE_ID);
             break;
 
         default:
@@ -660,5 +725,33 @@ public class ResponseObject {
             break;
         }
         return originalContentGooruId;
+    }
+
+    protected String getCourseId(JsonObject content) {
+        String courseId = null;
+        switch (eventName) {
+        case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
+            courseId = content.getString(EntityConstants.ID);
+            break;
+        case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+            courseId = content.getString(EntityConstants.COURSE_ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_COURSE_DELETE:
+            courseId = response.getString(EntityConstants.ID);
+            break;
+
+        case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
+        case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+        case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
+        case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+            courseId = response.getString(EntityConstants.COURSE_ID);
+            break;
+        }
+
+        return courseId;
     }
 }
