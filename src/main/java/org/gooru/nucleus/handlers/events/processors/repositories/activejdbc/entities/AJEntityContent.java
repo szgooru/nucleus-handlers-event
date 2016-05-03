@@ -17,7 +17,6 @@ public class AJEntityContent extends Model {
     public static final String ID = "id";
     public static final String TITLE = "title";
     public static final String URL = "url";
-    public static final String SHORT_TITLE = "short_title";
     public static final String PUBLIH_STATUS = "publish_status";
     public static final String ANSWER = "answer";
     public static final String METADATA = "metadata";
@@ -62,13 +61,13 @@ public class AJEntityContent extends Model {
         RESOURCE_INFO, VISIBLE_ON_PROFILE, DISPLAY_GUIDE, ACCESSIBILITY, COURSE_ID, UNIT_ID, LESSON_ID, COLLECTION_ID);
 
     public static final String SELECT_QUESTION =
-        "SELECT id, title, short_title, publish_date, publish_status, description, answer, content_format, content_subformat, metadata, taxonomy,"
+        "SELECT id, title, publish_date, publish_status, description, answer, content_format, content_subformat, metadata, taxonomy,"
             + " depth_of_knowledge, hint_explanation_detail, thumbnail, creator_id, original_content_id, original_creator_id, is_deleted, "
             + "is_copyright_owner,"
             + " copyright_owner, visible_on_profile, course_id, unit_id, lesson_id, collection_id FROM content WHERE id = ?::uuid AND content_format ="
             + " 'question'::content_format_type";
 
-    public static final List<String> QUESTION_FIELDS = Arrays.asList(ID, TITLE, DESCRIPTION, SHORT_TITLE, PUBLISH_DATE,
+    public static final List<String> QUESTION_FIELDS = Arrays.asList(ID, TITLE, DESCRIPTION, PUBLISH_DATE,
         PUBLIH_STATUS, ANSWER, CONTENT_FORMAT, CONTENT_SUBFORMAT, METADATA, TAXONOMY, DEPTH_OF_KNOWLEDGE,
         HINT_EXPLANATION_DETAIL, THUMBNAIL, CREATOR_ID, ORIGINAL_CONTENT_ID, ORIGINAL_CREATOR_ID, IS_DELETED,
         IS_COPYRIGHT_OWNER, COPYRIGHT_OWNER, VISIBLE_ON_PROFILE, COURSE_ID, UNIT_ID, LESSON_ID, COLLECTION_ID);
