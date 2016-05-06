@@ -27,13 +27,13 @@ public class ClassContentVisibilityResponseObjectBuilder extends ResponseObject 
         String contentId =
             this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
         contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId);
+        contextStructure.put(EventResponseConstants.COURSE_HIERARCHY, (Object) null);
         contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
         return contextStructure;
     }
 
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
-        payloadStructure.put(EventResponseConstants.DATA, this.response);
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());
         return payloadStructure;

@@ -1,9 +1,7 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
-import org.gooru.nucleus.handlers.events.constants.EntityConstants;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
-import org.gooru.nucleus.handlers.events.constants.MessageConstants;
 import org.gooru.nucleus.handlers.events.processors.repositories.RepoBuilder;
 
 import io.vertx.core.json.JsonObject;
@@ -47,28 +45,17 @@ public class ItemMoveResponseObjectBuilder extends ResponseObject {
         JsonObject sourceStructure = new JsonObject();
         JsonObject sourceContent = response.getJsonObject(EventResponseConstants.SOURCE);
         sourceStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(sourceContent));
-        sourceStructure.put(EventResponseConstants.PARENT_GOORU_ID, (Object) null);
+        sourceStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(sourceContent));
         sourceStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(sourceContent));
         sourceStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(sourceContent));
-        
-        updateCULCInfo(sourceContent, sourceStructure);
-        
-        String eventName = getSubEventName();
-        String courseId = null;
-        switch (eventName) {
-        case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
-            courseId = sourceContent.getString(EntityConstants.ID);
-            break;
-        case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
-        case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
-            courseId = sourceContent.getString(EntityConstants.COURSE_ID);
-            break;
-        }
 
+        updateCULCInfo(sourceContent, sourceStructure);
+
+        String courseId = getCourseId(sourceContent);
         String classIds = null;
         if (courseId != null) {
             classIds = RepoBuilder.buildClassRepo(null).getClassIdsForCourse(courseId);
-        } 
+        }
         sourceStructure.put(EventResponseConstants.CLASS_GOORU_ID, classIds);
         return sourceStructure;
     }
@@ -77,12 +64,13 @@ public class ItemMoveResponseObjectBuilder extends ResponseObject {
         JsonObject targetStructure = new JsonObject();
         JsonObject targetContent = response.getJsonObject(EventResponseConstants.TARGET);
         targetStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(targetContent));
-        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, (Object) null);
-        targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(targetContent));
+        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(targetContent));
+        targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, (Object) null);
         targetStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(targetContent));
+        // TODO: fetch class ids for target
         targetStructure.put(EventResponseConstants.CLASS_GOORU_ID, (Object) null);
         updateCULCInfo(targetContent, targetStructure);
-        
+
         return targetStructure;
     }
 

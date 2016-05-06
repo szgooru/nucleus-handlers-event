@@ -1,6 +1,5 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc;
 
-import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
@@ -12,6 +11,8 @@ import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonObject;
 
 /**
  * Created by subbu on 06-Jan-2016.
@@ -109,4 +110,18 @@ public class AJContentRepo implements ContentRepo {
         Base.close();
         return result;
     }
+
+    @Override
+    public String getContentFormatById(String contentId) {
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String contentFormat = null;
+        LazyList<AJEntityContent> contents =
+            AJEntityContent.findBySQL(AJEntityContent.SELECT_CONTENT_FORMAT, contentId);
+        if (!contents.isEmpty()) {
+            contentFormat = contents.get(0).getString(AJEntityContent.CONTENT_FORMAT);
+        }
+        Base.close();
+        return contentFormat;
+    }
+
 }

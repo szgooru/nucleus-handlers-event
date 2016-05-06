@@ -1,11 +1,11 @@
 package org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.javalite.activejdbc.Model;
 import org.javalite.activejdbc.annotations.IdName;
 import org.javalite.activejdbc.annotations.Table;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Table("class")
 @IdName("id")
@@ -32,11 +32,13 @@ public class AJEntityClass extends Model {
     public static final String MODIFIER_ID = "modifier_id";
 
     public static final String SELECT_QUERY = "id = ?::uuid";
-    
+
     public static final String SELECT_COLLABORATOR = "SELECT collaborator FROM class WHERE id = ?::uuid";
 
     public static final List<String> ALL_FIELDS =
         Arrays.asList(ID, CREATOR_ID, TITLE, DESCRIPTION, GREETING, GRADE, CLASS_SHARING, COVER_IMAGE, GRADE, CODE,
             MIN_SCORE, END_DATE, COURSE_ID, COLLABORATOR, GOORU_VERSION, CONTENT_VISIBILITY, IS_ARCHIVED);
     public static final String SELECT_CLASSID_FOR_COURSE = "SELECT id FROM class WHERE course_id = ?::uuid";
+
+    public static final String SELECT_CONTENT_VISIBILITY = "SELECT content_visibility FROM class WHERE id = ?::uuid";
 }

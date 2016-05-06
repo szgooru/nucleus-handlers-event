@@ -19,5 +19,7 @@ public interface ContentRepo {
     JsonObject deletedQuestionEvent();
     
     JsonObject getResource(String resourceId);
+    
+    String getContentFormatById(String contentId);
 
 }
