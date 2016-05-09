@@ -70,6 +70,7 @@ public class AJEntityContent extends Model {
         HINT_EXPLANATION_DETAIL, THUMBNAIL, COURSE_ID, UNIT_ID, LESSON_ID, COLLECTION_ID, IS_COPYRIGHT_OWNER, COPYRIGHT_OWNER, VISIBLE_ON_PROFILE,
         IS_DELETED);
 
+
     public static final String SELECT_CONTENT_FORMAT = "SELECT content_format FROM content WHERE id = ?::uuid";
 
 }
