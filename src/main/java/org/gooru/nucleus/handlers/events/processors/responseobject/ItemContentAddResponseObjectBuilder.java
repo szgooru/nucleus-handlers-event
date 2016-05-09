@@ -8,6 +8,9 @@ import io.vertx.core.json.JsonObject;
 
 public class ItemContentAddResponseObjectBuilder extends ResponseObject {
 
+    private String contentFormat;
+    private String contentId;
+    
     protected ItemContentAddResponseObjectBuilder(JsonObject body, JsonObject response) {
         super(body, response);
     }
@@ -25,7 +28,7 @@ public class ItemContentAddResponseObjectBuilder extends ResponseObject {
 
     private JsonObject createContextStructure() {
         JsonObject contextStructure = new JsonObject();
-        String contentId =
+        contentId =
             this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.CONTENT_ID);
         contextStructure.put(EventResponseConstants.CONTENT_GOORU_ID, contentId);
         contextStructure.put(EventResponseConstants.CLIENT_SOURCE, (Object) null);
@@ -34,10 +37,8 @@ public class ItemContentAddResponseObjectBuilder extends ResponseObject {
 
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
+        contentFormat = RepoBuilder.buildContentRepo(null).getContentFormatById(contentId);
         payloadStructure.put(EventResponseConstants.TARGET, getTargetStructure());
-        String contentId =
-            this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.CONTENT_ID);
-        String contentFormat = RepoBuilder.buildContentRepo(null).getContentFormatById(contentId);
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, contentFormat);
         payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());
         return payloadStructure;
@@ -45,10 +46,17 @@ public class ItemContentAddResponseObjectBuilder extends ResponseObject {
 
     private JsonObject getTargetStructure() {
         JsonObject targetStructure = new JsonObject();
-        JsonObject targetContent = new JsonObject();
-        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(response));
-        targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(response));
-        targetStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(response));
+        String parentGooruId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
+        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, parentGooruId);
+        JsonObject content = null;
+        if (contentFormat.equalsIgnoreCase(EventResponseConstants.FORMAT_RESOUCE)) {
+            content = RepoBuilder.buildContentRepo(null).getResource(contentId);
+        } else {
+            content = RepoBuilder.buildContentRepo(null).getQuestion(contentId);
+        }
+        
+        targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(content));
+        targetStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(content));
 
         String courseId = getCourseId(response);
         String classIds = null;
@@ -56,7 +64,7 @@ public class ItemContentAddResponseObjectBuilder extends ResponseObject {
             classIds = RepoBuilder.buildClassRepo(null).getClassIdsForCourse(courseId);
         }
         targetStructure.put(EventResponseConstants.CLASS_GOORU_ID, classIds);
-        updateCULCInfo(targetContent, targetStructure);
+        updateCULCInfo(response, targetStructure);
         return targetStructure;
     }
 

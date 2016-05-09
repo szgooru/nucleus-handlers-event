@@ -221,15 +221,15 @@ public final class EmailDataBuilder {
         List<String> inviteesList = new ArrayList<>();
         invitees.stream().forEach(invitee -> inviteesList.add(invitee.toString()));
 
-        List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(inviteesList);
-        LOGGER.debug("Preparing data for email ids:{}", Arrays.toString(emailIds.toArray()));
+        //List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(inviteesList);
+        LOGGER.debug("Preparing data for email ids:{}", Arrays.toString(inviteesList.toArray()));
         String classId = data.getString(EventRequestConstants.ID);
         JsonObject classObj = RepoBuilder.buildClassRepo(null).getClassById(classId);
         String teacherUsername =
             RepoBuilder.buildUserRepo(null).getUsername(classObj.getString(AJEntityClass.CREATOR_ID));
         JsonArray emailDataArray = new JsonArray();
 
-        emailIds.stream().forEach(email -> {
+        inviteesList.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
             emailData.put(EmailConstants.MAIL_TEMPLATE_NAME, emailTemplate);
             emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));

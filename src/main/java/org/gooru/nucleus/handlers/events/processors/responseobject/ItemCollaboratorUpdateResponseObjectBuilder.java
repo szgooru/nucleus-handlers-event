@@ -1,5 +1,6 @@
 package org.gooru.nucleus.handlers.events.processors.responseobject;
 
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
 import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
@@ -32,8 +33,10 @@ public class ItemCollaboratorUpdateResponseObjectBuilder extends ResponseObject 
 
     private JsonObject createPayLoadObjectStructure() {
         JsonObject payloadStructure = new JsonObject();
+        JsonArray collaboratorsFromResponse = response.getJsonArray(EventRequestConstants.COLLABORATORS);
         JsonObject collaborators = new JsonObject().put(EventRequestConstants.COLLABORATORS,
-            this.response.getJsonArray(EventRequestConstants.COLLABORATORS));
+            (collaboratorsFromResponse != null && !collaboratorsFromResponse.isEmpty()) ? collaboratorsFromResponse
+                : new JsonArray());
         payloadStructure.put(EventResponseConstants.DATA, collaborators);
         payloadStructure.put(EventResponseConstants.CONTENT_FORMAT, getContentFormatFromResponse());
         payloadStructure.put(EventResponseConstants.SUB_EVENT_NAME, getSubEventName());

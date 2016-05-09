@@ -20,6 +20,8 @@ public interface ContentRepo {
     
     JsonObject getResource(String resourceId);
     
+    JsonObject getQuestion(String questionId);
+    
     String getContentFormatById(String contentId);
 
 }
