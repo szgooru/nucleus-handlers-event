@@ -173,11 +173,12 @@ public class AJCollectionRepo implements CollectionRepo {
         JsonObject result = null;
         LazyList<AJEntityCollection> collections =
             AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLECTION, contentId);
+        LOGGER.debug("number of collections found {}", collections.size());
         if (!collections.isEmpty()) {
             result = new JsonObject(new JsonFormatterBuilder()
                 .buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
         }
-
+        LOGGER.debug("returning collection json: {}", result.toString());
         Base.close();
         return result;
     }

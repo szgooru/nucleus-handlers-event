@@ -542,6 +542,10 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_QUESTION_UPDATE:
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+        
+            //Because Analytics need contents parent id in content add events
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             parentContentId = content.getString(EntityConstants.PARENT_CONTENT_ID);
             break;
 
@@ -550,14 +554,12 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
         case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
-        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
-        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
             parentContentId = content.getString(EntityConstants.PARENT_COLLECTION_ID);
@@ -621,10 +623,16 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
         case MessageConstants.MSG_OP_EVT_COLLECTION_DELETE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
             lessonId = fromContent.getString(EntityConstants.LESSON_ID);
             unitId = fromContent.getString(EntityConstants.UNIT_ID);
             courseId = fromContent.getString(EntityConstants.COURSE_ID);
@@ -635,6 +643,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_LESSON_DELETE:
         case MessageConstants.MSG_OP_EVT_LESSON_MOVE:
         case MessageConstants.MSG_OP_EVT_LESSON_COPY:
+        case MessageConstants.MSG_OP_EVT_LESSON_CONTENT_REORDER:
             unitId = fromContent.getString(EntityConstants.UNIT_ID);
             courseId = fromContent.getString(EntityConstants.COURSE_ID);
             break;
@@ -644,6 +653,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_UNIT_DELETE:
         case MessageConstants.MSG_OP_EVT_UNIT_MOVE:
         case MessageConstants.MSG_OP_EVT_UNIT_COPY:
+        case MessageConstants.MSG_OP_EVT_UNIT_CONTENT_REORDER:
             courseId = fromContent.getString(EntityConstants.COURSE_ID);
             break;
 
@@ -698,6 +708,8 @@ public class ResponseObject {
         switch (eventName) {
         case MessageConstants.MSG_OP_EVT_RESOURCE_COPY:
         case MessageConstants.MSG_OP_EVT_QUESTION_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             originalContentGooruId = content.getString(AJEntityContent.ORIGINAL_CONTENT_ID);
             break;
 
@@ -748,6 +760,8 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_DELETE:
         case MessageConstants.MSG_OP_EVT_RESOURCE_DELETE:
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
+        case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
             courseId = response.getString(EntityConstants.COURSE_ID);
             break;
         }
