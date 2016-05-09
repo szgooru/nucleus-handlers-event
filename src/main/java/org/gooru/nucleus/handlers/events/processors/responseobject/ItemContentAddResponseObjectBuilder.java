@@ -46,7 +46,8 @@ public class ItemContentAddResponseObjectBuilder extends ResponseObject {
     private JsonObject getTargetStructure() {
         JsonObject targetStructure = new JsonObject();
         JsonObject targetContent = new JsonObject();
-        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(response));
+        String parentGooruId = this.body.getJsonObject(EventRequestConstants.EVENT_BODY).getString(EventRequestConstants.ID);
+        targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, parentGooruId);
         targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(response));
         targetStructure.put(EventResponseConstants.ORIGINAL_CONTENT_ID, getOriginalContentId(response));
 

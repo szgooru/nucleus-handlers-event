@@ -53,7 +53,11 @@ public class ItemDeleteResponseObjectBuilder extends ResponseObject {
             refParentGooruIds = this.body.getJsonObject(EventRequestConstants.EVENT_BODY)
                 .getJsonArray(EventRequestConstants.COLLECTION_ID);
         } else {
-            refParentGooruIds = new JsonArray().add(getParentGooruId(response));
+            String parentGooruId = getParentGooruId(response);
+            refParentGooruIds = new JsonArray();
+            if (parentGooruId != null) {
+                refParentGooruIds.add(parentGooruId);
+            }
         }
 
         payloadStructure.put(EventResponseConstants.REFERENCE_PARENT_GOORU_IDS, refParentGooruIds);

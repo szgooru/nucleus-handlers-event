@@ -79,8 +79,10 @@ public class AJCollectionRepo implements CollectionRepo {
         LazyList<AJEntityCollection> collections =
             AJEntityCollection.findBySQL(AJEntityCollection.SELECT_COLLABORATOR, contentId);
         if (!collections.isEmpty()) {
-            result.put(EventRequestConstants.COLLABORATORS,
-                collections.get(0).getString(AJEntityCollection.COLLABORATOR));
+            String collaborators = collections.get(0).getString(AJEntityCollection.COLLABORATOR);
+            if (collaborators != null && !collaborators.isEmpty()) {
+                result.put(EventRequestConstants.COLLABORATORS, new JsonArray(collaborators));
+            }
         }
         Base.close();
         return result;
