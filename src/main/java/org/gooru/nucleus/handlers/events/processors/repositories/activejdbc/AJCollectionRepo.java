@@ -142,7 +142,8 @@ public class AJCollectionRepo implements CollectionRepo {
 
     @Override
     public JsonObject addQuestionToAssessmentEvent() {
-        return new JsonObject();
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        return getAssessment(contentId);
     }
 
     @Override

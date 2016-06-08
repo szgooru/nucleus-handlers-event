@@ -43,6 +43,10 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
     private JsonObject getSourceStructure() {
         JsonObject sourceStructure = new JsonObject();
         JsonObject sourceContent = response.getJsonObject(EventResponseConstants.SOURCE);
+        if (sourceContent == null || sourceContent.isEmpty()) {
+            return null;
+        }
+        
         sourceStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(sourceContent));
         sourceStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(sourceContent));
         sourceStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(sourceContent));
@@ -54,6 +58,10 @@ public class ItemCopyResponseObjectBuilder extends ResponseObject {
     private JsonObject getTargetStructure() {
         JsonObject targetStructure = new JsonObject();
         JsonObject targetContent = response.getJsonObject(EventResponseConstants.TARGET);
+        if (targetContent == null || targetContent.isEmpty()) {
+            return null;
+        }
+        
         targetStructure.put(EventResponseConstants.CONTENT_GOORU_ID, getContentGooruId(targetContent));
         targetStructure.put(EventResponseConstants.PARENT_GOORU_ID, getParentGooruId(targetContent));
         targetStructure.put(EventResponseConstants.PARENT_CONTENT_ID, getParentContentId(targetContent));
