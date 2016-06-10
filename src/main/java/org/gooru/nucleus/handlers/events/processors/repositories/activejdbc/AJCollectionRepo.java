@@ -209,7 +209,6 @@ public class AJCollectionRepo implements CollectionRepo {
             .findBySQL(AJEntityCollection.SELECT_OWNER_CREATOR, toPostgresArrayString(refCollectionIds));
         ownerCreatorIdsFromDB.stream().forEach(collection -> {
             uniqueOwnerCreatorIds.add(collection.getString(AJEntityCollection.OWNER_ID));
-            uniqueOwnerCreatorIds.add(collection.getString(AJEntityCollection.CREATOR_ID));
         });
 
         List<String> ownerCreatorIds = new ArrayList<>();
