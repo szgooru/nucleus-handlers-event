@@ -284,8 +284,6 @@ public final class EmailDataBuilder {
 
     private JsonArray buildProfileFollowEmailData() {
         JsonObject data = getData();
-        String folloOnUsername =
-            RepoBuilder.buildUserRepo(null).getUsername(data.getString(EventRequestConstants.FOLLOW_ON_USER_ID));
         String username = RepoBuilder.buildUserRepo(null).getUsername(getUserId());
         List<String> userIds = new ArrayList<>();
         userIds.add(data.getString(EventRequestConstants.FOLLOW_ON_USER_ID));
@@ -298,7 +296,6 @@ public final class EmailDataBuilder {
             emailData.put(EmailConstants.TO_ADDRESSES, new JsonArray().add(email));
 
             JsonObject emailContextData = new JsonObject();
-            emailContextData.put(EmailConstants.FOLLOW_ON_USERNAME, folloOnUsername);
             emailContextData.put(EmailConstants.USERNAME, username);
             emailData.put(EmailConstants.MAIL_TEMPLATE_CONTEXT, emailContextData);
             emailDataArray.add(emailData);
