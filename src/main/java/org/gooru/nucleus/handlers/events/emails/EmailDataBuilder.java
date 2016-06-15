@@ -284,14 +284,13 @@ public final class EmailDataBuilder {
 
     private JsonArray buildProfileFollowEmailData() {
         JsonObject data = getData();
-        String userId = data.getString(EventRequestConstants.USER_ID);
-        List<String> userIds = new ArrayList<>();
-        userIds.add(userId);
-        List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
-        LOGGER.debug("Preparing data for email ids:{}", Arrays.toString(emailIds.toArray()));
         String folloOnUsername =
             RepoBuilder.buildUserRepo(null).getUsername(data.getString(EventRequestConstants.FOLLOW_ON_USER_ID));
         String username = RepoBuilder.buildUserRepo(null).getUsername(getUserId());
+        List<String> userIds = new ArrayList<>();
+        userIds.add(data.getString(EventRequestConstants.FOLLOW_ON_USER_ID));
+        List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
+        LOGGER.debug("Preparing data for email ids:{}", Arrays.toString(emailIds.toArray()));
         JsonArray emailDataArray = new JsonArray();
         emailIds.stream().forEach(email -> {
             JsonObject emailData = new JsonObject();
