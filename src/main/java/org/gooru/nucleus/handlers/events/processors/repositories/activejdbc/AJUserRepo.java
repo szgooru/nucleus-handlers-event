@@ -55,6 +55,7 @@ public class AJUserRepo implements UserRepo {
             firstLastName[0] = firstLastNames.get(0).getString(AJEntityUserDemographic.FIRSTNAME);
             firstLastName[1] = firstLastNames.get(0).getString(AJEntityUserDemographic.LASTNAME);
         }
+        Base.close();
         return firstLastName;
     }
 
