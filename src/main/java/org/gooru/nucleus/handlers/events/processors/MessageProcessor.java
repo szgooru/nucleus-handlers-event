@@ -137,7 +137,8 @@ class MessageProcessor implements Processor {
 
             case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_REORDER:
                 result = processEventCollectionContentReorder();
-
+                break;
+                
             case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
             case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
                 result = processEventAssessmentCreateUpdate();
@@ -161,7 +162,8 @@ class MessageProcessor implements Processor {
 
             case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
                 result = processEventAssessmentContentReorder();
-
+                break;
+                
             case MessageConstants.MSG_OP_EVT_RESOURCE_CREATE:
             case MessageConstants.MSG_OP_EVT_RESOURCE_UPDATE:
                 result = processEventResourceCreateUpdate();
