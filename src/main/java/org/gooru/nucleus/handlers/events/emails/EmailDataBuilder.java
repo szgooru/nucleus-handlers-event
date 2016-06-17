@@ -96,7 +96,7 @@ public final class EmailDataBuilder {
         String collectionId = eventData.getString(EventRequestConstants.ID);
         JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
 
-        List<String> userIds = new ArrayList<>();
+        List<String> userIds = new ArrayList<>(collaboratorsAdded.size());
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
 
         List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
@@ -126,7 +126,7 @@ public final class EmailDataBuilder {
         JsonObject eventData = getEventBody();
         String classId = eventData.getString(EventRequestConstants.ID);
         JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
-        List<String> userIds = new ArrayList<>();
+        List<String> userIds = new ArrayList<>(collaboratorsAdded.size());
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
 
         List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
@@ -159,7 +159,7 @@ public final class EmailDataBuilder {
         String courseId = eventData.getString(EventRequestConstants.ID);
         JsonArray collaboratorsAdded = eventData.getJsonArray(EventRequestConstants.COLLABORATORS_ADDED);
 
-        List<String> userIds = new ArrayList<>();
+        List<String> userIds = new ArrayList<>(collaboratorsAdded.size());
         collaboratorsAdded.stream().forEach(collaborator -> userIds.add(collaborator.toString()));
 
         List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
@@ -219,7 +219,7 @@ public final class EmailDataBuilder {
     private JsonArray buildUserInviteToClassEmailData() {
         JsonObject data = getData();
         JsonArray invitees = data.getJsonArray(EventRequestConstants.INVITEES);
-        List<String> inviteesList = new ArrayList<>();
+        List<String> inviteesList = new ArrayList<>(invitees.size());
         invitees.stream().forEach(invitee -> inviteesList.add(invitee.toString()));
 
         //List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(inviteesList);
@@ -252,7 +252,7 @@ public final class EmailDataBuilder {
     private JsonArray buildUserInviteToOpenClassEmailData() {
         JsonObject data = getData();
         JsonArray invitees = data.getJsonArray(EventRequestConstants.INVITEES);
-        List<String> inviteesList = new ArrayList<>();
+        List<String> inviteesList = new ArrayList<>(invitees.size());
         invitees.stream().forEach(invitee -> inviteesList.add(invitee.toString()));
 
         List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(inviteesList);
@@ -285,7 +285,7 @@ public final class EmailDataBuilder {
     private JsonArray buildProfileFollowEmailData() {
         JsonObject data = getData();
         String username = RepoBuilder.buildUserRepo(null).getUsername(getUserId());
-        List<String> userIds = new ArrayList<>();
+        List<String> userIds = new ArrayList<>(1);
         userIds.add(data.getString(EventRequestConstants.FOLLOW_ON_USER_ID));
         List<String> emailIds = RepoBuilder.buildUserRepo(null).getMultipleEmailIds(userIds);
         LOGGER.debug("Preparing data for email ids:{}", Arrays.toString(emailIds.toArray()));
