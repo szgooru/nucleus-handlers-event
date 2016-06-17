@@ -179,7 +179,6 @@ public class AJCollectionRepo implements CollectionRepo {
             result = new JsonObject(new JsonFormatterBuilder()
                 .buildSimpleJsonFormatter(false, AJEntityCollection.COLLECTION_FIELDS).toJson(collections.get(0)));
         }
-        LOGGER.debug("returning collection json: {}", result.toString());
         Base.close();
         return result;
     }
