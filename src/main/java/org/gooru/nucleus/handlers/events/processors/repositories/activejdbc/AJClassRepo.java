@@ -117,4 +117,9 @@ public class AJClassRepo implements ClassRepo {
         return classIds.toString();
     }
 
+    @Override
+    public JsonObject classRemoveStudentEvent() {
+        return context.eventBody();
+    }
+
 }

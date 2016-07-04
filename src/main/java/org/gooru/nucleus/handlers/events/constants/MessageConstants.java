@@ -65,6 +65,7 @@ public final class MessageConstants {
     public static final String MSG_OP_EVT_CLASS_STUDENT_INVITE = "event.class.student.invite";
     public static final String MSG_OP_EVT_CLASS_COURSE_ASSIGNED = "event.class.course.assigned";
     public static final String MSG_OP_EVT_CLASS_CONTENT_VISIBLE = "event.class.content.visible";
+    public static final String MSG_OP_EVT_CLASS_STUDENT_REMOVAL = "event.class.student.remove";
 
     public static final String MSG_OP_EVT_PROFILE_FOLLOW = "event.profile.follow";
     public static final String MSG_OP_EVT_PROFILE_UNFOLLOW = "event.profile.unfollow";
@@ -85,6 +86,7 @@ public final class MessageConstants {
     public static final int EST_JOIN_CLASS = 11;
     public static final int EST_ASSIGN_CLASS_COURSE = 12;
     public static final int EST_CLASS_CONTENT_VISIBILITY = 13;
+    public static final int EST_REMOVE_STUDENT = 14;
 
     private MessageConstants() {
         throw new AssertionError();

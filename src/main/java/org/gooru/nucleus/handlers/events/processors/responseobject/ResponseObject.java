@@ -190,6 +190,10 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
             retVal = EventResponseConstants.EVEBT_CLASS_CONTENT_VISIBLE;
             break;
+            
+        case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_REMOVAL:
+            retVal = EventResponseConstants.EVEBT_CLASS_REMOVE_STUDENT;
+            break;
 
         default:
             break;
@@ -408,6 +412,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_CLASS_COURSE_ASSIGNED:
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_INVITE:
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_JOIN:
+        case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_REMOVAL:
             retVal = EventResponseConstants.FORMAT_CLASS;
 
         default:

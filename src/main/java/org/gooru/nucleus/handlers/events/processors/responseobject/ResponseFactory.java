@@ -87,4 +87,9 @@ public final class ResponseFactory {
     private ResponseFactory() {
         throw new AssertionError();
     }
+
+    public static JsonObject generateClassStudentRemoveResponse(JsonObject body, JsonObject response) {
+        return new ResponseObjectBuilder().setBody(body).setResponse(response)
+            .setEventType(MessageConstants.EST_REMOVE_STUDENT).build();
+    }
 }
