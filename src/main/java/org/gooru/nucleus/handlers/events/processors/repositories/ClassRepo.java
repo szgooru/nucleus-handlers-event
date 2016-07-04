@@ -21,4 +21,6 @@ public interface ClassRepo {
     JsonObject getClassById(String classId);
 
     String getClassIdsForCourse(String courseId);
+
+    JsonObject classRemoveStudentEvent();
 }

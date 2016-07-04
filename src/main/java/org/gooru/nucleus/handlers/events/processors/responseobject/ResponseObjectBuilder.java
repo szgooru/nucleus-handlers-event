@@ -88,6 +88,9 @@ public final class ResponseObjectBuilder {
             case MessageConstants.EST_CLASS_CONTENT_VISIBILITY:
                 result = buildClassContentVisibility();
                 break;
+            case MessageConstants.EST_REMOVE_STUDENT:
+                result = buildClassRemoveStudentFromClassResponseObject();
+                break;
             default:
                 LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
                 result = buildFailureResponseObject();
@@ -96,6 +99,10 @@ public final class ResponseObjectBuilder {
         }
 
         return result;
+    }
+
+    private JsonObject buildClassRemoveStudentFromClassResponseObject() {
+        return new RemoveStudentFromClassResponseObject(body, response).build();
     }
 
     private JsonObject buildItemCreateUpdateResponseObject() {
