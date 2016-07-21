@@ -227,6 +227,11 @@ class MessageProcessor implements Processor {
             case MessageConstants.MSG_OP_EVT_PROFILE_UNFOLLOW:
                 result = processEventProfileFollowUnfollow();
                 break;
+                
+            case MessageConstants.MSG_OP_EVT_USER_CREATE:
+            case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+                result = processEventUserCreateUpdate();
+                break;
 
             default:
                 LOGGER.error("Invalid operation type passed in, not able to handle");
@@ -956,6 +961,22 @@ class MessageProcessor implements Processor {
             if (result != null) {
                 LOGGER.debug("result returned: {}", result);
                 return ResponseFactory.generateFollowUnfollowProfileResponse(request, result);
+            }
+        } catch (Throwable t) {
+            LOGGER.error("Error while getting content from database:", t);
+        }
+        LOGGER.error("Failed to generate event. Input data received {}", request);
+        TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+        return null;
+    }
+    
+    private JsonObject processEventUserCreateUpdate() {
+        try {
+            ProcessorContext context = createContext();
+            JsonObject result = RepoBuilder.buildUserRepo(context).getUser();
+            if (result != null) {
+                LOGGER.debug("result returned: {}", result);
+                return ResponseFactory.generateUserCreateUpdateResponse(request, result);
             }
         } catch (Throwable t) {
             LOGGER.error("Error while getting content from database:", t);

@@ -5,19 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.gooru.nucleus.handlers.events.app.components.DataSourceRegistry;
+import org.gooru.nucleus.handlers.events.constants.EventRequestConstants;
+import org.gooru.nucleus.handlers.events.constants.EventResponseConstants;
 import org.gooru.nucleus.handlers.events.processors.ProcessorContext;
 import org.gooru.nucleus.handlers.events.processors.repositories.UserRepo;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUserDemographic;
 import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.entities.AJEntityUserIdentity;
+import org.gooru.nucleus.handlers.events.processors.repositories.activejdbc.formatter.JsonFormatterBuilder;
 import org.javalite.activejdbc.Base;
 import org.javalite.activejdbc.LazyList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import io.vertx.core.json.JsonObject;
 
 public class AJUserRepo implements UserRepo {
 
     private final ProcessorContext context;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AJUserRepo.class);
 
     public AJUserRepo(ProcessorContext context) {
         this.context = context;
@@ -80,5 +82,28 @@ public class AJUserRepo implements UserRepo {
         }
     }
 
+    @Override
+    public JsonObject getUser() {
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String userId = context.eventBody().getString(EventRequestConstants.ID);
+        LazyList<AJEntityUserDemographic> userDemographics = AJEntityUserDemographic.find("id = ?::uuid", userId);
+        LazyList<AJEntityUserIdentity> userIdentities = AJEntityUserIdentity.find("user_id = ?::uuid", userId);
+        JsonObject userIdentityJson = new JsonObject();
+        if (!userIdentities.isEmpty()) {
+            userIdentityJson = new JsonObject(new JsonFormatterBuilder()
+                .buildSimpleJsonFormatter(false, AJEntityUserIdentity.ALL_FIELDS).toJson(userIdentities.get(0)));
+        }
+        JsonObject userDemographicJson = new JsonObject();
+        if (!userDemographics.isEmpty()) {
+            userDemographicJson = new JsonObject(new JsonFormatterBuilder()
+                .buildSimpleJsonFormatter(false, AJEntityUserDemographic.ALL_FIELDS).toJson(userDemographics.get(0)));
+        }
+
+        JsonObject result = new JsonObject();
+        result.put(EventResponseConstants.USER_DEMOGRAPHIC, userDemographicJson);
+        result.put(EventResponseConstants.USER_IDENTITY, userIdentityJson);
+        Base.close();
+        return result;
+    }
 
 }

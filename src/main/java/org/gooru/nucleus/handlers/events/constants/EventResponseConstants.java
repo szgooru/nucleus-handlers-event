@@ -22,8 +22,10 @@ public final class EventResponseConstants {
     public static final String EVENT_PROFILE_UNFOLLOW = "profile.unfollow";
     public static final String EVENT_COURSE_REORDER = "course.reorder";
     public static final String EVENT_CLASS_COURSE_ASSIGNED = "class.course.assigned";
-    public static final String EVEBT_CLASS_CONTENT_VISIBLE = "class.content.visible";
-    public static final String EVEBT_CLASS_REMOVE_STUDENT = "class.student.remove";
+    public static final String EVENT_CLASS_CONTENT_VISIBLE = "class.content.visible";
+    public static final String EVENT_CLASS_REMOVE_STUDENT = "class.student.remove";
+    public static final String EVENT_USER_CREATE = "user.create";
+    public static final String EVENT_USER_UPDATE = "user.update";
 
     public static final String METRICS = "metrics";
 
@@ -79,6 +81,7 @@ public final class EventResponseConstants {
     public static final String FORMAT_UNIT = "unit";
     public static final String FORMAT_COURSE = "course";
     public static final String FORMAT_CLASS = "class";
+    public static final String FORMAT_USER = "user";
 
     public static final String ITEM_TYPE_COLLECTION_RESOURCE = "collection.resource";
     public static final String ITEM_TYPE_COLLECTION_QUESTION = "collection.question";
@@ -96,6 +99,9 @@ public final class EventResponseConstants {
     public static final String EVENT_TIMESTAMP = "event.timestamp";
     public static final String EVENT_DUMP = "event.dump";
     public static final String ID = "id";
+    
+    public static final String USER_DEMOGRAPHIC = "user_demographic";
+    public static final String USER_IDENTITY = "user_identity";
 
     private EventResponseConstants() {
         throw new AssertionError();

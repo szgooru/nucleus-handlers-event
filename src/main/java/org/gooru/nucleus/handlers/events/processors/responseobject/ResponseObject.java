@@ -58,11 +58,15 @@ public class ResponseObject {
         JsonObject userStructure = new JsonObject();
         String sessionToken, userId;
         sessionToken = this.body.getString(EventRequestConstants.SESSION_TOKEN);
-        String decodedVal = getDecodedUserIDFromSession(sessionToken);
-        if (decodedVal != null) {
-            userId = decodedVal;
+        if (sessionToken != null) {
+            String decodedVal = getDecodedUserIDFromSession(sessionToken);
+            if (decodedVal != null) {
+                userId = decodedVal;
+            } else {
+                userId = sessionToken;
+            }
         } else {
-            userId = sessionToken;
+            userId = this.body.getString(EventRequestConstants.EVENT_USER_ID);
         }
 
         userStructure.put(EventResponseConstants.USER_IP, (Object) null);
@@ -188,13 +192,21 @@ public class ResponseObject {
             break;
 
         case MessageConstants.MSG_OP_EVT_CLASS_CONTENT_VISIBLE:
-            retVal = EventResponseConstants.EVEBT_CLASS_CONTENT_VISIBLE;
+            retVal = EventResponseConstants.EVENT_CLASS_CONTENT_VISIBLE;
             break;
             
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_REMOVAL:
-            retVal = EventResponseConstants.EVEBT_CLASS_REMOVE_STUDENT;
+            retVal = EventResponseConstants.EVENT_CLASS_REMOVE_STUDENT;
             break;
-
+            
+        case MessageConstants.MSG_OP_EVT_USER_CREATE:
+            retVal = EventResponseConstants.EVENT_USER_CREATE;
+            break;
+            
+        case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+            retVal = EventResponseConstants.EVENT_USER_UPDATE;
+            break;
+            
         default:
             break;
         }
@@ -415,6 +427,11 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_REMOVAL:
             retVal = EventResponseConstants.FORMAT_CLASS;
 
+        case MessageConstants.MSG_OP_EVT_USER_CREATE:
+        case MessageConstants.MSG_OP_EVT_USER_UPDATE:
+            retVal = EventResponseConstants.FORMAT_USER;
+            break;
+            
         default:
             break;
         }

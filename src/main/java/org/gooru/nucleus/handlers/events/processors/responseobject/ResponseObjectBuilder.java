@@ -91,6 +91,9 @@ public final class ResponseObjectBuilder {
             case MessageConstants.EST_REMOVE_STUDENT:
                 result = buildClassRemoveStudentFromClassResponseObject();
                 break;
+            case MessageConstants.EST_USER_CREATE_UPDATE:
+                result = buildUserCreateUpdateResponseObject();
+                break;
             default:
                 LOGGER.error("Invalid event type seen. Do not know how to handle. Will return failure object.");
                 result = buildFailureResponseObject();
@@ -99,6 +102,10 @@ public final class ResponseObjectBuilder {
         }
 
         return result;
+    }
+
+    private JsonObject buildUserCreateUpdateResponseObject() {
+        return new UserCreateUpdateResponseObject(body, response).build();
     }
 
     private JsonObject buildClassRemoveStudentFromClassResponseObject() {

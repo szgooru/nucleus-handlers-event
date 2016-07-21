@@ -44,8 +44,10 @@ public class AJClassRepo implements ClassRepo {
         JsonObject result = context.eventBody();
         LazyList<AJEntityClass> classes = AJEntityClass.findBySQL(AJEntityClass.SELECT_COLLABORATOR, contentId);
         if (!classes.isEmpty()) {
-            result.put(EventRequestConstants.COLLABORATORS,
-                new JsonArray(classes.get(0).getString(AJEntityClass.COLLABORATOR)));
+            String collaborators = classes.get(0).getString(AJEntityClass.COLLABORATOR);
+            if (collaborators != null && !collaborators.isEmpty()) {
+                result.put(EventRequestConstants.COLLABORATORS, new JsonArray(collaborators));
+            }
         }
         Base.close();
         return result;
@@ -53,7 +55,7 @@ public class AJClassRepo implements ClassRepo {
 
     @Override
     public JsonObject joinClassEvent() {
-        return new JsonObject();
+        return context.eventBody();
     }
 
     @Override

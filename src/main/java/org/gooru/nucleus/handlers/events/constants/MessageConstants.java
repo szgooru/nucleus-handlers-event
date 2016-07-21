@@ -70,6 +70,9 @@ public final class MessageConstants {
     public static final String MSG_OP_EVT_PROFILE_FOLLOW = "event.profile.follow";
     public static final String MSG_OP_EVT_PROFILE_UNFOLLOW = "event.profile.unfollow";
 
+    public static final String MSG_OP_EVT_USER_CREATE = "event.user.create";
+    public static final String MSG_OP_EVT_USER_UPDATE = "event.user.update";
+    
     // Event Structure Type
     public static final int EST_ERROR = -1;
     public static final int EST_ITEM_CREATE = 0;
@@ -87,7 +90,8 @@ public final class MessageConstants {
     public static final int EST_ASSIGN_CLASS_COURSE = 12;
     public static final int EST_CLASS_CONTENT_VISIBILITY = 13;
     public static final int EST_REMOVE_STUDENT = 14;
-
+    public static final int EST_USER_CREATE_UPDATE = 15;
+    
     private MessageConstants() {
         throw new AssertionError();
     }

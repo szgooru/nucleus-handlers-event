@@ -5,6 +5,7 @@ public final class EventRequestConstants {
     public static final String EVENT_NAME = "event.name";
     public static final String EVENT_BODY = "event.body";
     public static final String SESSION_TOKEN = "session.token";
+    public static final String EVENT_USER_ID = "user.id";
 
     public static final String ID = "id";
     public static final String CONTENT_ID = "content.id";
