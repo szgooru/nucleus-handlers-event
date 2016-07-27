@@ -237,4 +237,22 @@ public class AJCollectionRepo implements CollectionRepo {
             cnt = cnt + 1;
         }
     }
+
+    @Override
+    public JsonObject removeCollection() {
+        Base.open(DataSourceRegistry.getInstance().getDefaultDataSource());
+        String contentId = context.eventBody().getString(EventRequestConstants.ID);
+        LOGGER.debug("getting collection/assessment for id {}", contentId);
+
+        JsonObject result = null;
+        LazyList<AJEntityCollection> assessments =
+            AJEntityCollection.findBySQL(AJEntityCollection.SELECT_QUERY, contentId);
+        if (!assessments.isEmpty()) {
+            result = new JsonObject(new JsonFormatterBuilder()
+                .buildSimpleJsonFormatter(false, AJEntityCollection.ASSESSMENT_FIELDS).toJson(assessments.get(0)));
+        }
+
+        Base.close();
+        return result;
+    }
 }

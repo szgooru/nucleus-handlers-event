@@ -194,6 +194,10 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_CLASS_STUDENT_REMOVAL:
             retVal = EventResponseConstants.EVEBT_CLASS_REMOVE_STUDENT;
             break;
+            
+        case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
+            retVal = EventResponseConstants.EVEBT_ITEM_REMOVE;
+            break;
 
         default:
             break;
@@ -567,6 +571,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
             parentContentId = content.getString(EntityConstants.PARENT_COLLECTION_ID);
             break;
 
@@ -638,6 +643,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COLLABORATOR_UPDATE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_CONTENT_REORDER:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
             lessonId = fromContent.getString(EntityConstants.LESSON_ID);
             unitId = fromContent.getString(EntityConstants.UNIT_ID);
             courseId = fromContent.getString(EntityConstants.COURSE_ID);
@@ -721,6 +727,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_COLLECTION_COPY:
         case MessageConstants.MSG_OP_EVT_COLLECTION_MOVE:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_COPY:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
             originalContentGooruId = content.getString(AJEntityCollection.ORIGINAL_COLLECTION_ID);
             break;
 
@@ -767,6 +774,7 @@ public class ResponseObject {
         case MessageConstants.MSG_OP_EVT_QUESTION_DELETE:
         case MessageConstants.MSG_OP_EVT_COLLECTION_CONTENT_ADD:
         case MessageConstants.MSG_OP_EVT_ASSESSMENT_QUESTION_ADD:
+        case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
             courseId = response.getString(EntityConstants.COURSE_ID);
             break;
         }

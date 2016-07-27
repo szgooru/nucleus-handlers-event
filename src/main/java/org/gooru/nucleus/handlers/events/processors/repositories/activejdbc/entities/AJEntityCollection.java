@@ -74,4 +74,10 @@ public class AJEntityCollection extends Model {
 
     public static final String SELECT_OWNER_CREATOR =
         "SELECT owner_id, creator_id FROM collection where id = ANY(?::uuid[])";
+    
+    public static final String SELECT_QUERY =
+        "SELECT id, course_id, unit_id, lesson_id, title, created_at, updated_at, owner_id, creator_id, modifier_id, original_creator_id,"
+            + " original_collection_id, parent_collection_id, sequence_id, publish_date, publish_status, format, thumbnail, learning_objective,"
+            + " collaborator, metadata, taxonomy, url, login_required, setting, grading, visible_on_profile, is_deleted, editorial_tags, creator_system,"
+            + " license FROM collection WHERE id = ?::uuid";
 }

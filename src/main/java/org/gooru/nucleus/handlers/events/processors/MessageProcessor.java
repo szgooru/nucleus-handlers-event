@@ -139,6 +139,10 @@ class MessageProcessor implements Processor {
                 result = processEventCollectionContentReorder();
                 break;
                 
+            case MessageConstants.MSG_OP_EVT_COLLECTION_REMOVE:
+                result = processEventCollectionRemove();
+                break;
+                
             case MessageConstants.MSG_OP_EVT_ASSESSMENT_CREATE:
             case MessageConstants.MSG_OP_EVT_ASSESSMENT_UPDATE:
                 result = processEventAssessmentCreateUpdate();
@@ -238,6 +242,22 @@ class MessageProcessor implements Processor {
                 .generateErrorResponse((JsonObject) (message != null ? message.body() : null)).toString());
         }
         return result;
+    }
+
+    private JsonObject processEventCollectionRemove() {
+        try {
+            ProcessorContext context = createContext();
+            JsonObject result = RepoBuilder.buildCollectionRepo(context).removeCollection();
+            if (result != null) {
+                LOGGER.debug("result returned: {}", result);
+                return ResponseFactory.generateItemRemoveResponse(request, result);
+            }
+        } catch (Throwable t) {
+            LOGGER.error("Error while getting content from database:", t);
+        }
+        LOGGER.error("Failed to generate event. Input data received {}", request);
+        TRANSMIT_FAIL_LOGGER.error(ResponseFactory.generateErrorResponse(request).toString());
+        return null;
     }
 
     private boolean validateAndInitialize() {

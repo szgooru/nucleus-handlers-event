@@ -38,4 +38,6 @@ public interface CollectionRepo {
     List<String> getOwnerAndCreatorIds(JsonArray refCollectionIds);
 
     JsonObject getCollection(String id);
+
+    JsonObject removeCollection();
 }

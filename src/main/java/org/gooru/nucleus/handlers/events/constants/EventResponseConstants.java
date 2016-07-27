@@ -24,6 +24,7 @@ public final class EventResponseConstants {
     public static final String EVENT_CLASS_COURSE_ASSIGNED = "class.course.assigned";
     public static final String EVEBT_CLASS_CONTENT_VISIBLE = "class.content.visible";
     public static final String EVEBT_CLASS_REMOVE_STUDENT = "class.student.remove";
+    public static final String EVEBT_ITEM_REMOVE = "item.remove";
 
     public static final String METRICS = "metrics";
 

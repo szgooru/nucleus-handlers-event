@@ -26,6 +26,7 @@ public final class MessageConstants {
     public static final String MSG_OP_EVT_COLLECTION_CONTENT_ADD = "event.collection.content.add";
     public static final String MSG_OP_EVT_COLLECTION_COLLABORATOR_UPDATE = "event.collection.collaborator.update";
     public static final String MSG_OP_EVT_COLLECTION_MOVE = "event.collection.move";
+    public static final String MSG_OP_EVT_COLLECTION_REMOVE = "event.collection.remove";
 
     public static final String MSG_OP_EVT_ASSESSMENT_CREATE = "event.assessment.create";
     public static final String MSG_OP_EVT_ASSESSMENT_UPDATE = "event.assessment.update";
@@ -87,6 +88,7 @@ public final class MessageConstants {
     public static final int EST_ASSIGN_CLASS_COURSE = 12;
     public static final int EST_CLASS_CONTENT_VISIBILITY = 13;
     public static final int EST_REMOVE_STUDENT = 14;
+    public static final int EST_ITEM_REMOVE = 15;
 
     private MessageConstants() {
         throw new AssertionError();
